@@ -7,12 +7,6 @@ import 'package:get_storage/get_storage.dart';
 import 'Domain/Utilities/route.dart';
 
 void main() async{
-  // if (Platform.isWindows || Platform.isLinux) {
-  //   // Initialize FFI
-  //   sqfliteFfiInit();
-  //   // Change the default factory
-  //   databaseFactory = databaseFactoryFfi;
-  // }
   runApp(const MyApp());
   await GetStorage.init();
 

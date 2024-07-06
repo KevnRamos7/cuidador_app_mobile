@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
 
       title: "Cuidador",
       debugShowCheckedModeBanner: false,
-      initialRoute: '/', 
+      initialRoute: '/introduction', 
       getPages: Routes.routes, // Rutas de la aplicacion
       theme: ColorsThemeData().adultoMayorThemeData, // Cambiará dependiendo del valor recolectado del localstorage
       navigatorKey: Get.key,

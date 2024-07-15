@@ -30,14 +30,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-
       title: "Cuidador",
       debugShowCheckedModeBanner: false,
-      initialRoute: '/introduction', 
+      initialRoute: '/home', 
       getPages: Routes.routes, // Rutas de la aplicacion
       theme: ColorsThemeData().adultoMayorThemeData, // Cambiará dependiendo del valor recolectado del localstorage
       navigatorKey: Get.key,
-      defaultTransition: Transition.fade, // Animacion de pantalla a pantalla, cambiar de ser necesario
+      defaultTransition: Transition.cupertino, // Animacion de pantalla a pantalla, cambiar de ser necesario
       
     );
   } 

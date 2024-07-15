@@ -1,11 +1,14 @@
 
 
 
+import 'package:cuidador_app_mobile/UI/Pages/LoginModule/Models/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class BottomModelLogin{
+
+  LoginController loginController = Get.put(LoginController());
 
   Future<void> modalLoginBottom() async {
     return await Get.bottomSheet(
@@ -23,7 +26,7 @@ class BottomModelLogin{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Ingresa tus Datos!', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+            const Text('Ingresa tus Datos!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
 
             _textFieldsFormat('Usuario', Icons.person, false),
             _textFieldsFormat('Contraseña', Icons.lock, true),
@@ -38,7 +41,7 @@ class BottomModelLogin{
                     borderRadius: BorderRadius.circular(20),
                   )
                 ),
-                onPressed: (){}, 
+                onPressed: () => loginController.login('email', 'password'),
                 child: Text('Ingresar', 
                 style: GoogleFonts.anekMalayalam(
                   fontSize: 15, 

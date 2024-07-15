@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ColorsThemeData{
 
   ThemeData adultoMayorThemeData = ThemeData(
+    textTheme: GoogleFonts.anekMalayalamTextTheme(),
     primaryColor: const Color.fromARGB(255, 31, 31, 31),
     colorScheme: const ColorScheme(
       brightness: Brightness.light, 

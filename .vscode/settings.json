@@ -1,0 +1,12 @@
+{
+    "workbench.editor.customLabels.patterns": {
+        "*/Pages/*":"${filename}.${extname} - Page 📖",
+        "*/GlobalWidgets/*":"${filename}.${extname} - Componente 🧱",
+        "*/GlobalClass/*":"${filename}.${extname} - Global 🌍",
+        "*/Algorithm/*":"${filename}.${extname} - Algoritmo 🧮",
+        "*/Alerts/*":"${filename}.${extname} - Alert ⚠️",
+        "*/EnvironmentVariables/*":"${filename}.${extname} - Env 🌐",
+        "*/Entities/*":"${filename}.${extname} - Entidades 🙈",
+        "*/Data/*":"${filename}.${extname} - API 📡",
+    },
+}

@@ -26,7 +26,7 @@ class FormContratacion{
                 Container(
                   margin: EdgeInsets.only(top: Get.height * 0.04),
                   child: calendarContainer.calendarContainer(
-                    disabledDates: con.fechasNoDisponibles.map((e) => e).toList(),
+                    disabledDates: con.fechasNoDisponiblesSet,
                     height: Get.height * 0.4, 
                     width: Get.height * 0.4,
                     onDateChanged: (DateTime date){con.date = date;}
@@ -257,8 +257,8 @@ class FormContratacion{
             children: [
               TimePickerSpinnerPopUp(
                 onChange: (p0) => dateChange!(p0),
-                mode: CupertinoDatePickerMode.time,
-                initTime: DateTime.now()
+                mode: CupertinoDatePickerMode.values[1],
+                // initTime: DateTime.now(),
               ),
             ],
           ),

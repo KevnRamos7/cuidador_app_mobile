@@ -3,10 +3,12 @@ import 'package:cuidador_app_mobile/Data/Response/Contrato/contrato_response.dar
 import 'package:cuidador_app_mobile/Domain/Model/Contrato/contrato_model.dart';
 import 'package:cuidador_app_mobile/Domain/Model/Perfiles/persona_model.dart';
 import 'package:cuidador_app_mobile/Domain/Model/Perfiles/usuario_model.dart';
+import 'package:cuidador_app_mobile/UI/Pages/Contrato/Models/extra_functions.dart';
 import 'package:cuidador_app_mobile/UI/Pages/Contrato/Modules/contrato_item_list.dart';
 import 'package:cuidador_app_mobile/UI/Shared/Snackbar/snackbar_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+// import 'package:intl/intl.dart';
 // import 'package:get_storage/get_storage.dart';
 
 import '../../../../Domain/Model/Contrato/contrato_item_model.dart';
@@ -19,9 +21,11 @@ class ContratoController extends GetxController{
   UsuarioModel personaCuidador = UsuarioModel();
   SnackbarUI  snackbarUI = SnackbarUI();
   ContratoResponse contratoResponse = ContratoResponse();
+  ExtraFunctions extraFunctions = ExtraFunctions();
 
   ContratoItemList contratoItemList = ContratoItemList();
-  RxList<String> fechasNoDisponibles = RxList<String>();
+  List<String> fechasNoDisponiblesSet = [];
+  List<String> horariosDisponibles = [];
 
   DateTime dateStart = DateTime.now();
   DateTime dateEnd = DateTime.now();
@@ -46,16 +50,19 @@ class ContratoController extends GetxController{
     try
     {
       personaCuidador = Get.arguments as UsuarioModel;
-      List<ContratoItemModel> disabled = await contratoResponse.getFechasNoDisponibles();
-      for(var item in disabled){
-        fechasNoDisponibles.add(item.fechaInicioContrato!);
-        fechasNoDisponibles.add(item.fechaFinContrato!);
+
+      List<ContratoItemModel> fechasConCita = await contratoResponse.getFechasNoDisponibles();
+      fechasNoDisponiblesSet = extraFunctions.findDatesWithLessThanOneHour(fechasConCita, date.toString());
+      horariosDisponibles = extraFunctions.generateAvailableTimes(fechasConCita, "2024-07-17T09:00:00");
+      for (var item in horariosDisponibles) {
+        print(item);
       }
 
     }
     catch(e)
     {
-      snackbarUI.snackbarError('Ha Ocurrido Un Error', 'Error al cargar el cuidador');
+      snackbarUI.snackbarError('Ha Ocurrido Un Error', 'No se ha podido obtener la informacion del cuidador.');
+      print(e);
     }
   }
 
@@ -102,8 +109,8 @@ class ContratoController extends GetxController{
     contratoItems.add(
       ContratoItemModel(
         idContratoItem: 0,
-        fechaSolicitaCliente: horarioInicio.toIso8601String(),
-        fechaFinContrato: horarioFin.toIso8601String(),
+        horarioInicioPropuesto: horarioInicio.toIso8601String(),
+        horarioFinPropuesto: horarioFin.toIso8601String(),
         observaciones: txtObservacion.value.text,
         tareasContrato: tareasContrato,
       )

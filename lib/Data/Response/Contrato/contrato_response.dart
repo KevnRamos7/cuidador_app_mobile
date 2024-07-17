@@ -12,7 +12,7 @@ class ContratoResponse extends GetConnect{
     List<ContratoItemModel> contratos = [];
     try
     {
-      final response = await get('https://mocki.io/v1/d8818b56-d647-4acb-84fb-dd1205cd53ee');
+      final response = await get('https://mocki.io/v1/6a3e25d1-5b63-457e-86f2-3ec871c6a1cf');
       
       for(var item in response.body){
         contratos.add(ContratoItemModel.fromJson(item));

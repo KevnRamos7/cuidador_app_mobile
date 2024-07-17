@@ -1,17 +1,20 @@
-
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 
-class CalendarContainer{
-
+class CalendarContainer {
   Widget calendarContainer({
     required double height,
     required double width,
     required Function(DateTime date) onDateChanged,
     List<String>? disabledDates,
-  }){
-
-    String sanitizeDateTime(DateTime dateTime) => "${dateTime.year}-${dateTime.month}-${dateTime.day}";
+  }) {
+    // Función para convertir DateTime a un formato de cadena compatible
+    String sanitizeDateTime(DateTime dateTime) {
+      String year = dateTime.year.toString();
+      String month = dateTime.month.toString().padLeft(2, '0');
+      String day = dateTime.day.toString().padLeft(2, '0');
+      return "$year-$month-$day";
+    }
 
     return Container(
       height: height,
@@ -32,11 +35,14 @@ class CalendarContainer{
       ),
       child: CalendarDatePicker2(
         config: CalendarDatePicker2Config(
-          selectableDayPredicate: (DateTime val) {
-          String sanitized = sanitizeDateTime(val);
-          // disabledDates = sanitizeDateTime()
-          return disabledDates!.contains(sanitized);
-        },
+          selectableDayPredicate: (DateTime dateTime) {
+            if (disabledDates != null) {
+              String sanitizedDate = sanitizeDateTime(dateTime);
+              bool isDisabled = disabledDates.contains(sanitizedDate);
+              return !isDisabled;
+            }
+            return true;
+          },
           disabledDayTextStyle: const TextStyle(color: Colors.grey),
           calendarType: CalendarDatePicker2Type.single,
           daySplashColor: Colors.white,
@@ -47,12 +53,11 @@ class CalendarContainer{
             fontWeight: FontWeight.bold,
           ),
         ),
-        value: [DateTime.now()],
+        value: [],
         onValueChanged: (value) {
           onDateChanged(value[0]);
         },
-      )
+      ),
     );
   }
-
 }

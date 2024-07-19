@@ -1,12 +1,13 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CalendarContainer {
   Widget calendarContainer({
     required double height,
     required double width,
     required Function(DateTime date) onDateChanged,
-    List<String>? disabledDates,
+    required Rx<String> disabledDates,
   }) {
     // Función para convertir DateTime a un formato de cadena compatible
     String sanitizeDateTime(DateTime dateTime) {
@@ -36,9 +37,9 @@ class CalendarContainer {
       child: CalendarDatePicker2(
         config: CalendarDatePicker2Config(
           selectableDayPredicate: (DateTime dateTime) {
-            if (disabledDates != null) {
+            if (disabledDates.isNotEmpty) {
               String sanitizedDate = sanitizeDateTime(dateTime);
-              bool isDisabled = disabledDates.contains(sanitizedDate);
+              bool isDisabled = disabledDates.value.contains(sanitizedDate);
               return !isDisabled;
             }
             return true;
@@ -53,7 +54,7 @@ class CalendarContainer {
             fontWeight: FontWeight.bold,
           ),
         ),
-        value: [],
+        value: [DateTime.now()],
         onValueChanged: (value) {
           onDateChanged(value[0]);
         },

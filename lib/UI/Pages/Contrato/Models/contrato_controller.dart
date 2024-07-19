@@ -24,8 +24,14 @@ class ContratoController extends GetxController{
   ExtraFunctions extraFunctions = ExtraFunctions();
 
   ContratoItemList contratoItemList = ContratoItemList();
-  List<String> fechasNoDisponiblesSet = [];
-  List<String> horariosDisponibles = [];
+  List<ContratoItemModel> fechasConCita = [];
+  RxList<String> fechasNoDisponiblesSet =  RxList<String>();
+  var horariosInicialesDisponibles = <String>[];
+  var horariosFinalesDisponibles = <String>[].obs;
+
+  Rx<DateTime> selectedDate = DateTime.now().obs;
+  String selectedTimeStart = 'Hora Inicio';
+  String selectedTimeEnd = 'Hora Fin';
 
   DateTime dateStart = DateTime.now();
   DateTime dateEnd = DateTime.now();
@@ -51,19 +57,26 @@ class ContratoController extends GetxController{
     {
       personaCuidador = Get.arguments as UsuarioModel;
 
-      List<ContratoItemModel> fechasConCita = await contratoResponse.getFechasNoDisponibles();
-      fechasNoDisponiblesSet = extraFunctions.findDatesWithLessThanOneHour(fechasConCita, date.toString());
-      horariosDisponibles = extraFunctions.generateAvailableTimes(fechasConCita, "2024-07-17T09:00:00");
-      for (var item in horariosDisponibles) {
-        print(item);
-      }
-
+      fechasConCita = await contratoResponse.getFechasNoDisponibles();
+      fechasNoDisponiblesSet.assignAll(extraFunctions.findDatesWithLessThanOneHour(fechasConCita, date.toString()));
+      fechasNoDisponiblesSet.refresh();
     }
     catch(e)
     {
       snackbarUI.snackbarError('Ha Ocurrido Un Error', 'No se ha podido obtener la informacion del cuidador.');
-      print(e);
     }
+  }
+
+  void onDateChanged(DateTime date){
+      selectedDate = date.obs;
+  }
+
+  void onTimeStartChanged(String time){
+    selectedTimeStart = time;
+    int index = horariosInicialesDisponibles.indexOf(time);
+    horariosFinalesDisponibles.value = horariosInicialesDisponibles.sublist(index + 4);
+    horariosFinalesDisponibles.refresh();
+    update();
   }
 
   // Se agrega un listado de tareas al contrato item en curso

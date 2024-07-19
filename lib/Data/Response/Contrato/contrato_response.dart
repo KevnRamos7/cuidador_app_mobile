@@ -8,7 +8,7 @@ class ContratoResponse extends GetConnect{
 
   SnackbarUI snackbarUI = SnackbarUI();
 
-  Future<List<ContratoItemModel>> getFechasNoDisponibles() async{
+  Future<RxList<ContratoItemModel>> getFechasNoDisponibles() async{
     List<ContratoItemModel> contratos = [];
     try
     {
@@ -16,6 +16,7 @@ class ContratoResponse extends GetConnect{
       
       for(var item in response.body){
         contratos.add(ContratoItemModel.fromJson(item));
+        print(response.body);
       }
 
     }
@@ -23,7 +24,7 @@ class ContratoResponse extends GetConnect{
     {
       snackbarUI.snackbarError('Ha Ocurrido un Error!', e.toString());
     }
-    return contratos;
+    return contratos.obs;
   }
 
 }

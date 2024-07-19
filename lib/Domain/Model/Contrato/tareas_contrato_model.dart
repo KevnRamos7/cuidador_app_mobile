@@ -1,16 +1,28 @@
+import 'package:cuidador_app_mobile/Domain/Model/Catalogos/estatus_model.dart';
+
 class TareasContratoModel{
 
   int? idTareasContrato;
   String? tituloTarea;
   String? descripcionTarea;
   String? tipoTarea;
-  String? estatus;
-  String? motivoCancelacion;
+  EstatusModel? estatus;
+  String? fechaRealizar;
   String? fechaInicio;
-  String? fechaFin;
-  String? ultimaFechaPospuesta;
+  String? fechaFinalizacion;
+  String? fechaPospuesta;
 
-  TareasContratoModel({this.idTareasContrato, this.tituloTarea, this.descripcionTarea, this.tipoTarea, this.estatus, this.motivoCancelacion, this.fechaInicio, this.fechaFin, this.ultimaFechaPospuesta});
+  TareasContratoModel({
+    this.idTareasContrato, 
+    this.tituloTarea, 
+    this.descripcionTarea, 
+    this.tipoTarea, 
+    this.estatus, 
+    this.fechaRealizar, 
+    this.fechaInicio, 
+    this.fechaFinalizacion, 
+    this.fechaPospuesta
+  });
 
   TareasContratoModel.fromJson(Map<String, dynamic> json){
     idTareasContrato = json['id_tareas_contrato'];
@@ -18,10 +30,10 @@ class TareasContratoModel{
     descripcionTarea = json['descripcion_tarea'];
     tipoTarea = json['tipo_tarea'];
     estatus = json['estatus'];
-    motivoCancelacion = json['motivo_cancelacion'];
+    fechaRealizar = json['fecha_a_realizar'];
     fechaInicio = json['fecha_inicio'];
-    fechaFin = json['fecha_fin'];
-    ultimaFechaPospuesta = json['ultima_fecha_pospuesta'];
+    fechaFinalizacion = json['fecha_finalizacion'];
+    fechaPospuesta = json['fecha_pospuesta'];
   }
 
   Map<String, dynamic> toJson(){
@@ -31,10 +43,10 @@ class TareasContratoModel{
     data['descripcion_tarea'] = descripcionTarea;
     data['tipo_tarea'] = tipoTarea;
     data['estatus'] = estatus;
-    data['motivo_cancelacion'] = motivoCancelacion;
+    data['fecha_a_realizar'] = fechaRealizar;
     data['fecha_inicio'] = fechaInicio;
-    data['fecha_fin'] = fechaFin;
-    data['ultima_fecha_pospuesta'] = ultimaFechaPospuesta;
+    data['fecha_finalizacion'] = fechaFinalizacion;
+    data['fecha_pospuesta'] = fechaPospuesta;
     return data;
   }
 

@@ -8,6 +8,7 @@ import 'package:cuidador_app_mobile/UI/Pages/Contrato/Modules/contrato_item_list
 import 'package:cuidador_app_mobile/UI/Shared/Snackbar/snackbar_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 // import 'package:intl/intl.dart';
 // import 'package:get_storage/get_storage.dart';
 
@@ -22,8 +23,9 @@ class ContratoController extends GetxController{
   SnackbarUI  snackbarUI = SnackbarUI();
   ContratoResponse contratoResponse = ContratoResponse();
   ExtraFunctions extraFunctions = ExtraFunctions();
-
   ContratoItemList contratoItemList = ContratoItemList();
+
+
   List<ContratoItemModel> fechasConCita = [];
   RxList<String> fechasNoDisponiblesSet =  RxList<String>();
   var horariosInicialesDisponibles = <String>[];
@@ -33,10 +35,8 @@ class ContratoController extends GetxController{
   Rx<DateTime> selectedDate = DateTime.now().obs;
   String selectedTimeStart = 'Hora Inicio';
   String selectedTimeEnd = 'Hora Fin';
+  String selectedTimeTask = 'Hora Tarea';
 
-  DateTime dateStart = DateTime.now();
-  DateTime dateEnd = DateTime.now();
-  DateTime dateTask = DateTime.now();
   DateTime date = DateTime.now();
 
   Rx<TextEditingController> txtObservacion = TextEditingController().obs;
@@ -70,6 +70,8 @@ class ContratoController extends GetxController{
     }
   }
 
+ // TODO  Funciones de la vista
+
   void onDateChanged(DateTime date){
       selectedDate = date.obs;
   }
@@ -84,28 +86,26 @@ class ContratoController extends GetxController{
 
   void cbxTaskOnChange(bool value){
     cbxAsignTask.value = value;
-    tareasContrato.clear(); // temporal
-    String horaInicio = selectedTimeStart;//.padLeft(4, '0');
-    String horaFin = selectedTimeEnd;//.padLeft(4, '0');
+    // tareasContrato.clear(); // temporal
+    if(value == true){
+      String horaInicio = selectedTimeStart;//.padLeft(4, '0');
+      String horaFin = selectedTimeEnd;//.padLeft(4, '0');
 
-    String inicial = extraFunctions.stringToDateTime(horaInicio).toString();
-    String fin = extraFunctions.stringToDateTime(horaFin).toString();
+      String inicial = extraFunctions.stringToDateTime(horaInicio).toString();
+      String fin = extraFunctions.stringToDateTime(horaFin).toString();
 
-    horariosForTask.value = extraFunctions.availableTimesForTask(inicial, fin ,tareasContrato);
-    horariosForTask.refresh();
+      horariosForTask.value = extraFunctions.availableTimesForTask(inicial, fin ,tareasContrato);
+      horariosForTask.refresh();
+    }
   }
+
+  // TODO Funciones de la logica
 
   // Se agrega un listado de tareas al contrato item en curso
   void addTareasContrato(){
 
-    DateTime horarioInicio = DateTime(
-      date.year, date.month, date.day, 
-      dateStart.hour, dateStart.minute
-    );
-    DateTime horarioFin = DateTime(
-      date.year, date.month, date.day, 
-      dateEnd.hour, dateEnd.minute
-    );
+    // Se crea el objeto tipo DateTime de la fecha de inicio
+    DateTime horario = extraFunctions.stringToDateTime(selectedTimeTask);
 
     tareasContrato.add(
       TareasContratoModel(
@@ -113,8 +113,7 @@ class ContratoController extends GetxController{
         tituloTarea: txtTituloTarea.value.text,
         descripcionTarea: txtDescripcionTarea.value.text,
         tipoTarea: 'Tarea',
-        fechaInicio: horarioInicio.toIso8601String(),
-        fechaFin: horarioFin.toIso8601String(),
+        fechaRealizar: horario.toIso8601String()
       )
     );
 
@@ -125,14 +124,9 @@ class ContratoController extends GetxController{
   // Se agrega el contratoItem a la lista de contratoItems
   void saveContratoItem(){
 
-    DateTime horarioInicio = DateTime(
-      date.year, date.month, date.day, 
-      dateStart.hour, dateStart.minute
-    );
-    DateTime horarioFin = DateTime(
-      date.year, date.month, date.day, 
-      dateEnd.hour, dateEnd.minute
-    );
+    // Se crea el objeto tipo DateTime de la fecha de inicio y fin
+    DateTime horarioInicio = extraFunctions.stringToDateTime(selectedTimeStart);
+    DateTime horarioFin = extraFunctions.stringToDateTime(selectedTimeEnd);
 
     // Se agrega el contratoItem a la lista de contratoItems
     contratoItems.add(
@@ -147,17 +141,10 @@ class ContratoController extends GetxController{
 
     snackbarUI.snackbarSuccess('Fecha agregada con exito!', 'Se ha agregado la fecha al contrato.');
 
-    // //Vacia la lista de tareas
-    // tareasContrato.clear();
-    // tareasContrato.refresh();
-
   }
   //Carga el resumen del contrato
   void saveContrato(){
-
-    PersonaModel personaCliente = PersonaModel(
-      idPersona: 1, //GetStorage().read('usuario')['id_persona'],
-    );
+    PersonaModel personaCliente = PersonaModel.fromJson(GetStorage().read('perfil'));
 
     ContratoModel contrato = ContratoModel(
       idContrato: 0,
@@ -172,6 +159,66 @@ class ContratoController extends GetxController{
 
     Get.offNamed('/resumen_contrato', arguments: contrato);
 
+  }
+
+
+  //! METODOS DE PRUEBAS
+
+  void cargarContratosDePrueba(){
+
+    //Crear lista de contratos fake
+    List<ContratoItemModel> contratos = [
+      ContratoItemModel(
+        idContratoItem: 1,
+        horarioInicioPropuesto: '2022-10-10T10:00:00',
+        horarioFinPropuesto: '2022-10-10T12:00:00',
+        observaciones: 'Observaciones de la cita',
+        tareasContrato: RxList<TareasContratoModel>([
+          TareasContratoModel(
+            tituloTarea: 'Tarea 1',
+            descripcionTarea: 'Descripcion de la tarea 1',
+            tipoTarea: 'Tarea',
+            fechaRealizar: '2022-10-10T10:00:00',
+          ),
+          TareasContratoModel(
+            tituloTarea: 'Tarea 2',
+            descripcionTarea: 'Descripcion de la tarea 2',
+            tipoTarea: 'Tarea',
+            fechaRealizar: '2022-10-10T10:00:00',
+            fechaPospuesta: '2022-10-10T12:00:00',
+          ),
+        ]),
+      ),
+      ContratoItemModel(
+        idContratoItem: 2,
+        horarioInicioPropuesto: '2022-10-10T14:00:00',
+        horarioFinPropuesto: '2022-10-10T16:00:00',
+        observaciones: 'Observaciones de la cita',
+        tareasContrato: RxList<TareasContratoModel>([
+          TareasContratoModel(
+            tituloTarea: 'Tarea 1',
+            descripcionTarea: 'Descripcion de la tarea 1',
+            tipoTarea: 'Tarea',
+            fechaRealizar: '2022-10-10T10:00:00',
+          ),
+          TareasContratoModel(
+            tituloTarea: 'Tarea 2',
+            descripcionTarea: 'Descripcion de la tarea 2',
+            tipoTarea: 'Tarea',
+            fechaRealizar: '2022-10-10T10:00:00',
+            fechaPospuesta: '2022-10-10T12:00:00',
+          ),
+        ]),
+      ),
+    ];
+  
+    contratoItems.assignAll(contratos);
+    contratoItems.refresh();
+
+    if(contratoItems.isNotEmpty){
+      contratoItemList.mostrarListadofromModalSheet(contratos);
+    }
+  
   }
 
 }

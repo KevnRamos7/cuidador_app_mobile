@@ -1,4 +1,5 @@
 import 'package:cuidador_app_mobile/UI/Pages/Contrato/Models/contrato_controller.dart';
+import 'package:cuidador_app_mobile/UI/Pages/Contrato/Modules/contrato_item_list.dart';
 import 'package:cuidador_app_mobile/UI/Shared/Containers/calendar_container.dart';
 import 'package:cuidador_app_mobile/UI/Shared/TextFields/form_textfield.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -9,6 +10,7 @@ import 'package:get/get.dart';
 class FormContratacion{
 
   CalendarContainer calendarContainer = Get.put(CalendarContainer());
+  ContratoItemList contratoItemList = Get.put(ContratoItemList());
   FormTextfield formTextfield = Get.put(FormTextfield());
   ContratoController con = Get.put(ContratoController());
   // OnchangeFunctions onchangeFunctions = Get.put(OnchangeFunctions());
@@ -215,9 +217,10 @@ class FormContratacion{
                                 ),
                               )
                             ),
-                            _botonAgregar('', (){con.addTareasContrato();}, const Color(0xFF395886), null),
-                            _botonAgregar('Lista', (){}, Colors.black87, CupertinoIcons.square_list),
-                                      
+                            _botonAgregar(
+                              'Agregar', 
+                              ()=>con.addTareasContrato(), 
+                            const Color(0xFF395886), CupertinoIcons.add),
                           ],
                         ) : const SizedBox(),
                       ],
@@ -250,7 +253,8 @@ class FormContratacion{
             
                   const SizedBox(height: 20),
             
-                  con.contratoItems.isNotEmpty ? SizedBox(
+                  //con.contratoItems.isEmpty ? 
+                  SizedBox(
                     width: Get.width * 0.6,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -260,15 +264,15 @@ class FormContratacion{
                           side: const BorderSide(color: Colors.white, width: 1)
                         )
                       ),
-                      onPressed: () => con.contratoItemList.mostrarListadofromModalSheet(con.contratoItems), 
+                      onPressed: () => con.cargarContratosDePrueba(), 
                       child: const Text(
                         'Ver Solicitudes', 
                         style: TextStyle(color: Colors.white, fontSize: 15),
                       ),
                     ),
-                  ) : const SizedBox(),
+                  ) //: const SizedBox(),
               
-                  const SizedBox(height: 100)
+                  ,const SizedBox(height: 100)
               
                 ],
               ),

@@ -187,6 +187,10 @@ String _formatTime(DateTime dateTime) {
   return '$hours:$minutes';
 }
 
+String formatTimeInLetter(String date){
+  return '';
+}
+
 // Función para formatear string a Datetime
 DateTime stringToDateTime(String datetime){
   
@@ -229,7 +233,7 @@ DateTime stringToDateTime(String datetime){
         0, 0
       );
       return dateFormatted;
-      
+
     default:
       return DateTime.now();
   }

@@ -142,9 +142,9 @@ Future <RxList<String>>  generateAvailableTimes(List<ContratoItemModel> schedule
   horasDisponibles.clear();
   intervalosPorHora.forEach((hora, times){
     if(times.contains("$hora:00") && times.contains("$hora:15") && times.contains("$hora:30") && times.contains("$hora:45")){
-      times.forEach((time){
+      for (var time in times) {
         horasDisponibles.add(time);
-      });
+      }
     }
   });
 
@@ -167,7 +167,7 @@ List<String> availableTimesForTask(String fechaInicio, String fechaFin, List<Tar
     horasEnRango.add(formattedTime);
 
     // Incrementar 15 minutos
-    current = current.add(Duration(minutes: 10));
+    current = current.add(const Duration(minutes: 10));
   }
 
   // Filtrar las horas ocupadas
@@ -185,6 +185,55 @@ String _formatTime(DateTime dateTime) {
   String hours = dateTime.hour.toString().padLeft(2, '0');
   String minutes = dateTime.minute.toString().padLeft(2, '0');
   return '$hours:$minutes';
+}
+
+// Función para formatear string a Datetime
+DateTime stringToDateTime(String datetime){
+  
+  int logitudCadena = datetime.length;
+  String fecha = '';
+  int hora = 0;
+  int minuto = 0;
+
+  switch(logitudCadena){
+
+    case 10:
+    // Longitud de la cadena de fecha
+      return DateTime(
+        int.parse(datetime.substring(0, 4)), // Año
+        int.parse(datetime.substring(5, 7)), // Mes
+        int.parse(datetime.substring(8, 10)) // Día
+      );
+    case > 18:
+    // Longitud de la cadena de fecha y hora
+      fecha = datetime.substring(0, 10);
+      hora = int.parse(datetime.substring(12, datetime.indexOf(":") -1 ));
+      minuto = int.parse(datetime.substring(datetime.indexOf(":") + 1, datetime.indexOf(":") + 3 ));
+
+      return DateTime(
+        int.parse(datetime.substring(0, 4)), // Año
+        int.parse(datetime.substring(5, 7)), // Mes
+        int.parse(datetime.substring(8, 10)), // Día
+        int.parse(datetime.substring(12, datetime.indexOf(":") -1 )), // Hora
+        int.parse(datetime.substring(datetime.indexOf(":") + 1, datetime.indexOf(":") + 3 )) // Minuto
+      );
+    case <= 5:
+      hora = int.parse(datetime.substring(0, datetime.indexOf(":") ));
+      minuto = int.parse(datetime.substring(datetime.indexOf(":") + 1, datetime.indexOf(":") + 3 ));
+      DateTime dateFormatted =DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        hora,
+        minuto,
+        0, 0
+      );
+      return dateFormatted;
+      
+    default:
+      return DateTime.now();
+  }
+
 }
 
 }

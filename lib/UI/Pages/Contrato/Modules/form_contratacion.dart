@@ -11,6 +11,7 @@ class FormContratacion{
   CalendarContainer calendarContainer = Get.put(CalendarContainer());
   FormTextfield formTextfield = Get.put(FormTextfield());
   ContratoController con = Get.put(ContratoController());
+  // OnchangeFunctions onchangeFunctions = Get.put(OnchangeFunctions());
 
   Widget listForm(){
     return Expanded(
@@ -142,7 +143,9 @@ class FormContratacion{
                                 _textTitulo('¿Quieres Asignar Tareas?', 0),
                                 Checkbox(
                                   value: con.cbxAsignTask.value, 
-                                  onChanged: (value) {con.cbxAsignTask.value = value!;}
+                                  onChanged: (value) {
+                                    con.cbxTaskOnChange(value!);
+                                  }
                                   , activeColor: const Color(0xFF395886)
                                   , checkColor: Colors.white
                                   )
@@ -191,8 +194,8 @@ class FormContratacion{
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                 ),
-                                value: con.horariosInicialesDisponibles.first,
-                                items: con.horariosInicialesDisponibles.map((item) => DropdownMenuItem<String>(
+                                value: null,
+                                items: con.horariosForTask.map((item) => DropdownMenuItem<String>(
                                   value: item,
                                   child: Text(item,
                                     style: const TextStyle(fontSize: 14),

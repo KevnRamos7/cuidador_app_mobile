@@ -28,6 +28,7 @@ class ContratoController extends GetxController{
   RxList<String> fechasNoDisponiblesSet =  RxList<String>();
   var horariosInicialesDisponibles = <String>[];
   var horariosFinalesDisponibles = <String>[].obs;
+  var horariosForTask = <String>[].obs;
 
   Rx<DateTime> selectedDate = DateTime.now().obs;
   String selectedTimeStart = 'Hora Inicio';
@@ -60,6 +61,8 @@ class ContratoController extends GetxController{
       fechasConCita = await contratoResponse.getFechasNoDisponibles();
       fechasNoDisponiblesSet.assignAll(extraFunctions.findDatesWithLessThanOneHour(fechasConCita, date.toString()));
       fechasNoDisponiblesSet.refresh();
+      horariosInicialesDisponibles = await extraFunctions.generateAvailableTimes(fechasConCita, date.toString().split(" ")[0]);
+      update();
     }
     catch(e)
     {
@@ -77,6 +80,19 @@ class ContratoController extends GetxController{
     horariosFinalesDisponibles.value = horariosInicialesDisponibles.sublist(index + 4);
     horariosFinalesDisponibles.refresh();
     update();
+  }
+
+  void cbxTaskOnChange(bool value){
+    cbxAsignTask.value = value;
+    tareasContrato.clear(); // temporal
+    String horaInicio = selectedTimeStart;//.padLeft(4, '0');
+    String horaFin = selectedTimeEnd;//.padLeft(4, '0');
+
+    String inicial = extraFunctions.stringToDateTime(horaInicio).toString();
+    String fin = extraFunctions.stringToDateTime(horaFin).toString();
+
+    horariosForTask.value = extraFunctions.availableTimesForTask(inicial, fin ,tareasContrato);
+    horariosForTask.refresh();
   }
 
   // Se agrega un listado de tareas al contrato item en curso

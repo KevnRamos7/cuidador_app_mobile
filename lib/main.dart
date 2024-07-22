@@ -1,8 +1,10 @@
 
 import 'package:cuidador_app_mobile/Domain/Utilities/colors_theme_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:one_context/one_context.dart';
 
 import 'Domain/Utilities/route.dart';
 
@@ -37,7 +39,12 @@ class _MyAppState extends State<MyApp> {
       theme: ColorsThemeData().adultoMayorThemeData, // Cambiará dependiendo del valor recolectado del localstorage
       navigatorKey: Get.key,
       defaultTransition: Transition.cupertino, // Animacion de pantalla a pantalla, cambiar de ser necesario
-      
+      supportedLocales: const [Locale('es', 'ES'), Locale('en', 'US')], // Idiomas soportados
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
     );
   } 
 }

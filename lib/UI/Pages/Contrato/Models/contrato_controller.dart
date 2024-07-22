@@ -29,13 +29,14 @@ class ContratoController extends GetxController{
   List<ContratoItemModel> fechasConCita = [];
   RxList<String> fechasNoDisponiblesSet =  RxList<String>();
   var horariosInicialesDisponibles = <String>[];
+  var horasInicialesForEndTimes = <String>[];
   var horariosFinalesDisponibles = <String>[].obs;
   var horariosForTask = <String>[].obs;
 
   Rx<DateTime> selectedDate = DateTime.now().obs;
-  String selectedTimeStart = 'Hora Inicio';
-  String selectedTimeEnd = 'Hora Fin';
-  String selectedTimeTask = 'Hora Tarea';
+  String selectedTimeStart = '';
+  String selectedTimeEnd = '';
+  String selectedTimeTask = '';
 
   DateTime date = DateTime.now();
 
@@ -78,10 +79,10 @@ class ContratoController extends GetxController{
 
   void onTimeStartChanged(String time){
     selectedTimeStart = time;
-    int index = horariosInicialesDisponibles.indexOf(time);
-    horariosFinalesDisponibles.value = horariosInicialesDisponibles.sublist(index + 4);
+    List<String> horariosFinales = extraFunctions.selectedTimeEnd(horariosInicialesDisponibles, selectedTimeStart);
+
+    horariosFinalesDisponibles.value = horariosFinales;
     horariosFinalesDisponibles.refresh();
-    update();
   }
 
   void cbxTaskOnChange(bool value){
@@ -161,62 +162,124 @@ class ContratoController extends GetxController{
 
   }
 
+  void modfifyContratoItem(ContratoItemModel contratoItem, DateTime? value, int indexContrato, bool isDate) async{
+
+    Get.back(canPop: true, closeOverlays: true);
+
+    DateTime horarioInicioValide = DateTime.parse(contratoItem.horarioInicioPropuesto!);
+    // Se le cambia la fecha de inicio y fin al contratoItem manteniendo la hora
+
+    DateTime horarioInicio = DateTime.parse(contratoItem.horarioInicioPropuesto!);
+    DateTime horarioFin = DateTime.parse(contratoItem.horarioFinPropuesto!);
+
+    if(isDate){
+      horarioInicio = DateTime(value!.year, value.month, value.day, horarioInicio.hour, horarioInicio.minute);
+      horarioFin = DateTime(value.year, value.month, value.day, horarioFin.hour, horarioFin.minute);
+
+      contratoItems[indexContrato].horarioInicioPropuesto = horarioInicio.toString();
+      contratoItems[indexContrato].horarioFinPropuesto = horarioFin.toString();
+
+      if(horarioInicio.year != horarioInicioValide.year || horarioInicio.month != horarioInicioValide.month || horarioInicio.day != horarioInicioValide.day){
+      snackbarUI.snackbarSuccess('Fecha Modificada Con Exito!', 'Se ha modificado la fecha del contrato.');
+      contratoItems.refresh();
+      contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, indexContrato);
+      }
+      else{
+        snackbarUI.snackbarError('No Se Modifico La Fecha', 'La fecha de inicio del contrato sigue siendo la misma.');
+      }
+
+    }
+    else{
+      
+      int hora = int.parse(selectedTimeStart.padLeft(5, '0').split(":")[0].substring(0, 2));
+      int minuto = int.parse(selectedTimeStart.split(":")[1].substring(0, 2));
+      int horaFin = int.parse(selectedTimeEnd.padLeft(5, '0').split(":")[0].substring(0, 2));
+      int minutoFin = int.parse(selectedTimeEnd.split(":")[1].substring(0, 2));
+
+      horarioInicio = DateTime(horarioInicio.year, horarioInicio.month, horarioInicio.day, hora, minuto);
+      horarioFin = DateTime(horarioFin.year, horarioFin.month, horarioFin.day, horaFin, minutoFin);
+
+      contratoItems[indexContrato].horarioInicioPropuesto = horarioInicio.toString();
+      contratoItems[indexContrato].horarioFinPropuesto = horarioFin.toString();
+
+      double horasContratas = horarioFin.difference(horarioInicio).inMinutes / 60;
+      double costoTotal = horasContratas * personaCuidador.salarioCuidador!;
+
+      contratoItems[indexContrato].importeCuidado = costoTotal;
+
+      if((horarioInicio.hour != horarioInicioValide.hour || horarioInicio.minute != horarioInicioValide.minute)
+      || (horarioFin.hour != horarioInicioValide.hour || horarioFin.minute != horarioInicioValide.minute)){
+      snackbarUI.snackbarSuccess('Hora Modificada Con Exito!', 'Se ha modificado la hora del contrato.');
+      contratoItems.refresh();
+      contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, indexContrato);
+      }
+      else{
+        snackbarUI.snackbarError('No Se Modifico La Hora', 'La hora del contrato sigue siendo la misma.');
+      }
+
+    }
+    
+  }
 
   //! METODOS DE PRUEBAS
 
-  void cargarContratosDePrueba(){
+  void cargarContratosDePrueba() async{
 
     //Crear lista de contratos fake
     List<ContratoItemModel> contratos = [
       ContratoItemModel(
         idContratoItem: 1,
-        horarioInicioPropuesto: '2022-10-10T10:00:00',
-        horarioFinPropuesto: '2022-10-10T12:00:00',
+        horarioInicioPropuesto: '2024-07-10 10:00:00',
+        horarioFinPropuesto: '2024-07-10 12:00:00',
         observaciones: 'Observaciones de la cita',
+        importeCuidado: personaCuidador.salarioCuidador! * 2,
         tareasContrato: RxList<TareasContratoModel>([
           TareasContratoModel(
             tituloTarea: 'Tarea 1',
             descripcionTarea: 'Descripcion de la tarea 1',
             tipoTarea: 'Tarea',
-            fechaRealizar: '2022-10-10T10:00:00',
+            fechaRealizar: '2022-10-10 10:00:00',
           ),
           TareasContratoModel(
             tituloTarea: 'Tarea 2',
             descripcionTarea: 'Descripcion de la tarea 2',
             tipoTarea: 'Tarea',
-            fechaRealizar: '2022-10-10T10:00:00',
-            fechaPospuesta: '2022-10-10T12:00:00',
+            fechaRealizar: '2022-10-10 10:00:00',
+            fechaPospuesta: '2022-10-1 12:00:00',
           ),
         ]),
       ),
       ContratoItemModel(
         idContratoItem: 2,
-        horarioInicioPropuesto: '2022-10-10T14:00:00',
-        horarioFinPropuesto: '2022-10-10T16:00:00',
+        horarioInicioPropuesto: '2024-07-10 14:00:00',
+        horarioFinPropuesto: '2024-07-10 19:00:00',
         observaciones: 'Observaciones de la cita',
+        importeCuidado: personaCuidador.salarioCuidador! * 5,
         tareasContrato: RxList<TareasContratoModel>([
           TareasContratoModel(
             tituloTarea: 'Tarea 1',
             descripcionTarea: 'Descripcion de la tarea 1',
             tipoTarea: 'Tarea',
-            fechaRealizar: '2022-10-10T10:00:00',
-          ),
-          TareasContratoModel(
-            tituloTarea: 'Tarea 2',
-            descripcionTarea: 'Descripcion de la tarea 2',
-            tipoTarea: 'Tarea',
-            fechaRealizar: '2022-10-10T10:00:00',
-            fechaPospuesta: '2022-10-10T12:00:00',
+            fechaRealizar: '2022-10-10 10:00:00',
           ),
         ]),
       ),
     ];
   
-    contratoItems.assignAll(contratos);
-    contratoItems.refresh();
+    if(contratoItems.isEmpty){
+      contratoItems.assignAll(contratos);
+      contratoItems.refresh();
+
+      for(ContratoItemModel i in contratos){
+        fechasConCita.add(i);
+      }
+      fechasNoDisponiblesSet.assignAll(extraFunctions.findDatesWithLessThanOneHour(fechasConCita, date.toString()));
+      fechasNoDisponiblesSet.refresh();
+    }
 
     if(contratoItems.isNotEmpty){
-      contratoItemList.mostrarListadofromModalSheet(contratos);
+      // contratoItemList.cbxTimes(contratos.first, 1);
+      contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, 0);
     }
   
   }

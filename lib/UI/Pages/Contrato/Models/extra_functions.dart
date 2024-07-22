@@ -5,6 +5,55 @@ import '../../../../Domain/Model/Contrato/tareas_contrato_model.dart';
 
 class ExtraFunctions{
 
+RxList<String> onlyForStartTime(List<ContratoItemModel> scheduleJson, String date){
+
+  RxList<String> horasDisponibles = generateAvailableTimes(scheduleJson, date);
+
+  List<DateTime> convertToDateTimeList(List<String> horas) {
+  DateTime now = DateTime.now();
+  return horas.map((hora) {
+    return DateTime(now.year, now.month, now.day,
+        int.parse(hora.split(':')[0]),
+          int.parse(hora.split(':')[1]));
+    }).toList();
+  }
+
+  List<DateTime> horasDateTime = convertToDateTimeList(horasDisponibles);
+  
+  // Ordenar las horas cronológicamente.
+  horasDateTime.sort();
+
+  List<String> nonConformingHours = [];
+  
+  for (int i = 1; i < horasDateTime.length; i++) {
+    DateTime previousTime = horasDateTime[i - 1];
+    DateTime currentTime = horasDateTime[i];
+    
+    Duration difference = currentTime.difference(previousTime);
+    
+    // Verificar si la diferencia no es de 15 minutos.
+    if (difference.inMinutes != 15) {
+      nonConformingHours.add(formatTime(currentTime));
+    }
+  }
+
+  List<int> indicesHorasNoConformes = [];
+  for (String hora in nonConformingHours) {
+    indicesHorasNoConformes.add(horasDisponibles.indexOf(hora));
+  }
+
+  // Quitar las 4 horas anteriores a los indices de las horas no conformes.
+  for (int i = 0; i < indicesHorasNoConformes.length; i++) {
+    int index = indicesHorasNoConformes[i];
+    int start = index - 4;
+    int end = index;
+    if (start >= 0) {
+      horasDisponibles.removeRange(start, end);
+    }
+  }
+  return horasDisponibles;
+}
+
 List<String> findDatesWithLessThanOneHour(List<ContratoItemModel> scheduleJson, String date) {
   Map<String, double> dateHoursMap = {};
 
@@ -36,7 +85,7 @@ List<String> findDatesWithLessThanOneHour(List<ContratoItemModel> scheduleJson, 
   return datesWithLessThanOneHour;
 }
 
-Future <RxList<String>>  generateAvailableTimes(List<ContratoItemModel> scheduleJson, String date) async {
+RxList<String>  generateAvailableTimes(List<ContratoItemModel> scheduleJson, String date) {
 
   List<String> horasDisponibles = [];
 
@@ -163,7 +212,7 @@ List<String> availableTimesForTask(String fechaInicio, String fechaFin, List<Tar
   DateTime current = start;
   while (current.isBefore(end)) {
     // Formatear la hora y agregarla a la lista
-    String formattedTime = _formatTime(current);
+    String formattedTime = formatTime(current);
     horasEnRango.add(formattedTime);
 
     // Incrementar 15 minutos
@@ -180,8 +229,59 @@ List<String> availableTimesForTask(String fechaInicio, String fechaFin, List<Tar
   return horasEnRango;
 }
 
+List<String> selectedTimeEnd(List<String> horasDisponibles, String horarioInicio) {
+
+  List<String> horasDisponiblesEnd = horasDisponibles;
+
+  DateTime horaInicial = stringToDateTime(horarioInicio);
+  
+  DateTime stringHorasDisponibles (String horario){
+    int hora = 0;
+    int minuto = 0;
+    hora = int.parse(horario.substring(0, horario.indexOf(":") ));
+    minuto = int.parse(horario.substring(horario.indexOf(":") + 1, horario.indexOf(":") + 3 ));
+    DateTime dateFormatted =DateTime(
+      horaInicial.year,
+      horaInicial.month,
+      horaInicial.day,
+      hora,
+      minuto,
+      0, 0
+    );
+    return dateFormatted;
+  }
+
+    String formatTime(DateTime dateTime) {
+    String hours = dateTime.hour.toString();
+    String minutes = dateTime.minute.toString().padLeft(2, '0');
+    return '$hours:$minutes';
+  }
+
+  DateTime lastTime = horaInicial.subtract(const Duration(minutes: 15));
+  List<DateTime> horasDisponiblesDt = horasDisponiblesEnd.map((e) => stringHorasDisponibles(e)).toList();
+  for (DateTime hora in horasDisponiblesDt) {
+    if(hora.isBefore(horaInicial)){
+      String horaF = formatTime(hora);
+      horasDisponiblesEnd.remove(horaF);
+    }
+    //Si la hora anterior mas 15 minutos es mayor a la hora en curso, se elimina, si no se actualiza la variable lastTime
+    else if(lastTime.add(const Duration(minutes: 15)).isBefore(hora) ){
+      horasDisponiblesEnd.remove(formatTime(hora));
+    }
+    else{
+      lastTime = hora;
+    }
+  }
+
+  if(horasDisponiblesEnd.length < 5){
+    horasDisponiblesEnd.clear();
+  }
+
+  return horasDisponiblesEnd.length >= 4 ? horasDisponiblesEnd.sublist(4) : horasDisponiblesEnd;
+}
+
 // Función para formatear DateTime a una cadena con formato HH:mm
-String _formatTime(DateTime dateTime) {
+String formatTime(DateTime dateTime) {
   String hours = dateTime.hour.toString().padLeft(2, '0');
   String minutes = dateTime.minute.toString().padLeft(2, '0');
   return '$hours:$minutes';

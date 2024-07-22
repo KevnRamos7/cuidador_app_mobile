@@ -1,6 +1,7 @@
 import 'package:cuidador_app_mobile/UI/Pages/Contrato/Models/contrato_controller.dart';
 import 'package:cuidador_app_mobile/UI/Pages/Contrato/Modules/contrato_item_list.dart';
 import 'package:cuidador_app_mobile/UI/Shared/Containers/calendar_container.dart';
+import 'package:cuidador_app_mobile/UI/Shared/Containers/pickers.dart';
 import 'package:cuidador_app_mobile/UI/Shared/TextFields/form_textfield.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +14,7 @@ class FormContratacion{
   ContratoItemList contratoItemList = Get.put(ContratoItemList());
   FormTextfield formTextfield = Get.put(FormTextfield());
   ContratoController con = Get.put(ContratoController());
+  Pickers pickers = Get.put(Pickers());
   // OnchangeFunctions onchangeFunctions = Get.put(OnchangeFunctions());
 
   Widget listForm(){
@@ -49,7 +51,7 @@ class FormContratacion{
                         builder: (controller) {
                           final value = controller.selectedTimeStart;
                           final items = controller.horariosInicialesDisponibles;
-                          return _timePicker(
+                          return pickers.timePicker(
                             'Hora Inicio', 
                             DropdownButtonFormField2<String>(
                               isExpanded: true,
@@ -86,7 +88,7 @@ class FormContratacion{
                         builder: (controller) {
                           final value = controller.selectedTimeEnd;
                           final items = controller.horariosFinalesDisponibles;
-                          return _timePicker(
+                          return pickers.timePicker(
                             'Hora Fin', 
                             DropdownButtonFormField2<String>(
                               isExpanded: true,

@@ -7,7 +7,7 @@ class CalendarContainer {
     required double height,
     required double width,
     required Function(DateTime date) onDateChanged,
-    required Rx<String> disabledDates,
+    required Rx<String> disabledDates
   }) {
     // Función para convertir DateTime a un formato de cadena compatible
     String sanitizeDateTime(DateTime dateTime) {

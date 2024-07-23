@@ -221,7 +221,7 @@ List<String> availableTimesForTask(String fechaInicio, String fechaFin, List<Tar
 
   // Filtrar las horas ocupadas
   for (var tarea in ocupadas) {
-    String task = tarea.fechaInicio.toString().split(" ")[1].substring(0, 5);
+    String task = tarea.fechaRealizar.toString().split(" ")[1].substring(0, 5);
     horasEnRango.remove(task);
   }
 
@@ -311,8 +311,8 @@ DateTime stringToDateTime(String datetime){
     case > 18:
     // Longitud de la cadena de fecha y hora
       fecha = datetime.substring(0, 10);
-      hora = int.parse(datetime.substring(12, datetime.indexOf(":") -1 ));
-      minuto = int.parse(datetime.substring(datetime.indexOf(":") + 1, datetime.indexOf(":") + 3 ));
+      hora = int.parse(datetime.substring(12, 14));
+      minuto = int.parse(datetime.substring(16, 18));
 
       return DateTime(
         int.parse(datetime.substring(0, 4)), // Año

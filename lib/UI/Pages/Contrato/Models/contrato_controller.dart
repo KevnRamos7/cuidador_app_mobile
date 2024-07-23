@@ -173,11 +173,29 @@ class ContratoController extends GetxController{
     DateTime horarioFin = DateTime.parse(contratoItem.horarioFinPropuesto!);
 
     if(isDate){
+
       horarioInicio = DateTime(value!.year, value.month, value.day, horarioInicio.hour, horarioInicio.minute);
       horarioFin = DateTime(value.year, value.month, value.day, horarioFin.hour, horarioFin.minute);
 
+      RxList<String> horasDisponiblesNuevaFecha = RxList<String>();
+      horasDisponiblesNuevaFecha.assignAll(extraFunctions.onlyForStartTime(fechasConCita, value.toString().split(" ")[0]));
+
+      String horaInicioActual = '${horarioInicio.hour.toString().padLeft(2, '0')}:${horarioInicio.minute.toString().padLeft(2, '0')}';
+      String horaFinActual = '${horarioFin.hour.toString().padLeft(2, '0')}:${horarioFin.minute.toString().padLeft(2, '0')}';
+
+      if(horasDisponiblesNuevaFecha.contains(horaInicioActual) || horasDisponiblesNuevaFecha.contains(horaFinActual)){
+        snackbarUI.snackbarError('Horario No Disponible', 'Elimina el contrato actual para poder modificar la fecha.');
+        contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, indexContrato);
+        return;
+      }
+      
       contratoItems[indexContrato].horarioInicioPropuesto = horarioInicio.toString();
       contratoItems[indexContrato].horarioFinPropuesto = horarioFin.toString();
+
+      for (var t in contratoItems[indexContrato].tareasContrato!) {
+        DateTime fechaRealizar = DateTime.parse(t.fechaRealizar!);
+        t.fechaRealizar = DateTime(value.year, value.month, value.day, fechaRealizar.hour, fechaRealizar.minute).toString();
+      }
 
       if(horarioInicio.year != horarioInicioValide.year || horarioInicio.month != horarioInicioValide.month || horarioInicio.day != horarioInicioValide.day){
       snackbarUI.snackbarSuccess('Fecha Modificada Con Exito!', 'Se ha modificado la fecha del contrato.');
@@ -221,6 +239,47 @@ class ContratoController extends GetxController{
     
   }
 
+  void modifyObservaciones(String observaciones, int indexContrato){
+    contratoItems[indexContrato].observaciones = observaciones;
+    contratoItems.refresh();
+    contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, indexContrato);
+  }
+
+  void modifyTareasContrato(String ediciontext, int indiceTarea, int indexContrato, bool isTitulo){
+    if(isTitulo){
+      contratoItems[indexContrato].tareasContrato![0].tituloTarea = ediciontext;
+    }
+    else{
+      contratoItems[indexContrato].tareasContrato![0].descripcionTarea = ediciontext;
+    }
+    contratoItems.refresh();
+    contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, indexContrato);
+  }
+
+  void modifyHorarioTarea(String horario, int indexContrato, int indexTarea){
+    int hora = int.parse(horario.padLeft(5, '0').split(":")[0]);
+    int minuto = int.parse(horario.split(":")[1]);
+    DateTime horarioInicio = DateTime.parse(contratoItems[indexContrato].tareasContrato![indexTarea].fechaRealizar!);
+    horarioInicio = DateTime(horarioInicio.year, horarioInicio.month, horarioInicio.day, hora, minuto);
+    contratoItems[indexContrato].tareasContrato![indexTarea].fechaRealizar = horarioInicio.toString();
+    contratoItems.refresh();
+    contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, indexContrato);
+  }
+
+  void deleteContratoOrTask(int indexContrato, int indexTarea){
+    if(indexTarea == -1){
+      contratoItems.removeAt(indexContrato);
+      contratoItems.refresh();
+      Get.back();
+      contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, 0);
+    }
+    else{
+      contratoItems[indexContrato].tareasContrato!.removeAt(indexTarea);
+      contratoItems.refresh();
+      contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, 0);
+    }
+  }
+
   //! METODOS DE PRUEBAS
 
   void cargarContratosDePrueba() async{
@@ -261,6 +320,21 @@ class ContratoController extends GetxController{
             descripcionTarea: 'Descripcion de la tarea 1',
             tipoTarea: 'Tarea',
             fechaRealizar: '2022-10-10 10:00:00',
+          ),
+        ]),
+      ),
+      ContratoItemModel(
+        idContratoItem: 3,
+        horarioInicioPropuesto: '2024-07-11 14:00:00',
+        horarioFinPropuesto: '2024-07-11 11:00:00',
+        observaciones: 'Observaciones de la cita',
+        importeCuidado: personaCuidador.salarioCuidador! * 5,
+        tareasContrato: RxList<TareasContratoModel>([
+          TareasContratoModel(
+            tituloTarea: 'Tarea 1',
+            descripcionTarea: 'Descripcion de la tarea 1',
+            tipoTarea: 'Tarea',
+            fechaRealizar: '2022-10-11 10:00:00',
           ),
         ]),
       ),

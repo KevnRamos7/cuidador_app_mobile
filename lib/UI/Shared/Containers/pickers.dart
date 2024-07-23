@@ -14,8 +14,8 @@ class Pickers{
           children: [
             SizedBox(
               // key: const Key('pickers'),
-              width: Get.width * 0.6,
-              height: Get.height * 0.05,
+              width: Get.width * 0.3,
+              // height: Get.height * 0.05,
               child: timePickerDropdown
             )
           ],

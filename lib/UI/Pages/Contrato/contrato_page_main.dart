@@ -11,16 +11,27 @@ class ContratoPageMain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Column(
-        children: [
-          stickyTopBar.topInteractiveNav(
-            onTap: () => formContratacion.con.saveContrato(),
-            nombre: '${formContratacion.con.personaCuidador.persona!.first.nombre} ${formContratacion.con.personaCuidador.persona!.first.apellidoMaterno}',
-            costo: formContratacion.con.personaCuidador.salarioCuidador ?? 0.0,
-            imagen: formContratacion.con.personaCuidador.persona!.first.avatarImage ?? ''
+      child: FocusScope(
+        node: FocusScopeNode(),
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Column(
+            children: [
+              Obx(()=>
+                stickyTopBar.topInteractiveNav(
+                  onTap: () => formContratacion.con.saveContrato(),
+                  nombre: '${formContratacion.con.personaCuidador.persona!.first.nombre} ${formContratacion.con.personaCuidador.persona!.first.apellidoMaterno}',
+                  costo: formContratacion.con.personaCuidador.salarioCuidador ?? 0.0,
+                  imagen: formContratacion.con.personaCuidador.persona!.first.avatarImage ?? '',
+                  enable: formContratacion.con.contratoItems.isNotEmpty.obs
+                ),
+              ),
+              formContratacion.listForm()
+            ],
           ),
-          formContratacion.listForm()
-        ],
+        ),
       ), 
     );
   }

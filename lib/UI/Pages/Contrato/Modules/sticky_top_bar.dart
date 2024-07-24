@@ -13,7 +13,8 @@ class StickyTopBar{
       required Function() onTap,
       required String nombre,
       required double costo,
-      required String imagen
+      required String imagen,
+      required RxBool enable
     }
   ){
     return SafeArea(
@@ -50,8 +51,8 @@ class StickyTopBar{
                 ],
               ),
               child: GestureDetector(
-                onTap: () => onTap(),
-                child: const Icon(CupertinoIcons.paperplane_fill, color: Colors.blueGrey, size: 20))
+                onTap: () => enable.value == true ? onTap() : null,
+                child: Obx(()=> Icon(CupertinoIcons.paperplane_fill, color: enable.value == true ? Colors.blue : Colors.grey, size: 20)))
             )
 
           ],

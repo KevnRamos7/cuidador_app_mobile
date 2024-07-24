@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:one_context/one_context.dart';
 
 import 'Domain/Utilities/route.dart';
 
@@ -34,7 +33,7 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       title: "Cuidador",
       debugShowCheckedModeBanner: false,
-      initialRoute: '/home', 
+      initialRoute: '/introduction', 
       getPages: Routes.routes, // Rutas de la aplicacion
       theme: ColorsThemeData().adultoMayorThemeData, // Cambiará dependiendo del valor recolectado del localstorage
       navigatorKey: Get.key,

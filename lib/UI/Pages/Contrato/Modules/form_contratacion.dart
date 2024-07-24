@@ -23,173 +23,39 @@ class FormContratacion{
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: Get.width * 0.1),
           child: 
-            Column(
-                children: [
-              
-                  _textTitulo('¿Qué dias prefieres?', 0),
-              
-                  Container(
-                    margin: EdgeInsets.only(top: Get.height * 0.04),
-                    child: calendarContainer.calendarContainer(
-                      disabledDates: con.fechasNoDisponiblesSet.toString().obs,
-                      height: Get.height * 0.4, 
-                      width: Get.height * 0.4,
-                      onDateChanged: (DateTime date) async{
-                        con.onDateChanged(date);
-                        con.horariosInicialesDisponibles = await con.extraFunctions.generateAvailableTimes(con.fechasConCita, con.selectedDate.value.toString().split(" ")[0]);
-                        con.update();
-                      }
-                    )
-                  ),
-              
-                  _textTitulo('¿Qué horarios prefieres?', Get.height * 0.04),
-              
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GetBuilder<ContratoController>(
-                        builder: (controller) {
-                          final value = controller.selectedTimeStart;
-                          final items = controller.horariosInicialesDisponibles;
-                          return pickers.timePicker(
-                            'Hora Inicio', 
-                            DropdownButtonFormField2<String>(
-                              isExpanded: true,
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                              value: items.contains(value) ? value : null,
-                              items: con.horariosInicialesDisponibles.map((item) => DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(item,
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                              )).toList(),
-                              validator: (value) => value == null ? 'Campo requerido' : null,
-                              onChanged: (value) {
-                                con.onTimeStartChanged(value!);
-                              },
-                              dropdownStyleData: DropdownStyleData(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                              menuItemStyleData: const MenuItemStyleData(
-                                padding: EdgeInsets.symmetric(horizontal: 16),
-                              ),
-                              )
-                            );
-                        }
+            Obx(()=>
+              Column(
+                  children: [
+                
+                    _textTitulo('¿Qué dias prefieres?', 0),
+                
+                    Container(
+                      margin: EdgeInsets.only(top: Get.height * 0.04),
+                      child: Obx(()=>
+                        calendarContainer.calendarContainer(
+                          disabledDates: con.fechasNoDisponiblesSet.toString().obs,
+                          height: Get.height * 0.4, 
+                          width: Get.height * 0.4,
+                          onDateChanged: (DateTime date) async{
+                            con.onDateChanged(date);
+                            con.horariosInicialesDisponibles = con.extraFunctions.generateAvailableTimes(con.fechasConCita, con.selectedDate.value.toString().split(" ")[0]);
+                            con.update();
+                          }
+                        ),
                       )
-                      ,GetBuilder<ContratoController>(
-                        builder: (controller) {
-                          final value = controller.selectedTimeEnd;
-                          final items = controller.horariosFinalesDisponibles;
-                          return pickers.timePicker(
-                            'Hora Fin', 
-                            DropdownButtonFormField2<String>(
-                              isExpanded: true,
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                              value: items.contains(value) ? controller.horariosFinalesDisponibles.first : null,
-                              items: con.horariosFinalesDisponibles.map((item) => DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(item,
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                              )).toList(),
-                              validator: (value) => value == null ? 'Campo requerido' : null,
-                              onChanged: (value) {
-                                con.selectedTimeEnd = value!;
-                              },
-                              dropdownStyleData: DropdownStyleData(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                              menuItemStyleData: const MenuItemStyleData(
-                                padding: EdgeInsets.symmetric(horizontal: 16),
-                              ),
-                            )
-                          );
-                        }
-                      )
-                    ],
-                  ),
-              
-                  _textTitulo('¿Alguna Observación?', Get.height * 0.04),
-              
-                  _txtSubtitulo('Recuerda que puedes dejar comentarios / notas a tu cuidador para un cuidador más personalizado.', Get.height * 0.01),
-              
-                  formTextfield.form_txt(
-                    controller: con.txtObservacion.value,
-                    padding: Get.height * 0.03,
-                    height: Get.height * 0.2,
-                    width: Get.width * 0.8,
-                    hintText: 'Mi padre suele tener dificultades para comer, especialmente durante el desayuno. Sería ideal que se le motive pacientemente para que coma al menos ...',
-                  ),
-              
-                  Obx(()=>
-                    Column(
+                    ),
+                
+                    _textTitulo('¿Qué horarios prefieres?', Get.height * 0.04),
+                
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                    
-                        Container(
-                            margin: EdgeInsets.only(top: Get.height * 0.04),
-                            child: Row(
-                              children: [
-                                _textTitulo('¿Quieres Asignar Tareas?', 0),
-                                Checkbox(
-                                  value: con.cbxAsignTask.value, 
-                                  onChanged: (value) {
-                                    con.cbxTaskOnChange(value!);
-                                  }
-                                  , activeColor: const Color(0xFF395886)
-                                  , checkColor: Colors.white
-                                  )
-                              ],
-                            ),
-                          ),
-                                      
-                        _txtSubtitulo('En “Cuidador”, puedes generar una lista de tareas o actividades que tu cuidador debe realizar durante el cuidado en curso.', 10),
-                                      
-                        con.cbxAsignTask.value == true ? _txtTitulo2('Titulo', Get.height * 0.02) : const SizedBox(),
-                                      
-                        con.cbxAsignTask.value == true ? formTextfield.form_txt(
-                          controller: con.txtTituloTarea.value,
-                          padding: Get.height * 0.02,
-                          height: Get.height * 0.05,
-                          width: Get.width * 0.8,
-                          contentPaddingTop: 0,
-                          contentPaddingLeft: 20,
-                          hintText: 'Ejercicio Matutino, Limpieza del Hogar, etc.',
-                        ) : const SizedBox(),
-                                      
-                        con.cbxAsignTask.value == true ? _txtTitulo2('Descripción', Get.height * 0.02) : const SizedBox(),
-                                      
-                        con.cbxAsignTask.value == true ? formTextfield.form_txt(
-                          controller: con.txtDescripcionTarea.value,
-                          padding: Get.height * 0.02,
-                          height: Get.height * 0.1,
-                          width: Get.width * 0.8,
-                          contentPaddingTop: 10,
-                          maxLines: 10,
-                          hintText: 'Mantener el área de convivencia del paciente limpia y ordenada. Esto incluye la limpieza de la habitación, sala, cocina y baño.',
-                        ) : const SizedBox(),
-                                      
-                        con.cbxAsignTask.value == true ? _txtTitulo2('Hora de prefererencia', Get.height * 0.04) : const SizedBox(),  
-                                      
-                        con.cbxAsignTask.value == true ? Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _timePicker(
-                              '', 
+                        GetBuilder<ContratoController>(
+                          builder: (controller) {
+                            final value = controller.selectedTimeStart;
+                            final items = controller.horariosInicialesDisponibles;
+                            return pickers.timePicker(
+                              'Hora Inicio', 
                               DropdownButtonFormField2<String>(
                                 isExpanded: true,
                                 decoration: InputDecoration(
@@ -198,8 +64,8 @@ class FormContratacion{
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                 ),
-                                value: null,
-                                items: con.horariosForTask.map((item) => DropdownMenuItem<String>(
+                                value: items.contains(value) ? value : null,
+                                items: items.map((item) => DropdownMenuItem<String>(
                                   value: item,
                                   child: Text(item,
                                     style: const TextStyle(fontSize: 14),
@@ -207,7 +73,44 @@ class FormContratacion{
                                 )).toList(),
                                 validator: (value) => value == null ? 'Campo requerido' : null,
                                 onChanged: (value) {
-                                  con.selectedTimeStart = value!;
+                                  controller.onTimeStartChanged(value!);
+                                },
+                                dropdownStyleData: DropdownStyleData(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
+                                menuItemStyleData: const MenuItemStyleData(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                ),
+                                )
+                              );
+                          }
+                        )
+                        ,GetBuilder<ContratoController>(
+                          builder: (controller) {
+                            final value = controller.selectedTimeEnd;
+                            final items = controller.horariosFinalesDisponibles;
+                            return pickers.timePicker(
+                              'Hora Fin', 
+                              DropdownButtonFormField2<String>(
+                                isExpanded: true,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
+                                value: items.contains(value) ? controller.horariosFinalesDisponibles.first : null,
+                                items: items.map((item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Text(item,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                )).toList(),
+                                validator: (value) => value == null ? 'Campo requerido' : null,
+                                onChanged: (value) {
+                                  controller.selectedTimeEnd = value!;
                                 },
                                 dropdownStyleData: DropdownStyleData(
                                   decoration: BoxDecoration(
@@ -218,68 +121,192 @@ class FormContratacion{
                                   padding: EdgeInsets.symmetric(horizontal: 16),
                                 ),
                               )
-                            ),
-                            _botonAgregar(
-                              'Agregar', 
-                              ()=>con.addTareasContrato(), 
-                            const Color(0xFF395886), CupertinoIcons.add),
-                          ],
-                        ) : const SizedBox(),
+                            );
+                          }
+                        )
                       ],
                     ),
-                  ),
-            
-                  const SizedBox(height: 20),
-            
-                  Text('${con.tareasContrato.length} Tareas', style: const TextStyle(fontSize: 15, color: Colors.black54),),
-            
-                  const SizedBox(height: 20),
-            
-                  SizedBox(
-                    width: Get.width * 0.6,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white70,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: const BorderSide(color: Colors.black45, width: 1)
-                        )
-                      ),
-                      onPressed: () => con.saveContratoItem(), 
-                      child: const Text(
-                        'Guardar Fecha', 
-                        style: TextStyle(color: Colors.black, fontSize: 15),
+                
+                    _textTitulo('¿Alguna Observación?', Get.height * 0.04),
+                
+                    _txtSubtitulo('Recuerda que puedes dejar comentarios / notas a tu cuidador para un cuidador más personalizado.', Get.height * 0.01),
+                
+                    formTextfield.form_txt(
+                      controller: con.txtObservacion.value,
+                      padding: Get.height * 0.03,
+                      height: Get.height * 0.2,
+                      width: Get.width * 0.8,
+                      hintText: 'Mi padre suele tener dificultades para comer, especialmente durante el desayuno. Sería ideal que se le motive pacientemente para que coma al menos ...',
+                    ),
+                
+                    Obx(()=>
+                      Column(
+                        children: [
+                      
+                          Container(
+                              margin: EdgeInsets.only(top: Get.height * 0.04),
+                              child: Row(
+                                children: [
+                                  _textTitulo('¿Quieres Asignar Tareas?', 0),
+                                  Checkbox(
+                                    value: con.cbxAsignTask.value, 
+                                    onChanged: (value) {
+                                      con.cbxTaskOnChange(value!);
+                                    }
+                                    , activeColor: const Color(0xFF395886)
+                                    , checkColor: Colors.white
+                                    )
+                                ],
+                              ),
+                            ),
+                                        
+                          _txtSubtitulo('En “Cuidador”, puedes generar una lista de tareas o actividades que tu cuidador debe realizar durante el cuidado en curso.', 10),
+                                        
+                          con.cbxAsignTask.value == true ? _txtTitulo2('Titulo', Get.height * 0.02) : const SizedBox(),
+                                        
+                          con.cbxAsignTask.value == true ? formTextfield.form_txt(
+                            controller: con.txtTituloTarea.value,
+                            padding: Get.height * 0.02,
+                            height: Get.height * 0.05,
+                            width: Get.width * 0.8,
+                            contentPaddingTop: 0,
+                            contentPaddingLeft: 20,
+                            hintText: 'Ejercicio Matutino, Limpieza del Hogar, etc.',
+                          ) : const SizedBox(),
+                                        
+                          con.cbxAsignTask.value == true ? _txtTitulo2('Descripción', Get.height * 0.02) : const SizedBox(),
+                                        
+                          con.cbxAsignTask.value == true ? formTextfield.form_txt(
+                            controller: con.txtDescripcionTarea.value,
+                            padding: Get.height * 0.02,
+                            height: Get.height * 0.1,
+                            width: Get.width * 0.8,
+                            contentPaddingTop: 10,
+                            maxLines: 10,
+                            hintText: 'Mantener el área de convivencia del paciente limpia y ordenada. Esto incluye la limpieza de la habitación, sala, cocina y baño.',
+                          ) : const SizedBox(),
+                                        
+                          con.cbxAsignTask.value == true ? _txtTitulo2('Hora de prefererencia', Get.height * 0.04) : const SizedBox(),  
+                                        
+                          con.cbxAsignTask.value == true ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _comboTiempoTarea()
+                            ],
+                          ) : const SizedBox(),
+                        ],
                       ),
                     ),
-                  ),
-            
-                  const SizedBox(height: 20),
-            
-                  //con.contratoItems.isEmpty ? 
-                  SizedBox(
-                    width: Get.width * 0.6,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black87,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: const BorderSide(color: Colors.white, width: 1)
-                        )
-                      ),
-                      onPressed: () => con.cargarContratosDePrueba(), 
-                      child: const Text(
-                        'Ver Solicitudes', 
-                        style: TextStyle(color: Colors.white, fontSize: 15),
+              
+                    const SizedBox(height: 20),
+              
+                    Text('${con.tareasContrato.length} Tareas', style: const TextStyle(fontSize: 15, color: Colors.black54),),
+              
+                    const SizedBox(height: 20),
+              
+                    SizedBox(
+                      width: Get.width * 0.6,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white70,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: const BorderSide(color: Colors.black45, width: 1)
+                          )
+                        ),
+                        onPressed: () => con.saveContratoItem(), 
+                        child: const Text(
+                          'Guardar Fecha', 
+                          style: TextStyle(color: Colors.black, fontSize: 15),
+                        ),
                       ),
                     ),
-                  ) //: const SizedBox(),
               
-                  ,const SizedBox(height: 100)
+                    const SizedBox(height: 20),
               
-                ],
-              ),
+                    con.contratoItems.isNotEmpty ? 
+                    SizedBox(
+                      width: Get.width * 0.6,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black87,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: const BorderSide(color: Colors.white, width: 1)
+                          )
+                        ),
+                        onPressed: () => con.contratoItemList.mostrarListadofromModalSheet(con.contratoItems, con.personaCuidador.persona!.first.avatarImage!, 0), 
+                        child: const Text(
+                          'Ver Solicitudes', 
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                        ),
+                      ),
+                    ) : const SizedBox(),
+                
+                    const SizedBox(height: 100)
+                
+                  ],
+                ),
+            ),
           ),
         ),
+    );
+  }
+
+  Widget _comboTiempoTarea(){
+    return GetBuilder<ContratoController>(
+      builder: (controller) {
+        RxString selectedTimeTask = ''.obs;
+        RxList<String> horariosForTask = controller.horariosForTask;
+        return Obx(()=>
+          Row(
+            children: [
+              DropdownButton2<String>(
+                hint: const Text('Selecciona una hora'),
+                value: selectedTimeTask.value,
+                items: horariosForTask
+                    .map((hora) => DropdownMenuItem<String>(
+                          value: hora,
+                          child: Text(hora),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  selectedTimeTask.value = value!.padLeft(5, '0');
+                  controller.selectedTimeTask = selectedTimeTask.value;
+                },
+                alignment: Alignment.center,
+                underline: Container(),
+                buttonStyleData: ButtonStyleData(
+                  height: Get.height * 0.05,
+                  width: 160,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                  ),
+                ),
+                iconStyleData: const IconStyleData(
+                  icon: Icon(Icons.arrow_drop_down),
+                  iconSize: 20,
+                ),
+                dropdownStyleData: DropdownStyleData(
+                  maxHeight: 200,
+                  width: 160,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 20,),
+              _botonAgregar('', (){controller.addTareasContrato();
+              }, const Color(0xFF395886), CupertinoIcons.add),
+            ],
+          ),
+        );
+      }
     );
   }
 
@@ -338,15 +365,15 @@ class FormContratacion{
   Widget _botonAgregar(String titulo, Function evento, Color? color, IconData? icono){
     return Column(
       children: [
-        Container(
-          margin: const EdgeInsets.only(top: 15),
-          width: titulo == '' ? Get.width * 0.15 : Get.width * (titulo.length * 0.06),
+        SizedBox(
+          // margin: const EdgeInsets.only(top: 15),
+          width: titulo == '' ? Get.width * 0.2 : Get.width * (titulo.length * 0.04),
           height: Get.height * 0.05,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: color ?? const Color(0xFF395886),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(5),
               )
             ),
             onPressed: () => evento(),
@@ -364,31 +391,5 @@ class FormContratacion{
       ],
     );
   }
-
-  Widget _timePicker(String titulo, Widget timePickerDropdown) {
-  return Container(
-    margin: const EdgeInsets.only(top: 15),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            SizedBox(
-              // key: const Key('pickers'),
-              width: Get.width * 0.3,
-              child: timePickerDropdown
-            )
-          ],
-        ),
-        titulo == '' ? const SizedBox() : Text(
-          titulo, 
-          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
-          textAlign: TextAlign.center),
-      ],
-    ),
-  );
-}
-
 
 }

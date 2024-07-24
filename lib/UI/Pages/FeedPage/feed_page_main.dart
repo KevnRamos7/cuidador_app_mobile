@@ -14,12 +14,20 @@ class FeedPageMain extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          filterBarNav.topNavigation(),
-          feedGridView.feedGridView()
-        ],
+      body: FocusScope(
+        node: FocusScopeNode(),
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              filterBarNav.topNavigation(),
+              feedGridView.feedGridView()
+            ],
+          ),
+        ),
       ),
       bottomNavigationBar: BottomNavigationMain.instance.bottomNavigation(),
     );

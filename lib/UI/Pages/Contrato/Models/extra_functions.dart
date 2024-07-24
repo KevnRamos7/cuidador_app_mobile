@@ -224,7 +224,7 @@ List<String> availableTimesForTask(String fechaInicio, String fechaFin, List<Tar
     String task = tarea.fechaRealizar.toString().split(" ")[1].substring(0, 5);
     horasEnRango.remove(task);
   }
-
+  horasEnRango.add('');
   // Devolver la lista de horas en rango
   return horasEnRango;
 }

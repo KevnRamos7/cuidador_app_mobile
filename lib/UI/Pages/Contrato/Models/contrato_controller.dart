@@ -62,7 +62,7 @@ class ContratoController extends GetxController{
       fechasConCita = await contratoResponse.getFechasNoDisponibles();
       fechasNoDisponiblesSet.assignAll(extraFunctions.findDatesWithLessThanOneHour(fechasConCita, date.toString()));
       fechasNoDisponiblesSet.refresh();
-      horariosInicialesDisponibles = await extraFunctions.generateAvailableTimes(fechasConCita, date.toString().split(" ")[0]);
+      horariosInicialesDisponibles = extraFunctions.onlyForStartTime(fechasConCita, date.toString().split(" ")[0]);
       update();
     }
     catch(e)
@@ -83,12 +83,12 @@ class ContratoController extends GetxController{
 
     horariosFinalesDisponibles.value = horariosFinales;
     horariosFinalesDisponibles.refresh();
+    update();
   }
 
   void cbxTaskOnChange(bool value){
-    cbxAsignTask.value = value;
-    // tareasContrato.clear(); // temporal
-    if(value == true){
+    if(value == true && selectedTimeStart.isNotEmpty && selectedTimeEnd.isNotEmpty){
+      cbxAsignTask.value = value;
       String horaInicio = selectedTimeStart;//.padLeft(4, '0');
       String horaFin = selectedTimeEnd;//.padLeft(4, '0');
 
@@ -97,6 +97,8 @@ class ContratoController extends GetxController{
 
       horariosForTask.value = extraFunctions.availableTimesForTask(inicial, fin ,tareasContrato);
       horariosForTask.refresh();
+    }else{
+      snackbarUI.snackbarError('Sin horario seleccionado!', 'Debes seleccionar un horario de inicio y fin para poder asignar tareas.');
     }
   }
 
@@ -107,6 +109,8 @@ class ContratoController extends GetxController{
 
     // Se crea el objeto tipo DateTime de la fecha de inicio
     DateTime horario = extraFunctions.stringToDateTime(selectedTimeTask);
+    String fechaFin = extraFunctions.stringToDateTime(selectedTimeEnd.padLeft(5, '0')).toString();
+    String fechaInicio = extraFunctions.stringToDateTime(selectedTimeStart.padLeft(5,'0')).toString();
 
     tareasContrato.add(
       TareasContratoModel(
@@ -114,13 +118,14 @@ class ContratoController extends GetxController{
         tituloTarea: txtTituloTarea.value.text,
         descripcionTarea: txtDescripcionTarea.value.text,
         tipoTarea: 'Tarea',
-        fechaRealizar: horario.toIso8601String()
+        fechaRealizar: horario.toString()
       )
     );
-
+    horariosForTask.assignAll(extraFunctions.availableTimesForTask(fechaInicio, fechaFin, tareasContrato));
     txtTituloTarea.value.clear();
     txtDescripcionTarea.value.clear();
-
+    horariosForTask.refresh();
+    update();
   }
   // Se agrega el contratoItem a la lista de contratoItems
   void saveContratoItem(){
@@ -133,14 +138,27 @@ class ContratoController extends GetxController{
     contratoItems.add(
       ContratoItemModel(
         idContratoItem: 0,
-        horarioInicioPropuesto: horarioInicio.toIso8601String(),
-        horarioFinPropuesto: horarioFin.toIso8601String(),
+        horarioInicioPropuesto: horarioInicio.toString(),
+        horarioFinPropuesto: horarioFin.toString(),
         observaciones: txtObservacion.value.text,
-        tareasContrato: tareasContrato,
+        tareasContrato: RxList<TareasContratoModel>(
+          tareasContrato
+        ),
+        importeCuidado: personaCuidador.salarioCuidador! * horarioFin.difference(horarioInicio).inMinutes / 60
       )
     );
 
-    snackbarUI.snackbarSuccess('Fecha agregada con exito!', 'Se ha agregado la fecha al contrato.');
+    if(contratoItems.isNotEmpty){
+      fechasConCita.add(contratoItems.last);
+      fechasNoDisponiblesSet.assignAll(extraFunctions.findDatesWithLessThanOneHour(fechasConCita, date.toString()));
+      fechasNoDisponiblesSet.refresh();
+      selectedTimeStart = '';
+      selectedTimeEnd = '';
+      txtObservacion.value.clear();
+      tareasContrato.clear();
+      cbxAsignTask.value = false;
+      snackbarUI.snackbarSuccess('Fecha agregada con exito!', 'Se ha agregado la fecha al contrato.');
+    }
 
   }
   //Carga el resumen del contrato
@@ -156,7 +174,7 @@ class ContratoController extends GetxController{
       ) ,
     );
 
-    contrato.contratoItem!.isNotEmpty ? Get.offNamed('/resumen_contrato', arguments: contrato) : snackbarUI.snackbarError('Error', 'No se ha agregado ninguna fecha al contrato.');
+    contrato.contratoItem!.isNotEmpty ? Get.toNamed('/resumen_contrato', arguments: contrato) : snackbarUI.snackbarError('Error', 'No se ha agregado ninguna fecha al contrato.');
 
     Get.offNamed('/resumen_contrato', arguments: contrato);
 
@@ -270,15 +288,48 @@ class ContratoController extends GetxController{
     if(indexTarea == -1){
       contratoItems.removeAt(indexContrato);
       contratoItems.refresh();
+      fechasConCita.removeAt(indexContrato);
+      fechasNoDisponiblesSet.assignAll(extraFunctions.findDatesWithLessThanOneHour(fechasConCita, date.toString()));
+      fechasNoDisponiblesSet.refresh();
+      horariosInicialesDisponibles = extraFunctions.onlyForStartTime(fechasConCita, date.toString().split(" ")[0]);
       Get.back();
-      contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, 0);
+      snackbarUI.snackbarSuccess('Contrato Eliminado', 'Se ha eliminado el contrato.');
+      // contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, 0);
     }
     else{
       contratoItems[indexContrato].tareasContrato!.removeAt(indexTarea);
       contratoItems.refresh();
-      contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, 0);
+      horariosForTask.assignAll(extraFunctions.availableTimesForTask(contratoItems[indexContrato].horarioInicioPropuesto!, contratoItems[indexContrato].horarioFinPropuesto!, contratoItems[indexContrato].tareasContrato!));
+      horariosForTask.refresh();
+      snackbarUI.snackbarSuccess('Tarea Eliminada', 'Se ha eliminado la tarea.');
+      // contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, 0);
     }
   }
+
+  // bool valideSaveContratoItem(){
+
+  //   //Validar que existan fechas seleccionadas
+  //   if(selectedTimeStart.isEmpty || selectedTimeEnd.isEmpty){
+  //     snackbarUI.snackbarError('Contrato sin fecha!', 'Debes seleccionar un horario de inicio y fin.');
+  //     return false;
+  //   }
+
+  //   // Validar que 
+
+  //   if(selectedTimeStart.isEmpty || selectedTimeEnd.isEmpty){
+  //     snackbarUI.snackbarError('Error', 'Debes seleccionar un horario de inicio y fin.');
+  //     return false;
+  //   }
+  //   if(selectedTimeStart.isNotEmpty && selectedTimeEnd.isNotEmpty){
+  //     DateTime horarioInicio = extraFunctions.stringToDateTime(selectedTimeStart);
+  //     DateTime horarioFin = extraFunctions.stringToDateTime(selectedTimeEnd);
+  //     if(horarioInicio.isAfter(horarioFin)){
+  //       snackbarUI.snackbarError('Error', 'El horario de inicio no puede ser mayor al horario de fin.');
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // }
 
   //! METODOS DE PRUEBAS
 

@@ -1,5 +1,8 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:cuidador_app_mobile/Domain/Model/Contrato/contrato_model.dart';
+import 'package:cuidador_app_mobile/Domain/Utilities/letter_dates.dart';
+import 'package:cuidador_app_mobile/UI/Pages/Contrato/Models/extra_functions.dart';
 import 'package:cuidador_app_mobile/UI/Pages/Contrato/Models/resumen_cont_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +11,8 @@ import 'package:get/get.dart';
 class ResumenContPageMain extends StatelessWidget {
   // const ResumenContPageMain({super.key});
   ResumenContController con = Get.put(ResumenContController());
+  ExtraFunctions extra = ExtraFunctions();
+  LetterDates letter = LetterDates();
 
   ResumenContPageMain({super.key});
 
@@ -28,6 +33,10 @@ class ResumenContPageMain extends StatelessWidget {
                   encabezado('Fechas y Horarios'),
               
                   tableForSchedules(),
+
+                  encabezado('Observaciones'),
+
+                  _observacionesCard(),
               
                   encabezado('Lista de Tareas'),
               
@@ -36,8 +45,8 @@ class ResumenContPageMain extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      btnAction('Confirmar', (){}, const Color.fromARGB(255, 4, 48, 110)),
-                      btnAction('Cancelar', (){}, const Color.fromARGB(255, 220, 74, 63)),
+                      btnAction('Confirmar', (){Get.offNamedUntil('/confirmacion_cont', (route) => false );}, const Color.fromARGB(255, 4, 48, 110)),
+                      btnAction('Cancelar', (){Get.back();}, const Color.fromARGB(255, 220, 74, 63)),
                     ],
                   )
                 ],
@@ -92,30 +101,30 @@ class ResumenContPageMain extends StatelessWidget {
         columns: const [
           DataColumn(label: Text('Tarea', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
           DataColumn(label: Text('Hora', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
+          DataColumn(label: Text('N° Contrato', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
         ],
-        rows: const [
-          DataRow(
-            cells: [
-              DataCell(Text('Salir a dar un paseo en el parque', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
-              DataCell(Text('8:00', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
-            ]
-          ),
-          DataRow(
-            cells: [
-              DataCell(Text('Realizar tareas de limpieza en su habitación', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
-              DataCell(Text('10:00', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
-            ]
-          ),
-          DataRow(
-            cells: [
-              DataCell(Text('Dar medicamento para la diabetes', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
-              DataCell(Text('12:00', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
-            ]
-          )
-        ],
+        rows: _buildDataRows(con.contrato.value),
       ),
     );
   }
+
+  List<DataRow> _buildDataRows(ContratoModel contratos) {
+  List<DataRow> rows = [];
+    for (var contratoItem in contratos.contratoItem!) {
+      int i = contratos.contratoItem!.indexOf(contratoItem);
+      for (var tarea in contratoItem.tareasContrato!) {
+        rows.add(
+          DataRow(cells: [
+            DataCell(Text(tarea.tituloTarea ?? '')),
+            DataCell(Text(tarea.fechaRealizar?.isNotEmpty == true ? letter.formatearSoloHora(tarea.fechaRealizar!) : '')),
+            DataCell(Text((i + 1).toString())), // El índice del contrato
+          ]),
+        );
+      }
+    }
+
+  return rows;
+}
 
   Widget tableForSchedules(){
     return SizedBox(
@@ -130,26 +139,15 @@ class ResumenContPageMain extends StatelessWidget {
           DataColumn(label: Text('Fecha', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
           DataColumn(label: Text('Horario', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)),
         ],
-        rows: const [
-          DataRow(
-            cells: [
-              DataCell(Text('23 de Abril de 2024', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
-              DataCell(Text('8:00 - 12:00', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
-            ]
-          ),
-          DataRow(
-            cells: [
-              DataCell(Text('23 de Abril de 2024', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
-              DataCell(Text('8:00 - 12:00', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
-            ]
-          ),
-          DataRow(
-            cells: [
-              DataCell(Text('23 de Abril de 2024', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
-              DataCell(Text('8:00 - 12:00', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
-            ]
-          )
-        ],
+        rows: con.contrato.value.contratoItem?.map((e) => DataRow(
+          cells: [
+            DataCell(Text(e.horarioInicioPropuesto?.isNotEmpty == true ? letter.formatearSoloFecha(e.horarioInicioPropuesto!) : '', 
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)
+            ),
+            DataCell(Text('${letter.formatearSoloHora(e.horarioInicioPropuesto!)} - ${letter.formatearSoloHora(e.horarioFinPropuesto!)}', 
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
+          ]
+        )).toList() ?? const [],
       ),
     );
   }
@@ -208,21 +206,26 @@ class ResumenContPageMain extends StatelessWidget {
                         ),
                       ),
                             
-                      Text(
-                        con.contrato.value.personaCuidador!.certificaciones![0].tipoCerficacion ?? '',
+                       Text(
+                        con.contrato.value.personaCuidador?.certificaciones?.isNotEmpty == true
+                          ? con.contrato.value.personaCuidador!.certificaciones![0].tipoCerficacion ?? ''
+                          : '',
                         style: const TextStyle(
                           fontSize: 13,
-                          color: Colors.black
+                          color: Colors.black,
                         ),
                       ),
+
                             
                       Text(
-                        con.contrato.value.personaCuidador!.certificaciones![0].tipoCerficacion ?? '',
+                        con.contrato.value.personaCuidador?.certificaciones?.isNotEmpty == true
+                          ? con.contrato.value.personaCuidador!.certificaciones![1].tipoCerficacion ?? ''
+                          : 'Sin certificaciones',
                         style: const TextStyle(
                           fontSize: 13,
-                          color: Colors.black
+                          color: Colors.black,
                         ),
-                      )
+                      ),
                             
                     ],
                   ),
@@ -243,7 +246,7 @@ class ResumenContPageMain extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             const Text(
-                              'Calificación',
+                              'Costo Total',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -251,15 +254,15 @@ class ResumenContPageMain extends StatelessWidget {
                               ),
                              ),
                       
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: 5,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index){
-                                  return const Icon(CupertinoIcons.star_fill, color: Colors.yellow, size: 15,);
-                                },
+                            Text(
+                              con.contrato.value.contratoItem?.isNotEmpty == true
+                                ? ' \$ ${con.contrato.value.contratoItem!.map((e) => e.importeCuidado).reduce((value, element) => value! + element!).toString()}'
+                                : '0',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.green[800]
                               ),
-                            ),
+                            )
           
                           ],
                         ),
@@ -268,12 +271,12 @@ class ResumenContPageMain extends StatelessWidget {
                       SizedBox(
                         height: Get.height * 0.05,
                         width: Get.width * 0.4,
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                             Text(
-                              'Cuidados Realizados',
+                             const Text(
+                              'Contratos Ligados',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -282,8 +285,10 @@ class ResumenContPageMain extends StatelessWidget {
                             ),
                       
                             Text(
-                              '101 CUIDADOS',
-                              style: TextStyle(
+                              con.contrato.value.contratoItem?.isNotEmpty == true
+                                ? con.contrato.value.contratoItem!.length.toString()
+                                : '0',
+                              style: const TextStyle(
                                 fontSize: 13,
                                 color: Colors.blueGrey
                               ),
@@ -307,7 +312,7 @@ class ResumenContPageMain extends StatelessWidget {
               width: Get.width * 0.2,
               height: 76.69,
               decoration: ShapeDecoration(
-                image: const DecorationImage(image: AssetImage('assets/img/testing/profile_image_test.png'), fit: BoxFit.fill),
+                image: DecorationImage(image: NetworkImage(con.contrato.value.personaCuidador?.avatarImage ?? ''), fit: BoxFit.fill),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100),
                 ),
@@ -324,6 +329,32 @@ class ResumenContPageMain extends StatelessWidget {
           ),
 
         ],
+      ),
+    );
+  }
+
+  Widget _observacionesCard(){
+    return Container(
+      margin: EdgeInsets.only(top: Get.height * 0.02),
+      width: Get.width * 0.95,
+      child: DataTable(
+        headingRowColor: WidgetStateProperty.resolveWith((states) => Colors.grey[100]!),
+        headingRowHeight: 40,
+        border: TableBorder.all(color: Colors.grey, width: 0.5, borderRadius: BorderRadius.circular(10)),
+
+        columns: const [
+          DataColumn(label: Text('Contrato', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
+          DataColumn(label: Text('Observación', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)),
+        ],
+        rows: con.contrato.value.contratoItem?.map((e) => DataRow(
+          cells: [
+            DataCell(Text((con.contrato.value.contratoItem!.indexOf(e) + 1).toString(), 
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)
+            ),
+            DataCell(Text(e.observaciones ?? '', 
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
+          ]
+        )).toList() ?? const [],
       ),
     );
   }

@@ -6,11 +6,11 @@ class ContratoItemModel{
   int? idContratoItem;
   String? estatus;
   String? observaciones;
-  String? horarioInicioPropuesto;
-  String? horarioFinPropuesto;
-  String? fechaAceptacion;
-  String? fechaInicioCuidado;
-  String? fechaFinCuidado;
+  DateTime? horarioInicioPropuesto;
+  DateTime? horarioFinPropuesto;
+  DateTime? fechaAceptacion;
+  DateTime? fechaInicioCuidado;
+  DateTime? fechaFinCuidado;
   double? importeCuidado;
   RxList<TareasContratoModel>? tareasContrato;
 
@@ -21,11 +21,11 @@ class ContratoItemModel{
       idContratoItem: json['id_contrato_item'],
       estatus: json['estatus'],
       observaciones: json['observaciones'],
-      horarioInicioPropuesto: json['horario_inicio_propuesto'],
-      horarioFinPropuesto: json['horario_fin_propuesto'],
-      fechaAceptacion: json['fecha_aceptacion'],
-      fechaInicioCuidado: json['fecha_inicio_cuidado'],
-      fechaFinCuidado: json['fecha_fin_cuidado'],
+      horarioInicioPropuesto: DateTime.tryParse(json['horario_inicio_propuesto'].toString().replaceAll('T', " ")),
+      horarioFinPropuesto: DateTime.tryParse(json['horario_fin_propuesto'].toString().replaceAll('T', " ")),
+      fechaAceptacion: DateTime.tryParse(json['fecha_aceptacion'].toString().replaceAll('T', " ")),
+      fechaInicioCuidado: DateTime.tryParse(json['fecha_inicio_cuidado'].toString().replaceAll('T', " ")),
+      fechaFinCuidado: DateTime.tryParse(json['fecha_fin_cuidado'].toString().replaceAll('T', " ")),
       importeCuidado: json['importe_cuidado'] != null ? json['importe_cuidado'].toDouble() : 0.0,
       tareasContrato: json['tareas_contrato'] != null ? (json['tareas_contrato'] as List).map((i) => TareasContratoModel.fromJson(i)).toList().obs : null,
     );

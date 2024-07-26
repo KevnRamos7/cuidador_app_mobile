@@ -38,7 +38,7 @@ class FormContratacion{
                           width: Get.height * 0.4,
                           onDateChanged: (DateTime date) async{
                             con.onDateChanged(date);
-                            con.horariosInicialesDisponibles = con.extraFunctions.generateAvailableTimes(con.fechasConCita, con.selectedDate.value.toString().split(" ")[0]);
+                            con.horariosInicialesDisponibles = con.extraFunctions.generateAvailableTimes(con.fechasConCita, con.selectedDate.value);
                             con.update();
                           }
                         ),
@@ -46,86 +46,12 @@ class FormContratacion{
                     ),
                 
                     _textTitulo('¿Qué horarios prefieres?', Get.height * 0.04),
-                
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        GetBuilder<ContratoController>(
-                          builder: (controller) {
-                            final value = controller.selectedTimeStart;
-                            final items = controller.horariosInicialesDisponibles;
-                            return pickers.timePicker(
-                              'Hora Inicio', 
-                              DropdownButtonFormField2<String>(
-                                isExpanded: true,
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                ),
-                                value: items.contains(value) ? value : null,
-                                items: items.map((item) => DropdownMenuItem<String>(
-                                  value: item,
-                                  child: Text(item,
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                )).toList(),
-                                validator: (value) => value == null ? 'Campo requerido' : null,
-                                onChanged: (value) {
-                                  controller.onTimeStartChanged(value!);
-                                },
-                                dropdownStyleData: DropdownStyleData(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                ),
-                                menuItemStyleData: const MenuItemStyleData(
-                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                ),
-                                )
-                              );
-                          }
-                        )
-                        ,GetBuilder<ContratoController>(
-                          builder: (controller) {
-                            final value = controller.selectedTimeEnd;
-                            final items = controller.horariosFinalesDisponibles;
-                            return pickers.timePicker(
-                              'Hora Fin', 
-                              DropdownButtonFormField2<String>(
-                                isExpanded: true,
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                ),
-                                value: items.contains(value) ? controller.horariosFinalesDisponibles.first : null,
-                                items: items.map((item) => DropdownMenuItem<String>(
-                                  value: item,
-                                  child: Text(item,
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                )).toList(),
-                                validator: (value) => value == null ? 'Campo requerido' : null,
-                                onChanged: (value) {
-                                  controller.selectedTimeEnd = value!;
-                                },
-                                dropdownStyleData: DropdownStyleData(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                ),
-                                menuItemStyleData: const MenuItemStyleData(
-                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                ),
-                              )
-                            );
-                          }
-                        )
-                      ],
-                    ),
+
+                    _txtSubtitulo('Selecciona una hora de inicio', 10),
+                    _listaHoras(1),
+
+                    _txtSubtitulo('Selecciona una hora de finalización', 10),
+                    _listaHoras(2),
                 
                     _textTitulo('¿Alguna Observación?', Get.height * 0.04),
                 
@@ -188,12 +114,7 @@ class FormContratacion{
                                         
                           con.cbxAsignTask.value == true ? _txtTitulo2('Hora de prefererencia', Get.height * 0.04) : const SizedBox(),  
                                         
-                          con.cbxAsignTask.value == true ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              _comboTiempoTarea()
-                            ],
-                          ) : const SizedBox(),
+                          con.cbxAsignTask.value == true ? _listaHoras(3) : const SizedBox(),
                         ],
                       ),
                     ),
@@ -272,7 +193,7 @@ class FormContratacion{
                     .toList(),
                 onChanged: (value) {
                   selectedTimeTask.value = value!.padLeft(5, '0');
-                  controller.selectedTimeTask = selectedTimeTask.value;
+                  controller.selectedTimeTask = selectedTimeTask;
                 },
                 alignment: Alignment.center,
                 underline: Container(),
@@ -391,5 +312,54 @@ class FormContratacion{
       ],
     );
   }
+
+  Widget _listaHoras(int typeTime) {
+  return SizedBox(
+    height: Get.height * 0.07,
+    width: Get.width * 0.85,
+    child: GetBuilder<ContratoController>(
+      builder: (controller) {
+        return ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: typeTime == 1 ? controller.horariosInicialesDisponibles.length 
+            : (typeTime == 2  ? controller.horariosFinalesDisponibles.length : 
+            controller.horariosForTask.length),
+          itemBuilder: (context, index) {
+            String hora = typeTime == 1 ? controller.horariosInicialesDisponibles[index] 
+            : (typeTime == 2  ? controller.horariosFinalesDisponibles[index] : 
+            controller.horariosForTask[index]);
+            bool isSelected = (typeTime == 1 ? controller.selectedTimeStart.value :
+            (typeTime == 2 ? controller.selectedTimeEnd.value : controller.selectedTimeTask.value)
+            ) == hora;
+        
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: GestureDetector(
+                onTap: () {
+                  controller.onTimeSelected(hora, typeTime);
+                },
+                child: Card(
+                  color: isSelected ? Colors.blueGrey : Colors.white,
+                  elevation: 5,
+                  child: Container(
+                    width: 100,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      hora,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: isSelected ? Colors.white : Colors.black),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      }
+    )
+  );
+}
 
 }

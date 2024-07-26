@@ -114,8 +114,8 @@ class ContratoItemList{
             PullDownMenuItem(onTap: (){
               ContratoController con = Get.find<ContratoController>();
               con.horariosForTask.value = con.extraFunctions.availableTimesForTask(
-                DateTime.parse(contratoItemActivo.value.horarioInicioPropuesto!).toString(),
-                DateTime.parse(contratoItemActivo.value.horarioFinPropuesto!).toString(),
+                contratoItemActivo.value.horarioInicioPropuesto!,
+                contratoItemActivo.value.horarioFinPropuesto!,
                 contratoItemActivo.value.tareasContrato!
               );
               _dialogTimeTask(tareasAsignadas, indiceTarea);
@@ -140,22 +140,22 @@ class ContratoItemList{
     ContratoController con = Get.find<ContratoController>();
     TextEditingController observaciones = TextEditingController();
 
-    DateTime fechaContrato = DateTime.parse(contrato.horarioInicioPropuesto!);
-    con.selectedTimeStart = contrato.horarioInicioPropuesto!.split(" ")[1].substring(0, 5);
-    con.selectedTimeEnd = contrato.horarioFinPropuesto!.split(" ")[1].substring(0, 5);
+    DateTime fechaContrato = contrato.horarioInicioPropuesto!;
+    con.selectedTimeStart.value = contrato.horarioInicioPropuesto!.toString().split(" ")[1].substring(0, 5);
+    con.selectedTimeEnd.value = contrato.horarioFinPropuesto!.toString().split(" ")[1].substring(0, 5);
 
     con.horariosInicialesDisponibles =  con.extraFunctions.onlyForStartTime(
       con.fechasConCita.where((element) => 
         element.horarioInicioPropuesto != contrato.horarioInicioPropuesto 
         && element.horarioFinPropuesto != contrato.horarioFinPropuesto).toList(), 
-      fechaContrato.toString().split(" ")[0]
+      fechaContrato
     );
 
     con.horasInicialesForEndTimes = con.extraFunctions.generateAvailableTimes(
       con.fechasConCita.where((element) => 
         element.horarioInicioPropuesto != contrato.horarioInicioPropuesto 
         && element.horarioFinPropuesto != contrato.horarioFinPropuesto).toList(), 
-      fechaContrato.toString().split(" ")[0]
+      fechaContrato
     );
 
     return PullDownButton(
@@ -270,7 +270,7 @@ class ContratoItemList{
                         textAlign: TextAlign.start,
                       ),
                       Text(
-                        letterDates.formatearFecha(tareas[index].fechaRealizar!).toString(), 
+                        letterDates.formatearFecha(tareas[index].fechaRealizar!.toString()).toString(), 
                         style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w400),
                         textAlign: TextAlign.start,
                       ),
@@ -376,8 +376,8 @@ class ContratoItemList{
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _subtitleFormat(letterDates.formatearSoloHora(contrato.horarioInicioPropuesto!)),
-                  _subtitleFormat(letterDates.formatearSoloHora(contrato.horarioFinPropuesto!)),
+                  _subtitleFormat(letterDates.formatearSoloHora(contrato.horarioInicioPropuesto!.toString())),
+                  _subtitleFormat(letterDates.formatearSoloHora(contrato.horarioFinPropuesto!.toString())),
                 ],
               ),
             ],
@@ -439,8 +439,8 @@ class ContratoItemList{
       confirmText: 'Seleccionar',
       cancelText: 'Cancelar',
       context: Get.context!,
-      initialDate: DateTime.parse(contrato.horarioInicioPropuesto!),
-      firstDate: DateTime.parse(contrato.horarioInicioPropuesto!),
+      initialDate: contrato.horarioInicioPropuesto!,
+      firstDate: contrato.horarioInicioPropuesto!,
       lastDate: DateTime(2025),
       selectableDayPredicate: (day) {
         if (con.fechasNoDisponiblesSet.toString().obs.isNotEmpty) {
@@ -451,7 +451,7 @@ class ContratoItemList{
         return true;
       },
       initialDatePickerMode: DatePickerMode.day,
-      currentDate: DateTime.parse(contrato.horarioInicioPropuesto!),
+      currentDate: contrato.horarioInicioPropuesto!,
       builder: (context, child){
         return Theme(
           data: ThemeData.light().copyWith(
@@ -467,7 +467,7 @@ class ContratoItemList{
         );
       }
     );
-    DateTime horarioFormat = DateTime.parse(contrato.horarioInicioPropuesto!);
+    DateTime horarioFormat = contrato.horarioInicioPropuesto!;
     if(pickDate != null && (pickDate.year != horarioFormat.year || pickDate.month != horarioFormat.month || pickDate.day != horarioFormat.day)){
       newDate = pickDate;
       con.modfifyContratoItem(contrato, newDate, indexContrato, true);
@@ -511,8 +511,8 @@ class ContratoItemList{
                       )).toList(),
                       validator: (value) => value == null ? 'Campo requerido' : null,
                       onChanged: (value) {
-                        controller.selectedTimeStart = value!;
-                        List<String> horariosFinales = controller.extraFunctions.selectedTimeEnd(controller.horasInicialesForEndTimes, controller.selectedTimeStart);
+                        controller.selectedTimeStart.value = value!;
+                        List<String> horariosFinales = controller.extraFunctions.selectedTimeEnd(controller.horasInicialesForEndTimes, controller.extraFunctions.stringToDateTime(controller.selectedTimeStart.value));
                         controller.horariosFinalesDisponibles.value = horariosFinales;
                       },
                       dropdownStyleData: DropdownStyleData(
@@ -553,7 +553,7 @@ class ContratoItemList{
                       )).toList(),
                       validator: (value) => value == null ? 'Campo requerido' : null,
                       onChanged: (value) {
-                        controller.selectedTimeEnd = value!;
+                        controller.selectedTimeEnd.value = value!;
                       },
                       dropdownStyleData: DropdownStyleData(
                         maxHeight: Get.height * 0.15,
@@ -655,7 +655,7 @@ class ContratoItemList{
                   )).toList(),
                   validator: (value) => value == null ? 'Campo requerido' : null,
                   onChanged: (value) {
-                    con.selectedTimeTask = value!;
+                    con.selectedTimeTask.value = value!;
                   },
                   dropdownStyleData: DropdownStyleData(
                     maxHeight: Get.height * 0.15,
@@ -677,7 +677,7 @@ class ContratoItemList{
                   borderRadius: BorderRadius.circular(5),
                 ),
               ),
-              onPressed: () => con.modifyHorarioTarea(con.selectedTimeTask, indexContratoActivo, indice),
+              onPressed: () => con.modifyHorarioTarea(con.selectedTimeTask.value, indexContratoActivo, indice),
               child: const Text('Guardar', style: TextStyle(color: Colors.white),),
             ),
           )

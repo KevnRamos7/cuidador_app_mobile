@@ -5,7 +5,7 @@ import '../../../../Domain/Model/Contrato/tareas_contrato_model.dart';
 
 class ExtraFunctions{
 
-RxList<String> onlyForStartTime(List<ContratoItemModel> scheduleJson, String date){
+RxList<String> onlyForStartTime(List<ContratoItemModel> scheduleJson, DateTime date){
 
   RxList<String> horasDisponibles = generateAvailableTimes(scheduleJson, date);
 
@@ -54,43 +54,47 @@ RxList<String> onlyForStartTime(List<ContratoItemModel> scheduleJson, String dat
   return horasDisponibles;
 }
 
-List<String> findDatesWithLessThanOneHour(List<ContratoItemModel> scheduleJson, String date) {
+List<String> findDatesWithLessThanOneHour(List<ContratoItemModel> scheduleJson, DateTime date) {
   Map<String, double> dateHoursMap = {};
 
   // Iterate through each schedule entry
   for (ContratoItemModel entry in scheduleJson) {
-    DateTime start = DateTime.parse(entry.horarioInicioPropuesto!);
-    DateTime end = DateTime.parse(entry.horarioFinPropuesto!);
-      
-      // Calculate duration in hours
-      double durationInHours = end.difference(start).inMinutes / 60;
+    DateTime start = entry.horarioInicioPropuesto!;
+    DateTime end = entry.horarioFinPropuesto!;
 
-      // Sum duration for each date
-      String dateKey = start.toIso8601String().substring(0, 10); // Key by date (yyyy-MM-dd)
-      if (dateHoursMap.containsKey(dateKey)) {
-        dateHoursMap[dateKey] = dateHoursMap[dateKey]! + durationInHours;
-      } else {
-        dateHoursMap[dateKey] = durationInHours;
-      }
+    // Calculate duration in hours
+    double durationInHours = end.difference(start).inMinutes / 60;
+
+    // Sum duration for each date
+    String dateKey = start.toIso8601String().substring(0, 10); // Key by date (yyyy-MM-dd)
+    if (dateHoursMap.containsKey(dateKey)) {
+      dateHoursMap[dateKey] = dateHoursMap[dateKey]! + durationInHours;
+    } else {
+      dateHoursMap[dateKey] = durationInHours;
+    }
   }
 
   // Filter dates with total hours less than 1
   List<String> datesWithLessThanOneHour = [];
   dateHoursMap.forEach((date, hours) {
     if (hours > 15) {
-      datesWithLessThanOneHour.add(date);
+      datesWithLessThanOneHour.add(date.toString());
     }
   });
 
   return datesWithLessThanOneHour;
 }
 
-RxList<String>  generateAvailableTimes(List<ContratoItemModel> scheduleJson, String date) {
+RxList<String>  generateAvailableTimes(List<ContratoItemModel> scheduleJson, DateTime date) {
 
   List<String> horasDisponibles = [];
 
+  String dateS =  date.toString().split(" ")[0];
+  // String horarioInicioS = hor
   // filtra la lista de todas las fechas ocupadas por el dia pasado por parametro
-  List<ContratoItemModel> listafiltradaFecha = scheduleJson.where((e) => e.horarioInicioPropuesto!.contains(date)).toList();
+  List<ContratoItemModel> listafiltradaFecha = scheduleJson.where((e) => 
+    e.horarioInicioPropuesto!.toString()
+    .contains(dateS)).toList();
 
   // Genera una lista de las horas posibles (24 horas * 4 intervalos por hora = 96 combinaciones)
   List<String> allTimes = [];
@@ -102,16 +106,16 @@ RxList<String>  generateAvailableTimes(List<ContratoItemModel> scheduleJson, Str
 
   // Itera sobre los elementos de la lista de fechas ocupadas
   for (var entry in listafiltradaFecha) {
-    DateTime start = DateTime.parse(entry.horarioInicioPropuesto!);
-    DateTime end = DateTime.parse(entry.horarioFinPropuesto!);
+    // DateTime start = DateTime.parse(entry.horarioInicioPropuesto!);
+    // DateTime end = DateTime.parse(entry.horarioFinPropuesto!);
 
     // Quita las horas de inicio y fin de la lista de todas las horas del dia
-    allTimes.remove("${start.hour}:${start.minute.toString().padLeft(2, '0')}");
-    allTimes.remove("${end.hour}:${end.minute.toString().padLeft(2, '0')}");
+    allTimes.remove("${entry.horarioInicioPropuesto!.hour}:${entry.horarioInicioPropuesto!.minute.toString().padLeft(2, '0')}");
+    allTimes.remove("${entry.horarioFinPropuesto!.hour}:${entry.horarioFinPropuesto!.minute.toString().padLeft(2, '0')}");
 
     // Calcula los minutos de inicio y fin
-    int startMinutes = start.hour * 60 + start.minute;
-    int endMinutes = end.hour * 60 + end.minute;
+    int startMinutes = entry.horarioInicioPropuesto!.hour * 60 + entry.horarioInicioPropuesto!.minute;
+    int endMinutes = entry.horarioFinPropuesto!.hour * 60 + entry.horarioFinPropuesto!.minute;
 
     // Quita los intervalos ocupados de la lista de todas las horas
     // Itera sobre cada intervalo de 15 minutos en el rango de horas ocupadas
@@ -131,24 +135,25 @@ RxList<String>  generateAvailableTimes(List<ContratoItemModel> scheduleJson, Str
 
     // Revisa si la hora del item esta dentro de un intervalo ocupado
     bool isInSchedule = scheduleJson.any((entry) {
-      DateTime start = DateTime.parse(entry.horarioInicioPropuesto!);
-      DateTime end = DateTime.parse(entry.horarioFinPropuesto!);
+      // DateTime start = DateTime.parse(entry.horarioInicioPropuesto!);
+      // DateTime end = DateTime.parse(entry.horarioFinPropuesto!);
 
 
-      String horarioInicioFormatted = "${start.hour.toString().padLeft(2, '0')}:${start.minute.toString().padLeft(2, '0')}";
+    String horarioInicioFormatted = "${entry.horarioInicioPropuesto!.hour.toString().padLeft(2, '0')}:${entry.horarioInicioPropuesto!.minute.toString().padLeft(2, '0')}";
 
-    String horarioFinFormatted = "${end.hour.toString().padLeft(2, '0')}:${end.minute.toString().padLeft(2, '0')}";
+    String horarioFinFormatted = "${entry.horarioFinPropuesto!.hour.toString().padLeft(2, '0')}:${entry.horarioFinPropuesto!.minute.toString().padLeft(2, '0')}";
 
       /// Construir la cadena de fecha y hora completa para start y end
+      String dateFormatted = date.toString().split(" ")[0];
       String startDateTimeStr =
-          "$date ${horarioInicioFormatted.padLeft(5, '0')}";
+          "$dateFormatted ${horarioInicioFormatted.padLeft(5, '0')}";
       String endDateTimeStr =
-          "$date ${horarioFinFormatted.padLeft(5, '0')}";
+          "$dateFormatted ${horarioFinFormatted.padLeft(5, '0')}";
 
       // Verificar si currentTime está dentro del intervalo ocupado
       //return false;
-      return start.isBefore(DateTime.parse(startDateTimeStr)) &&
-          end.isAfter(DateTime.parse(endDateTimeStr));
+      return entry.horarioInicioPropuesto!.isBefore(DateTime.parse(startDateTimeStr)) &&
+          entry.horarioFinPropuesto!.isAfter(DateTime.parse(endDateTimeStr));
     });
 
     if (!isInSchedule) {
@@ -156,13 +161,13 @@ RxList<String>  generateAvailableTimes(List<ContratoItemModel> scheduleJson, Str
       if (i > 0) {
         String previousTime = allTimes[i - 1];
         bool isPreviousInSchedule = scheduleJson.any((entry) {
-          DateTime start = DateTime.parse(entry.horarioInicioPropuesto!);
-          DateTime end = DateTime.parse(entry.horarioFinPropuesto!);
 
-          return start.isBefore(
-                  DateTime.parse("$date ${previousTime.padLeft(5, '0')}")) &&
-              end.isAfter(
-                  DateTime.parse("$date ${previousTime.padLeft(5, '0')}"));
+          String dateFormatted = date.toString().split(" ")[0];
+
+          return entry.horarioInicioPropuesto!.isBefore(
+                  DateTime.parse("$dateFormatted ${previousTime.padLeft(5, '0')}")) &&
+              entry.horarioFinPropuesto!.isAfter(
+                  DateTime.parse("$dateFormatted ${previousTime.padLeft(5, '0')}"));
         });
 
         if (!isPreviousInSchedule) {
@@ -200,17 +205,14 @@ RxList<String>  generateAvailableTimes(List<ContratoItemModel> scheduleJson, Str
   return horasDisponibles.obs;
 }
   
-List<String> availableTimesForTask(String fechaInicio, String fechaFin, List<TareasContratoModel> ocupadas) {
-  // Parsear las fechas de inicio y fin
-  DateTime start = DateTime.parse(fechaInicio);
-  DateTime end = DateTime.parse(fechaFin);
+List<String> availableTimesForTask(DateTime fechaInicio, DateTime fechaFin, List<TareasContratoModel> ocupadas) {
 
   // Inicializar una lista para almacenar las horas disponibles
   List<String> horasEnRango = [];
 
   // Iterar desde la hora de inicio hasta la hora de fin en intervalos de 15 minutos
-  DateTime current = start;
-  while (current.isBefore(end)) {
+  DateTime current = fechaInicio;
+  while (current.isBefore(fechaFin)) {
     // Formatear la hora y agregarla a la lista
     String formattedTime = formatTime(current);
     horasEnRango.add(formattedTime);
@@ -224,16 +226,16 @@ List<String> availableTimesForTask(String fechaInicio, String fechaFin, List<Tar
     String task = tarea.fechaRealizar.toString().split(" ")[1].substring(0, 5);
     horasEnRango.remove(task);
   }
-  horasEnRango.add('');
+  // horasEnRango.add('');
   // Devolver la lista de horas en rango
   return horasEnRango;
 }
 
-List<String> selectedTimeEnd(List<String> horasDisponibles, String horarioInicio) {
+List<String> selectedTimeEnd(List<String> horasDisponibles, DateTime horarioInicio) {
 
   List<String> horasDisponiblesEnd = horasDisponibles;
 
-  DateTime horaInicial = stringToDateTime(horarioInicio);
+  // DateTime horaInicial = stringToDateTime(horarioInicio);
   
   DateTime stringHorasDisponibles (String horario){
     int hora = 0;
@@ -241,9 +243,9 @@ List<String> selectedTimeEnd(List<String> horasDisponibles, String horarioInicio
     hora = int.parse(horario.substring(0, horario.indexOf(":") ));
     minuto = int.parse(horario.substring(horario.indexOf(":") + 1, horario.indexOf(":") + 3 ));
     DateTime dateFormatted =DateTime(
-      horaInicial.year,
-      horaInicial.month,
-      horaInicial.day,
+      horarioInicio.year,
+      horarioInicio.month,
+      horarioInicio.day,
       hora,
       minuto,
       0, 0
@@ -257,10 +259,10 @@ List<String> selectedTimeEnd(List<String> horasDisponibles, String horarioInicio
     return '$hours:$minutes';
   }
 
-  DateTime lastTime = horaInicial.subtract(const Duration(minutes: 15));
+  DateTime lastTime = horarioInicio.subtract(const Duration(minutes: 15));
   List<DateTime> horasDisponiblesDt = horasDisponiblesEnd.map((e) => stringHorasDisponibles(e)).toList();
   for (DateTime hora in horasDisponiblesDt) {
-    if(hora.isBefore(horaInicial)){
+    if(hora.isBefore(horarioInicio)){
       String horaF = formatTime(hora);
       horasDisponiblesEnd.remove(horaF);
     }

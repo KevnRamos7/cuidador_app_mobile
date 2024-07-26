@@ -116,7 +116,7 @@ class ResumenContPageMain extends StatelessWidget {
         rows.add(
           DataRow(cells: [
             DataCell(Text(tarea.tituloTarea ?? '')),
-            DataCell(Text(tarea.fechaRealizar?.isNotEmpty == true ? letter.formatearSoloHora(tarea.fechaRealizar!) : '')),
+            DataCell(Text(tarea.fechaRealizar?.toString().isNotEmpty == true ? letter.formatearSoloHora(tarea.fechaRealizar!.toString()) : '')),
             DataCell(Text((i + 1).toString())), // El índice del contrato
           ]),
         );
@@ -141,10 +141,10 @@ class ResumenContPageMain extends StatelessWidget {
         ],
         rows: con.contrato.value.contratoItem?.map((e) => DataRow(
           cells: [
-            DataCell(Text(e.horarioInicioPropuesto?.isNotEmpty == true ? letter.formatearSoloFecha(e.horarioInicioPropuesto!) : '', 
+            DataCell(Text(e.horarioInicioPropuesto?.toString().isNotEmpty == true ? letter.formatearSoloFecha(e.horarioInicioPropuesto!.toString()) : '', 
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)
             ),
-            DataCell(Text('${letter.formatearSoloHora(e.horarioInicioPropuesto!)} - ${letter.formatearSoloHora(e.horarioFinPropuesto!)}', 
+            DataCell(Text('${letter.formatearSoloHora(e.horarioInicioPropuesto!.toString())} - ${letter.formatearSoloHora(e.horarioFinPropuesto!.toString())}', 
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
           ]
         )).toList() ?? const [],

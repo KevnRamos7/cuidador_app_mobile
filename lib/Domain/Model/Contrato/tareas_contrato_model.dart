@@ -7,10 +7,10 @@ class TareasContratoModel{
   String? descripcionTarea;
   String? tipoTarea;
   EstatusModel? estatus;
-  String? fechaRealizar;
-  String? fechaInicio;
-  String? fechaFinalizacion;
-  String? fechaPospuesta;
+  DateTime? fechaRealizar;
+  DateTime? fechaInicio;
+  DateTime? fechaFinalizacion;
+  DateTime? fechaPospuesta;
 
   TareasContratoModel({
     this.idTareasContrato, 
@@ -30,10 +30,10 @@ class TareasContratoModel{
     descripcionTarea = json['descripcion_tarea'];
     tipoTarea = json['tipo_tarea'];
     estatus = json['estatus'];
-    fechaRealizar = json['fecha_a_realizar'];
-    fechaInicio = json['fecha_inicio'];
-    fechaFinalizacion = json['fecha_finalizacion'];
-    fechaPospuesta = json['fecha_pospuesta'];
+    fechaRealizar = DateTime.tryParse(json['fecha_a_realizar'].toString().replaceAll('T', " "));
+    fechaInicio = DateTime.tryParse(json['fecha_inicio'].toString().replaceAll('T', " "));
+    fechaFinalizacion = DateTime.tryParse(json['fecha_inicio'].toString().replaceAll('T', " "));
+    fechaPospuesta = DateTime.tryParse(json['fecha_pospuesta'].toString().replaceAll('T', " "));
   }
 
   Map<String, dynamic> toJson(){

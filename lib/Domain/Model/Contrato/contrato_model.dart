@@ -21,7 +21,7 @@ class ContratoModel{
     if(json['contrato_item'] != null){
       contratoItem!.value = [];
       json['contrato_item'].forEach((v) {
-        contratoItem!.value.add(ContratoItemModel.fromJson(v));
+        contratoItem!.add(ContratoItemModel.fromJson(v));
       });
     }
   }
@@ -33,7 +33,7 @@ class ContratoModel{
     data['persona_cliente'] = personaCliente;
     data['estatus'] = estatus;
     if(contratoItem != null){
-      data['contrato_item'] = contratoItem!.value.map((v) => v.toJson()).toList();
+      data['contrato_item'] = contratoItem!.map((v) => v.toJson()).toList();
     }
     return data;
   }

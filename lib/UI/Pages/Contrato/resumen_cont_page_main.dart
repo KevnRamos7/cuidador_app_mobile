@@ -45,7 +45,8 @@ class ResumenContPageMain extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      btnAction('Confirmar', (){Get.offNamedUntil('/confirmacion_cont', (route) => false );}, const Color.fromARGB(255, 4, 48, 110)),
+                      // btnAction('Confirmar', (){Get.offNamedUntil('/confirmacion_cont', (route) => false );}, const Color.fromARGB(255, 4, 48, 110)),
+                      btnAction('Confirmar', (){con.confirmacionContrato();}, const Color.fromARGB(255, 4, 48, 110)),
                       btnAction('Cancelar', (){Get.back();}, const Color.fromARGB(255, 220, 74, 63)),
                     ],
                   )

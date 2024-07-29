@@ -36,12 +36,12 @@ class ContratoItemModel{
       'id_contrato_item': idContratoItem,
       'estatus': estatus,
       'observaciones': observaciones,
-      'horario_inicio_propuesto': horarioInicioPropuesto,
-      'horario_fin_propuesto': horarioFinPropuesto,
-      'fecha_aceptacion': fechaAceptacion,
-      'fecha_cambio_estatus': fechaInicioCuidado,
-      'fecha_inicio_cuidado': fechaInicioCuidado,
-      'fecha_fin_cuidado': fechaFinCuidado,
+      'horario_inicio_propuesto': horarioInicioPropuesto.toString(),
+      'horario_fin_propuesto': horarioFinPropuesto.toString(),
+      'fecha_aceptacion': fechaAceptacion.toString(),
+      'fecha_cambio_estatus': fechaInicioCuidado.toString(),
+      'fecha_inicio_cuidado': fechaInicioCuidado.toString(),
+      'fecha_fin_cuidado': fechaFinCuidado.toString(),
       'tareas_contrato': tareasContrato!.map((e) => e.toJson()).toList(),
     };
   }

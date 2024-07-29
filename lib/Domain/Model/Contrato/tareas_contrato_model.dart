@@ -43,10 +43,10 @@ class TareasContratoModel{
     data['descripcion_tarea'] = descripcionTarea;
     data['tipo_tarea'] = tipoTarea;
     data['estatus'] = estatus;
-    data['fecha_a_realizar'] = fechaRealizar;
-    data['fecha_inicio'] = fechaInicio;
-    data['fecha_finalizacion'] = fechaFinalizacion;
-    data['fecha_pospuesta'] = fechaPospuesta;
+    data['fecha_a_realizar'] = fechaRealizar.toString();
+    data['fecha_inicio'] = fechaInicio.toString();
+    data['fecha_finalizacion'] = fechaFinalizacion.toString();
+    data['fecha_pospuesta'] = fechaPospuesta.toString();
     return data;
   }
 

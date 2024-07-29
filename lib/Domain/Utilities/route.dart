@@ -3,6 +3,7 @@ import 'package:cuidador_app_mobile/UI/Pages/Contrato/resumen_cont_page_main.dar
 import 'package:cuidador_app_mobile/UI/Pages/FeedPage/feed_page_main.dart';
 import 'package:cuidador_app_mobile/UI/Pages/Introduction/introduction_page_main.dart';
 import 'package:cuidador_app_mobile/UI/Pages/LoginModule/login_page_main.dart';
+import 'package:cuidador_app_mobile/UI/Pages/ProfilesPreview/ProfileCuidador/profile_cuidador_main.dart';
 import 'package:get/get.dart';
 
 import '../../UI/Pages/Contrato/confirmacion_cont_page.dart';
@@ -18,6 +19,7 @@ class Routes {
     GetPage(name: '/select_profile', page: () => SelectProfilePage()),
     GetPage(name: '/resumen_contrato', page: () => ResumenContPageMain()),
     GetPage(name: '/confirmacion_cont', page: () => ConfirmacionContPage()),
+    GetPage(name: '/previewProfileCuidador', page: () => ProfileCuidadorMain()),
   ];
 
 }

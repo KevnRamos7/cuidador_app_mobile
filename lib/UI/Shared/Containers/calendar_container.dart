@@ -40,6 +40,10 @@ class CalendarContainer {
             if (disabledDates.isNotEmpty) {
               String sanitizedDate = sanitizeDateTime(dateTime);
               bool isDisabled = disabledDates.value.contains(sanitizedDate);
+              //quitar fechas anteriores a la fecha actual
+              if (dateTime.isBefore(DateTime.now())) {
+                return false;
+              }
               return !isDisabled;
             }
             return true;

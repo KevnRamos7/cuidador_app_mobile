@@ -6,6 +6,7 @@ import 'package:cuidador_app_mobile/Domain/Utilities/letter_dates.dart';
 import 'package:cuidador_app_mobile/UI/Pages/Contrato/Models/contrato_controller.dart';
 import 'package:cuidador_app_mobile/UI/Pages/Contrato/Models/extra_functions.dart';
 import 'package:cuidador_app_mobile/UI/Shared/Containers/pickers.dart';
+import 'package:cuidador_app_mobile/UI/Shared/TextFields/form_textfield.dart';
 import 'package:cuidador_app_mobile/UI/Shared/TextFields/search_textfield.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,6 +28,7 @@ class ContratoItemList{
   PageController pageTimesController = PageController();
 
   RxBool dateEdit = false.obs;
+  RxBool isStartTime = true.obs;
 
   void mostrarListadofromModalSheet(List<ContratoItemModel> contrato, String routeimage, int? jumpTo){
 
@@ -77,6 +79,33 @@ class ContratoItemList{
                 contratoItemActivo.value.tareasContrato == null ? contrato.first.tareasContrato! : contratoItemActivo.value.tareasContrato!
               )),
 
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: FloatingActionButton.small(onPressed: (){
+                      ContratoController con = Get.find();
+                      ExtraFunctions extra = ExtraFunctions();
+                      ContratoItemModel contratoItemModel = contratoItemActivo.value.horarioInicioPropuesto == null ? contrato.first : contratoItemActivo.value;
+                      String horaInicio = extra.formatTime(contratoItemModel.horarioInicioPropuesto!).padLeft(5, '0');
+                      String horaFin = extra.formatTime(contratoItemModel.horarioFinPropuesto!).padLeft(5, '0');
+
+                      DateTime inicial = extra.stringToDateTime(horaInicio);
+                      DateTime fin = extra.stringToDateTime(horaFin);
+
+                      con.horariosForTask.value = extra.availableTimesForTask(inicial, fin ,contratoItemModel.tareasContrato!);
+                      con.horariosForTask.refresh();
+                      con.selectedTimeTask.value = '';
+                      _dialogNewTask(indexContratoActivo);
+                    }
+                    , tooltip: 'Añadir Tarea'
+                    , child: const Icon(CupertinoIcons.add, color: Colors.white,),
+                    ),
+                  ),
+                ],
+              )
+
             ],
           ),
         ),
@@ -113,10 +142,11 @@ class ContratoItemList{
             }, title: 'Descripción',icon: CupertinoIcons.pencil_circle),
             PullDownMenuItem(onTap: (){
               ContratoController con = Get.find<ContratoController>();
+              ContratoItemModel contratoModel = con.contratoItems[indiceContrato];
               con.horariosForTask.value = con.extraFunctions.availableTimesForTask(
-                contratoItemActivo.value.horarioInicioPropuesto!,
-                contratoItemActivo.value.horarioFinPropuesto!,
-                contratoItemActivo.value.tareasContrato!
+                contratoModel.horarioInicioPropuesto!,
+                contratoModel.horarioFinPropuesto!,
+                contratoModel.tareasContrato!
               );
               _dialogTimeTask(tareasAsignadas, indiceTarea);
             }, title: 'Hora', icon: CupertinoIcons.time),
@@ -323,6 +353,7 @@ class ContratoItemList{
   }
 
   Widget containerContratoItem(ContratoItemModel contrato, int indice) {
+  ContratoController con = Get.find();
   return AnimatedContainer(
     duration: const Duration(milliseconds: 3000),
     height: Get.height * (dateEdit.value == false ? 0.32 : 0.45),
@@ -410,13 +441,45 @@ class ContratoItemList{
           ],
         ),
 
-        Visibility(visible: dateEdit.value, child: Column(
-          children: [
-            _separator(),
-            _expandedForTimesEdit(contrato, indice),
-          ],
+        Visibility(visible: dateEdit.value,
+        child: Obx(()=>
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _separator(),
+              isStartTime.value ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                    onPressed: () => dateEdit.value = false, icon: const Icon(CupertinoIcons.xmark_circle_fill, size: 25, color: Colors.grey,)),
+                  _listaHoras(1),
+                  IconButton(
+                    onPressed: () {
+                      isStartTime.value = false;
+                    }, icon: const Icon(CupertinoIcons.arrow_right_circle_fill, size: 25, color: Colors.blueGrey,))
+                ],
+              ) : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                    onPressed: () => isStartTime.value = true, icon: const Icon(CupertinoIcons.arrow_left_circle_fill, size: 25, color: Colors.blueGrey,)),
+                  _listaHoras(2),
+                  IconButton(
+                    onPressed: () {
+                      con.modfifyContratoItem(contrato, null, indice, false);
+                      dateEdit.value = false;
+                      isStartTime.value = true;
+                    }, icon: const Icon(CupertinoIcons.check_mark_circled_solid, size: 25, color: Colors.green,)),
+                ],
+              ),
+              const SizedBox(height: 15,),
+              Obx(()=>
+                Text('${con.selectedTimeStart.value} -- ${con.selectedTimeEnd.value}',
+                 style: const TextStyle(color: Colors.grey, fontSize: 13),),
+              )
+            ],
+          ),
         )),
-
       ],
     ),
   );
@@ -473,107 +536,6 @@ class ContratoItemList{
       con.modfifyContratoItem(contrato, newDate, indexContrato, true);
     }
 
-  }
-
-  Widget _expandedForTimesEdit(ContratoItemModel contrato, int indice){
-    return SizedBox(
-      height: Get.height * 0.1,
-      width: Get.width * 0.9,
-      child: PageView(
-        controller: pageTimesController,
-        children: [
-
-          GetBuilder<ContratoController>(
-            builder: (controller){
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(onPressed: (){
-                    dateEdit.value = false;
-                  }, icon: const Icon(CupertinoIcons.xmark_circle_fill, color: Colors.grey, size: 20,)),
-                  _timePicker(
-                    'Hora Inicio', 
-                    DropdownButtonFormField2<String>(
-                      isExpanded: false,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.only(bottom: 16),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                      // value: controller.selectedTimeStart,
-                      items: controller.horariosInicialesDisponibles.map((item) => DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(item,
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                      )).toList(),
-                      validator: (value) => value == null ? 'Campo requerido' : null,
-                      onChanged: (value) {
-                        controller.selectedTimeStart.value = value!;
-                        List<String> horariosFinales = controller.extraFunctions.selectedTimeEnd(controller.horasInicialesForEndTimes, controller.extraFunctions.stringToDateTime(controller.selectedTimeStart.value));
-                        controller.horariosFinalesDisponibles.value = horariosFinales;
-                      },
-                      dropdownStyleData: DropdownStyleData(
-                        maxHeight: Get.height * 0.15,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                    )
-                  ),
-                  IconButton(onPressed: ()=> pageTimesController.jumpToPage(1), icon: const Icon(CupertinoIcons.arrow_right_circle_fill, color: Colors.blueGrey, size: 20,))
-                ],
-              );
-            }
-          ),
-          GetBuilder<ContratoController>(
-            builder: (controller){
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(onPressed: ()=> pageTimesController.jumpToPage(0), icon: const Icon(CupertinoIcons.arrow_left_circle_fill, color: Colors.blueGrey, size: 20,)),
-                  _timePicker(
-                    'Hora Fin', 
-                    DropdownButtonFormField2<String>(
-                      isExpanded: false,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.only(bottom: 16),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                      // value: controller.selectedTimeEnd,
-                      items: controller.horariosFinalesDisponibles.map((item) => DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(item,
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                      )).toList(),
-                      validator: (value) => value == null ? 'Campo requerido' : null,
-                      onChanged: (value) {
-                        controller.selectedTimeEnd.value = value!;
-                      },
-                      dropdownStyleData: DropdownStyleData(
-                        maxHeight: Get.height * 0.15,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                    )
-                  ),
-                  IconButton(onPressed: (){
-                    dateEdit.value = false;
-                    controller.modfifyContratoItem(contrato, null, indice, false);
-                  }, icon: const Icon(CupertinoIcons.check_mark_circled_solid, color: Colors.green, size: 20,))
-                ],
-              );
-            }
-          )
-        ],
-      ),
-    );
   }
 
   Future<void> _dialogTarea(TareasContratoModel tarea, int indice, String editText, TextEditingController edicion, bool isTitle){
@@ -686,6 +648,51 @@ class ContratoItemList{
     );
   }
 
+  Future<void> _dialogNewTask(int indiceContrato){
+    ContratoController con = Get.find();
+    FormTextfield form = Get.put(FormTextfield());
+    return Get.defaultDialog(
+      title: 'Añadir Tarea',
+      radius: 5,
+      titlePadding: const EdgeInsets.symmetric(vertical: 10),
+      content: Column(
+        children: [
+          _separator(),
+          _txtTitulo2('Titulo', 10),
+          form.form_txt(
+            controller: con.txtTituloTarea.value,
+            padding: Get.height * 0.02,
+            height: Get.height * 0.05,
+            width: Get.width * 0.8,
+            contentPaddingTop: 0,
+            contentPaddingLeft: 20,
+            hintText: 'Ejercicio Matutino, Limpieza del Hogar, etc.',
+          ),
+          _txtTitulo2('Descripción', Get.height * 0.02),
+          form.form_txt(
+            controller: con.txtDescripcionTarea.value,
+            padding: Get.height * 0.02,
+            height: Get.height * 0.1,
+            width: Get.width * 0.8,
+            contentPaddingTop: 10,
+            maxLines: 10,
+            hintText: 'Mantener el área de convivencia del paciente limpia y ordenada. Esto incluye la limpieza de la habitación, sala, cocina y baño.',
+          ),
+          _txtTitulo2('Hora de prefererencia', Get.height * 0.04),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _listaHoras(3),
+              IconButton.filled(onPressed: (){
+                con.addTareasFromModal(indiceContrato);
+              }, icon: const Icon(CupertinoIcons.add, size: 20,color: Colors.white,))
+            ],
+          ) 
+        ],
+      )
+    );
+  }
+
   // ** FORMATO DE WIDGETS **
 
   Widget _timePicker(String titulo, Widget timePickerDropdown) {
@@ -734,6 +741,87 @@ class ContratoItemList{
     return Text(
       subtitle,
       style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 15),
+    );
+  }
+
+  Widget _listaHoras(int typeTime) {
+  List<ScrollController> controladores = [
+    ScrollController(),
+    ScrollController(),
+    ScrollController()
+  ];
+  return SizedBox(
+    height: Get.height * 0.07,
+    width: typeTime == 3 ? Get.width * 0.55 : Get.width * 0.5,
+    child: GetBuilder<ContratoController>(
+      builder: (controller) {
+        return ListView.builder(
+          controller: controladores[typeTime - 1],
+          scrollDirection: Axis.horizontal,
+          itemCount: typeTime == 1 ? controller.horariosInicialesDisponibles.length 
+            : (typeTime == 2  ? controller.horariosFinalesDisponibles.length : 
+            controller.horariosForTask.length),
+          itemBuilder: (context, index) {
+            String hora = typeTime == 1 ? controller.horariosInicialesDisponibles[index] 
+            : (typeTime == 2  ? controller.horariosFinalesDisponibles[index] : 
+            controller.horariosForTask[index]);
+            bool isSelected = (typeTime == 1 ? controller.selectedTimeStart.value :
+            (typeTime == 2 ? controller.selectedTimeEnd.value : controller.selectedTimeTask.value)
+            ) == hora;
+        
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: GestureDetector(
+                onTap: () {
+                  controller.onTimeSelected(hora, typeTime);
+                  if(typeTime == 1){
+                    controladores[typeTime - 1].animateTo(
+                      controladores[typeTime - 1].position.minScrollExtent,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  }
+                },
+                child: Card(
+                  color: isSelected ? Colors.blueGrey : Colors.white,
+                  elevation: 5,
+                  child: Container(
+                    width: 100,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      hora,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: isSelected ? Colors.white : Colors.black),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      }
+    )
+  );
+}
+
+  Widget _txtTitulo2(String titulo, double padding){
+    return Container(
+      width: Get.width * 0.75,
+      margin: EdgeInsets.only(top: padding),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            titulo, 
+            textAlign: TextAlign.start,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold),
+            ),
+        ],
+      ),
     );
   }
 

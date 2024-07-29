@@ -3,7 +3,6 @@ import 'package:cuidador_app_mobile/UI/Pages/Contrato/Modules/contrato_item_list
 import 'package:cuidador_app_mobile/UI/Shared/Containers/calendar_container.dart';
 import 'package:cuidador_app_mobile/UI/Shared/Containers/pickers.dart';
 import 'package:cuidador_app_mobile/UI/Shared/TextFields/form_textfield.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -114,7 +113,15 @@ class FormContratacion{
                                         
                           con.cbxAsignTask.value == true ? _txtTitulo2('Hora de prefererencia', Get.height * 0.04) : const SizedBox(),  
                                         
-                          con.cbxAsignTask.value == true ? _listaHoras(3) : const SizedBox(),
+                          con.cbxAsignTask.value == true ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _listaHoras(3),
+                              IconButton.filled(onPressed: (){
+                                con.addTareasContrato();
+                              }, icon: const Icon(CupertinoIcons.add, size: 20,color: Colors.white,))
+                            ],
+                          ) : const SizedBox(),
                         ],
                       ),
                     ),
@@ -174,63 +181,6 @@ class FormContratacion{
     );
   }
 
-  Widget _comboTiempoTarea(){
-    return GetBuilder<ContratoController>(
-      builder: (controller) {
-        RxString selectedTimeTask = ''.obs;
-        RxList<String> horariosForTask = controller.horariosForTask;
-        return Obx(()=>
-          Row(
-            children: [
-              DropdownButton2<String>(
-                hint: const Text('Selecciona una hora'),
-                value: selectedTimeTask.value,
-                items: horariosForTask
-                    .map((hora) => DropdownMenuItem<String>(
-                          value: hora,
-                          child: Text(hora),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  selectedTimeTask.value = value!.padLeft(5, '0');
-                  controller.selectedTimeTask = selectedTimeTask;
-                },
-                alignment: Alignment.center,
-                underline: Container(),
-                buttonStyleData: ButtonStyleData(
-                  height: Get.height * 0.05,
-                  width: 160,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 1,
-                    ),
-                  ),
-                ),
-                iconStyleData: const IconStyleData(
-                  icon: Icon(Icons.arrow_drop_down),
-                  iconSize: 20,
-                ),
-                dropdownStyleData: DropdownStyleData(
-                  maxHeight: 200,
-                  width: 160,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 20,),
-              _botonAgregar('', (){controller.addTareasContrato();
-              }, const Color(0xFF395886), CupertinoIcons.add),
-            ],
-          ),
-        );
-      }
-    );
-  }
-
   Widget _textTitulo(String titulo, double padding){
     return Container(
       margin: EdgeInsets.only(top: padding),
@@ -283,40 +233,10 @@ class FormContratacion{
     );
   }
 
-  Widget _botonAgregar(String titulo, Function evento, Color? color, IconData? icono){
-    return Column(
-      children: [
-        SizedBox(
-          // margin: const EdgeInsets.only(top: 15),
-          width: titulo == '' ? Get.width * 0.2 : Get.width * (titulo.length * 0.04),
-          height: Get.height * 0.05,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: color ?? const Color(0xFF395886),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              )
-            ),
-            onPressed: () => evento(),
-            child: 
-             titulo == '' ? const Icon(CupertinoIcons.add, color: Colors.white, size: 20) :
-             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(titulo, style: const TextStyle(color: Colors.white, fontSize: 15),),
-                Icon(icono ?? CupertinoIcons.add, color: Colors.white, size: 20)
-              ],
-             )
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _listaHoras(int typeTime) {
   return SizedBox(
     height: Get.height * 0.07,
-    width: Get.width * 0.85,
+    width: typeTime == 3 ? Get.width * 0.65 : Get.width * 0.85,
     child: GetBuilder<ContratoController>(
       builder: (controller) {
         return ListView.builder(

@@ -15,6 +15,7 @@ class UsuarioModel{
   RxList<PersonaModel>? persona;
   RxList<ComentariosModel>? comentariosUsuario;
   double? salarioCuidador;
+  int? cuidadosRealizados;
 
   UsuarioModel({
     this.idUsuario, 
@@ -25,7 +26,8 @@ class UsuarioModel{
     this.nivelUsuario, 
     this.calificacion,
     this.comentariosUsuario,
-    this.salarioCuidador
+    this.salarioCuidador,
+    this.cuidadosRealizados
   });
     
   factory UsuarioModel.fromJson(Map<String, dynamic> json){
@@ -38,7 +40,8 @@ class UsuarioModel{
       contrasena: json['contrasena'],
       persona: json['persona'] != null ? (json['persona'] as List).map((v) => PersonaModel.fromJson(v)).toList().obs : null,
       comentariosUsuario: json['comentarios_usuario'] != null ? (json['comentarios_usuario'] as List).map((v) => ComentariosModel.fromJson(v)).toList().obs : null,
-      salarioCuidador: json['salario_cuidador'].toDouble()
+      salarioCuidador: json['salario_cuidador'].toDouble(),
+      cuidadosRealizados: json['cuidados_realizados']
     );
   }
 
@@ -57,6 +60,7 @@ class UsuarioModel{
       data['comentarios_usuario'] = comentariosUsuario!.map((v) => v.toJson()).toList();
     }
     data['salario_cuidador'] = salarioCuidador;
+    data['cuidados_realizados'] = cuidadosRealizados;
     return data;
   }
 

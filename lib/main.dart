@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       title: "Cuidador",
       debugShowCheckedModeBanner: false,
-      initialRoute: '/previewProfileCuidador', 
+      initialRoute: '/home', 
       getPages: Routes.routes, // Rutas de la aplicacion
       theme: ColorsThemeData().adultoMayorThemeData, // Cambiará dependiendo del valor recolectado del localstorage
       navigatorKey: Get.key,

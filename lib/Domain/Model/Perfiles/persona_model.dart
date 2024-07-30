@@ -3,7 +3,6 @@ import 'package:cuidador_app_mobile/Domain/Model/Perfiles/datos_medicos_model.da
 import 'package:cuidador_app_mobile/Domain/Model/Perfiles/documentacion_model.dart';
 import 'package:cuidador_app_mobile/Domain/Model/Perfiles/domicilio_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:palette_generator/palette_generator.dart';
 
@@ -30,6 +29,7 @@ class PersonaModel {
   Color? colorBg = Colors.white;
   String? estatus;
   DocumentacionModel? documentacion;
+  DateTime? fechaRegistro;
 
   /// Constructor de la clase PersonaModel.
   PersonaModel({
@@ -53,7 +53,8 @@ class PersonaModel {
     this.avatarImage,
     // required this.colorBg,
     this.estatus,
-    this.documentacion
+    this.documentacion,
+    this.fechaRegistro
   });
 
   /// Crea una instancia de PersonaModel a partir de un Map JSON.
@@ -80,6 +81,7 @@ class PersonaModel {
       // colorBg: Colors.white,
       estatus: json['estatus'],
       documentacion: json['documentacion'] != null ? DocumentacionModel.fromJson(json['documentacion']) : null,
+      // fechaRegistro:  json['fecha_resgistro'] != null ? DateTime.tryParse(json['fecha_registro']) : null,
       // colorBg: json['avatar_image'] != null ? getColorBh(json['avatar_image']) : Future.value(Colors.white),
     );
   }
@@ -107,6 +109,7 @@ class PersonaModel {
       'avatar_image': avatarImage,
       'estatus': estatus,
       'documentacion': documentacion?.toJson(),
+      'fecha_registro': fechaRegistro?.toIso8601String()
     };
   }
 

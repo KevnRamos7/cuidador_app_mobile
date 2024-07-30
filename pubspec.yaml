@@ -51,6 +51,7 @@ dependencies:
   pull_down_button: ^0.9.4
   shadcn_ui: ^0.6.4
   one_context: ^4.0.0
+  flutter_statusbarcolor_ns: ^0.5.0
 
 dev_dependencies:
   flutter_test:

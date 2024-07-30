@@ -138,22 +138,25 @@ class FeedGridView{
               Positioned(
                 left: (Get.width * 0.45 - Get.width * 0.2) / 2,
                 top: 0,
-                child: Container(
-                  width: Get.width * 0.2,
-                  height: 76.69,
-                  decoration: ShapeDecoration(
-                    image: DecorationImage(image: NetworkImage(usuario.persona!.first.avatarImage.toString()), fit: BoxFit.fill),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100),
+                child: GestureDetector(
+                  onTap: () => Get.toNamed('/previewProfileCuidador'),
+                  child: Container(
+                    width: Get.width * 0.2,
+                    height: 76.69,
+                    decoration: ShapeDecoration(
+                      image: DecorationImage(image: NetworkImage(usuario.persona!.first.avatarImage.toString()), fit: BoxFit.fill),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      shadows: const [
+                        BoxShadow(
+                          color: Color(0x3F000000),
+                          blurRadius: 4,
+                          offset: Offset(0, 4),
+                          spreadRadius: 0,
+                        )
+                      ],
                     ),
-                    shadows: const [
-                      BoxShadow(
-                        color: Color(0x3F000000),
-                        blurRadius: 4,
-                        offset: Offset(0, 4),
-                        spreadRadius: 0,
-                      )
-                    ],
                   ),
                 ),
               ),

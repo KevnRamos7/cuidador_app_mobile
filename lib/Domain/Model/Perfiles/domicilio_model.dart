@@ -27,10 +27,10 @@ class DomicilioModel {
     this.pais = "MÉXICO", // Valor por defecto
     this.referencias,
     this.estatusId,
-    required this.fechaRegistro,
-    required this.usuarioRegistro,
-    this.fechaModificacion,
-    this.usuarioModifico,
+    // required this.fechaRegistro,
+    // required this.usuarioRegistro,
+    // this.fechaModificacion,
+    // this.usuarioModifico,
   });
 
   /// Crea una instancia de DomicilioModel a partir de un Map JSON.
@@ -46,10 +46,10 @@ class DomicilioModel {
       pais: json['pais'] ?? "MÉXICO",
       referencias: json['referencias'],
       estatusId: json['estatus_id'],
-      fechaRegistro: DateTime.parse(json['fecha_registro']),
-      usuarioRegistro: json['usuario_registro'],
-      fechaModificacion: json['fecha_modificacion'] != null ? DateTime.parse(json['fecha_modificacion']) : null,
-      usuarioModifico: json['usuario_modifico'],
+      // fechaRegistro: DateTime.parse(json['fecha_registro']),
+      // usuarioRegistro: json['usuario_registro'],
+      // fechaModificacion: json['fecha_modificacion'] != null ? DateTime.parse(json['fecha_modificacion']) : null,
+      // usuarioModifico: json['usuario_modifico'],
     );
   }
 

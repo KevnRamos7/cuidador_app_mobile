@@ -8,16 +8,18 @@ class ComentariosModel{
   PersonaModel? personaEmisor;
   int? calificacion;
   String? comentario;
+  DateTime? fechaRegistro;
 
-  ComentariosModel({this.idComentarios, this.personaReceptor, this.personaEmisor, this.calificacion, this.comentario});
+  ComentariosModel({this.idComentarios, this.personaReceptor, this.personaEmisor, this.calificacion, this.comentario, this.fechaRegistro});
 
   factory ComentariosModel.fromJson(Map<String, dynamic> json){
     return ComentariosModel(
       idComentarios: json['id_comentarios'],
-      personaReceptor: json['persona_receptor'],
-      personaEmisor: json['persona_emisor'],
+      personaReceptor: json['persona_receptor'] != null ? PersonaModel.fromJson(json['persona_receptor']) : null,
+      personaEmisor: json['persona_emisor'] != null ? PersonaModel.fromJson(json['persona_emisor']) : null,
       calificacion: json['calificacion'],
       comentario: json['comentario'],
+      // fechaRegistro: json['fecha_registro'] != null ? DateTime.tryParse(json['fecha_registro']) : null
     );
   }
 
@@ -28,6 +30,7 @@ class ComentariosModel{
     data['persona_emisor'] = personaEmisor;
     data['calificacion'] = calificacion;
     data['comentario'] = comentario;
+    data['fecha_registro'] = fechaRegistro;
     return data;
   }
 

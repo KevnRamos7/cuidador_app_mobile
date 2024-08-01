@@ -17,7 +17,7 @@ class SearchTextfield{
         onChanged: (value) => onChanged(value),
         decoration: InputDecoration(
           prefixIcon: const Icon(CupertinoIcons.search, color: Color(0xFFA6A6A6), size: 20,),
-          hintText: 'Nombre, Certificaciones, Horarios, Genero ...',
+          hintText: hintText,
       
             hintStyle: const TextStyle(
               color: Colors.grey,

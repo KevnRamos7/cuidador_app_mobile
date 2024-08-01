@@ -26,7 +26,7 @@ class LoginResponse extends GetConnect{
     List<MenuModel> menus = <MenuModel>[];
     try
     {
-      final response = await get('https://mocki.io/v1/ee168e10-42a6-4029-8edf-520df0e97d1c');
+      final response = await get('https://mocki.io/v1/b2421eff-8bb3-410a-a6f8-f219fcc1a2d6');
       for(var item in response.body){
         menus.add(MenuModel.fromJson(item));
       }

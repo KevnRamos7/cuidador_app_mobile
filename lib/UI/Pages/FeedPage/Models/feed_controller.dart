@@ -14,13 +14,16 @@ class FeedController extends GetxController{
   HomeResponse  homeResponse = HomeResponse();
 
   RxList<UsuarioModel> cuidadoresList = <UsuarioModel>[].obs;
+  RxList<UsuarioModel> cuidadoresListSearch = <UsuarioModel>[].obs;
   String testRuta = "assets/img/testing/profile_image_test.png";
 
+
   @override
-  void onInit() {
+  void onInit() async{
     super.onInit();
     // PersonaModel().getColorBh();
-    setPerfilesCuidadores();
+    await setPerfilesCuidadores();
+    buscarCuidador('');
   }
 
   Future<void> setPerfilesCuidadores() async{
@@ -30,6 +33,31 @@ class FeedController extends GetxController{
       i.persona!.first.colorBg = paletteGenerator.dominantColor!.color;
     }
     cuidadoresList.refresh();
+  }
+
+  void buscarCuidador(String query){
+
+    List<UsuarioModel> dummySearchList = cuidadoresList;
+
+    if (query.isNotEmpty) {
+      List<UsuarioModel> searchList = [];
+      for (var usuario in dummySearchList) {
+
+        for(var persona in usuario.persona!){
+
+          if (persona.nombre!.toLowerCase().contains(query.toLowerCase()) 
+          || persona.apellidoMaterno!.toLowerCase().contains(query.toLowerCase())
+          || persona.apellidoPaterno!.toLowerCase().contains(query.toLowerCase())) {
+            searchList.add(usuario);
+          }
+
+        }
+
+      }
+      cuidadoresListSearch.assignAll(searchList);
+    } else {
+      cuidadoresListSearch.assignAll(cuidadoresList);
+    }
   }
 
   void generatedContrato(UsuarioModel cuidador){

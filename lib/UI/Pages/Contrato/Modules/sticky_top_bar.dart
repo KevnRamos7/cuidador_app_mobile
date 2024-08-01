@@ -14,7 +14,8 @@ class StickyTopBar{
       required String nombre,
       required double costo,
       required String imagen,
-      required RxBool enable
+      required RxBool enable,
+      String? rutaVolver
     }
   ){
     return SafeArea(
@@ -27,7 +28,7 @@ class StickyTopBar{
           children: [
 
             dynamicContainer.dynamicContainer(
-              onTap: () => Get.back(),
+              onTap: () => Get.offNamedUntil(rutaVolver ?? '/home', (route) => false),
               nombre: nombre, 
               costo: costo, 
               imagen: imagen

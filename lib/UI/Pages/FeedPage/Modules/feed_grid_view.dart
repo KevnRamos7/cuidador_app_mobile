@@ -11,14 +11,14 @@ class FeedGridView{
     return Expanded(
       child: Obx(()=>
         GridView.builder(
-          itemCount: con.cuidadoresList.length,
+          itemCount: con.cuidadoresListSearch.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 10,
             childAspectRatio: 0.8,
           ),
           itemBuilder: (context, index){
-            return itemForGrid(usuario: con.cuidadoresList[index]);
+            return itemForGrid(usuario: con.cuidadoresListSearch[index]);
           },
         ),
       ),

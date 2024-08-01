@@ -17,7 +17,9 @@ class ProfileCuidadorMain extends StatelessWidget {
       Scaffold(
         appBar: AppBar(
           backgroundColor: con.colorBg.value,
-          leading: IconButton(onPressed: (){}, icon: const Icon(CupertinoIcons.back, color: Colors.white70, size: 25,)),
+          leading: IconButton(onPressed: (){
+            Get.back();
+          }, icon: const Icon(CupertinoIcons.back, color: Colors.white70, size: 25,)),
           centerTitle: true,
           title: Column(
             children: [
@@ -79,10 +81,13 @@ class ProfileCuidadorMain extends StatelessWidget {
                 Positioned(
                   bottom: Get.height * -0.01, // Ajusta este valor para posicionar la imagen correctamente
                   left: (Get.width - 150) / 2, // Ajusta este valor para centrar la imagen
-                  child: Image.asset(
-                    'assets/img/testing/profile_image_test.png',
-                    height: 150,
-                    fit: BoxFit.contain,
+                  child: Container(
+                    decoration: const BoxDecoration(shape: BoxShape.circle),
+                    child: Image.asset(
+                      'assets/img/testing/profile_image_test.png',
+                      height: 150,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ],
@@ -133,7 +138,32 @@ class ProfileCuidadorMain extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _contentForListInformation(con.profileCuidador.value.cuidadosRealizados.toString(), 'Cuidados'),
-          _contentForListInformation(con.profileCuidador.value.persona?.first.certificaciones?.first.experienciaAnios.toString() ?? '0', 'Años de Experiencia'),
+          Tooltip(
+            message: 'Contratar',
+            child: GestureDetector(
+              onTap: () {
+                Get.offNamed('/contratar', arguments: con.profileCuidador.value);
+              },
+              child: Container(
+                margin: const EdgeInsets.all(10),
+                width: Get.width * 0.18,
+                height: Get.width * 0.18,  // Asegúrate de que la altura sea igual al ancho
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(Get.width * 0.09)),  // La mitad del ancho/alto para que sea circular
+                  color: Colors.blueGrey,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: const Icon(CupertinoIcons.pencil_outline, color: Colors.white, size: 20),
+              ),
+            ),
+          ),
           _contentForListInformation((con.profileCuidador.value.persona?.first.certificaciones?.length ?? 0).toString(), 'Certificaciones'),
         ],
       ),

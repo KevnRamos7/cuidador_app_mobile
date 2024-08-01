@@ -1,4 +1,5 @@
 import 'package:cuidador_app_mobile/Domain/Model/Perfiles/menu_model.dart';
+import 'package:cuidador_app_mobile/UI/Shared/BottomNavigation/btn_nav_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,6 +27,8 @@ import 'package:get/get.dart';
 class BottomNavigationMain {
   // final BottomNavigationController con = Get.find<BottomNavigationController>();
 
+  BtnNavController con = Get.put(BtnNavController());
+
   static final BottomNavigationMain _instance = BottomNavigationMain._internal();
 
   static BottomNavigationMain get instance => _instance;
@@ -51,18 +54,21 @@ class BottomNavigationMain {
         children: List.generate(
           parameters.length,
           (index) => GestureDetector(
-            onTap: () => Get.toNamed(parameters[index].rutaMenu ?? '/login'),
+            onTap: () { 
+              Get.offNamedUntil(parameters[index].rutaMenu ?? '/login', (route) => false);
+              con.setIndex(index);
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   iconoMenu[index].values.first,
-                  color: index == 0 ? Colors.blue : Colors.grey,
+                  color: con.index.value == index ? Colors.blue : Colors.grey
                 ),
                 Text(
                   parameters[index].nombreMenu ?? '',
                   style: TextStyle(
-                    color: index == 0 ? Colors.blue : Colors.grey,
+                    color: con.index.value == index ? Colors.blue : Colors.grey,
                     fontSize: 12,
                   ),
                 ),

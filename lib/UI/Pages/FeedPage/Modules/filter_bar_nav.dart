@@ -1,3 +1,4 @@
+import 'package:cuidador_app_mobile/UI/Pages/FeedPage/Models/feed_controller.dart';
 import 'package:cuidador_app_mobile/UI/Shared/TextFields/search_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 class FilterBarNav{
 
   SearchTextfield searchComponent = Get.put(SearchTextfield());
+  FeedController feedController = Get.put(FeedController());
 
   Widget topNavigation(){
     return Container(
@@ -28,9 +30,9 @@ class FilterBarNav{
         child: Column(
           children: [
             searchComponent.searchTextField(
-              hintText: 'Nombre, Certificaciones, Horarios, Genero ...',
+              hintText: 'Nombre del Cuidador',
               icon: CupertinoIcons.search,
-              onChanged: (value) => {},
+              onChanged: (value) => { feedController.buscarCuidador(value) },
             ),
             _scrollIconsFilter(),
           ],

@@ -1,16 +1,17 @@
 
-import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Modules/CuidadorView/contratos_detalle.dart';
-import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Modules/CuidadorView/contratos_estatus.dart';
+import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Modules/ClienteView/contratos_detalle.dart';
+import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Modules/ClienteView/contratos_estatus.dart';
+import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Modules/Shared/modal_components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 class ContratosHead{
 
   ContratosEstatus estatus = Get.put(ContratosEstatus());
   ContratosDetalle detalle = Get.put(ContratosDetalle());
+  ModalComponents modalComponents = ModalComponents();
 
   Widget contenido(){
     return Expanded(
@@ -53,7 +54,7 @@ class ContratosHead{
       itemBuilder: (context) {
         return [
           PullDownMenuItem(
-            onTap: (){_showModal(estatus.contenidoEstatus());},
+            onTap: (){modalComponents.showModal(estatus.contenidoEstatus());},
             title: 'Estatus',
             icon: CupertinoIcons.check_mark_circled_solid,
             iconColor: Colors.green,
@@ -66,12 +67,16 @@ class ContratosHead{
             icon: CupertinoIcons.person_alt_circle_fill,
           ),
           PullDownMenuItem(
-            onTap: (){_showModal(detalle.contenidoDetalle());},
+            onTap: (){modalComponents.showModal(detalle.contenidoDetalle());},
             title: 'Detalle',
             icon: CupertinoIcons.square_list_fill,
           ),
           PullDownMenuItem(
-            onTap: (){_showConfirmCancel();},
+            onTap: (){modalComponents.showConfirmCancel(
+              message: '¿Estás seguro de cancelar el contrato?',
+              onConfirm: (){},
+              onCancel: (){}
+            );},
             title: 'Cancelar',
             icon: CupertinoIcons.xmark_circle_fill,
             iconColor: Colors.red,
@@ -81,49 +86,4 @@ class ContratosHead{
       },
     );
   }
-
-  void _showModal(Widget content){
-    showBarModalBottomSheet(
-      context: Get.context!, 
-      builder: (context){
-        return Container(
-          padding: const EdgeInsets.all(20),
-          height: Get.height * 0.9,
-          child: content,
-        );
-      }
-    );
-  }
-
-  void _showConfirmCancel(){
-    showBarModalBottomSheet(
-      context: Get.context!, 
-      builder: (context){
-        return Container(
-          padding: const EdgeInsets.all(20),
-          height: Get.height * 0.2,
-          child: Column(
-            children: [
-              const Text('¿Estás seguro de cancelar el contrato?', style: TextStyle(fontSize: 20),),
-              const SizedBox(height: 20,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  CupertinoButton(
-                    onPressed: (){},
-                    child: const Text('Cancelar', style: TextStyle(color: Colors.grey),),
-                  ),
-                  CupertinoButton(
-                    onPressed: (){},
-                    child: const Text('Aceptar', style: TextStyle(color: Colors.green),),
-                  ),
-                ],
-              )
-            ],
-          ),
-        );
-      }
-    );
-  }
-
 }

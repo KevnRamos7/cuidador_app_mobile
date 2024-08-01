@@ -21,6 +21,7 @@ class Routes {
     GetPage(name: '/resumen_contrato', page: () => ResumenContPageMain()),
     GetPage(name: '/confirmacion_cont', page: () => ConfirmacionContPage()),
     GetPage(name: '/previewProfileCuidador', page: () => ProfileCuidadorMain()),
+    GetPage(name: '/previewProfileCliente', page: () => ProfileCuidadorMain()),
     GetPage(name: '/list_contratos', page: () => ListcontratoPageMain()),
   ];
 

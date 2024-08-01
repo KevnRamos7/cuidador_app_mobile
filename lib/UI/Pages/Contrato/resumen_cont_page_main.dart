@@ -4,13 +4,14 @@ import 'package:cuidador_app_mobile/Domain/Model/Contrato/contrato_model.dart';
 import 'package:cuidador_app_mobile/Domain/Utilities/letter_dates.dart';
 import 'package:cuidador_app_mobile/UI/Pages/Contrato/Models/extra_functions.dart';
 import 'package:cuidador_app_mobile/UI/Pages/Contrato/Models/resumen_cont_controller.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cuidador_app_mobile/UI/Shared/Containers/summary_contract.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ResumenContPageMain extends StatelessWidget {
   // const ResumenContPageMain({super.key});
   ResumenContController con = Get.put(ResumenContController());
+  SummaryContract summary = SummaryContract();
   ExtraFunctions extra = ExtraFunctions();
   LetterDates letter = LetterDates();
 
@@ -28,26 +29,44 @@ class ResumenContPageMain extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  cuidadorCard(),
-              
-                  encabezado('Fechas y Horarios'),
-              
-                  tableForSchedules(),
 
-                  encabezado('Observaciones'),
+                  summary.cuidadorCard(
+                    nombrePersona: con.contrato.value.personaCuidador!.nombre ?? '', 
+                    subtitulo: 'Certificaciones', 
+                    masdatos: [
+                      con.contrato.value.personaCuidador?.certificaciones?.isNotEmpty == true
+                        ? con.contrato.value.personaCuidador!.certificaciones![0].tipoCerficacion ?? ''
+                        : '',
+                      con.contrato.value.personaCuidador?.certificaciones?.isNotEmpty == true
+                        ? con.contrato.value.personaCuidador!.certificaciones![1].tipoCerficacion ?? ''
+                        : 'Sin certificaciones'
+                    ],
+                    costoTotal: con.contrato.value.contratoItem?.isNotEmpty == true
+                                ? ' \$ ${con.contrato.value.contratoItem!.map((e) => e.importeCuidado).reduce((value, element) => value! + element!).toString()}'
+                                : '0', 
+                    contratosLigados: con.contrato.value.contratoItem?.isNotEmpty == true
+                                ? con.contrato.value.contratoItem!.length.toString()
+                                : '0', 
+                    imagenPerfil: con.contrato.value.personaCuidador?.avatarImage ?? ''
+                  ),
+              
+                  summary.encabezado('Fechas y Horarios'),
+              
+                  summary.tableForSchedules(con.contrato.value),
 
-                  _observacionesCard(),
+                  summary.encabezado('Observaciones'),
+
+                  summary.observacionesCard(con.contrato.value),
               
-                  encabezado('Lista de Tareas'),
+                  summary.encabezado('Lista de Tareas'),
               
-                  tableForTask(),
+                  summary.tableForTask(con.contrato.value),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      // btnAction('Confirmar', (){Get.offNamedUntil('/confirmacion_cont', (route) => false );}, const Color.fromARGB(255, 4, 48, 110)),
-                      btnAction('Confirmar', (){con.confirmacionContrato();}, const Color.fromARGB(255, 4, 48, 110)),
-                      btnAction('Cancelar', (){Get.back();}, const Color.fromARGB(255, 220, 74, 63)),
+                      _btnAction('Confirmar', (){con.confirmacionContrato();}, const Color.fromARGB(255, 4, 48, 110)),
+                      _btnAction('Cancelar', (){Get.back();}, const Color.fromARGB(255, 220, 74, 63)),
                     ],
                   )
                 ],
@@ -59,7 +78,7 @@ class ResumenContPageMain extends StatelessWidget {
     );
   }
 
-  Widget btnAction(String titulo, Function() onPressed, Color color){
+  Widget _btnAction(String titulo, Function() onPressed, Color color){
     return Container(
       width: Get.width * 0.3,
       height: Get.height * 0.05,

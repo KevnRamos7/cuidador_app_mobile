@@ -1,54 +1,39 @@
+import 'package:cuidador_app_mobile/Domain/Model/Contrato/contrato_model.dart';
 import 'package:cuidador_app_mobile/Domain/Utilities/letter_dates.dart';
-import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Models/list_contrato_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../Domain/Model/Contrato/contrato_model.dart';
+class SummaryContract{
 
-class ContratosDetalle{
-
-  ListContratoController con = Get.put(ListContratoController());
   LetterDates letter = LetterDates();
 
-  Widget contenidoDetalle(){
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            cuidadorCard(),
-              
-            _encabezado('Fechas y Horarios'),
-        
-            tableForSchedules(),
+  Widget tableForSchedules(ContratoModel contrato) {
+    return SizedBox(
+      // height: Get.height * 0.3,
+      width: Get.width * 0.95,
+      child: DataTable(
+        headingRowColor: WidgetStateProperty.resolveWith((states) => Colors.grey[100]!),
+        headingRowHeight: 40,
+        border: TableBorder.all(color: Colors.grey, width: 0.5, borderRadius: BorderRadius.circular(10)),
 
-            _encabezado('Observaciones'),
-
-            _observacionesCard(),
-        
-            _encabezado('Lista de Tareas'),
-        
-            tableForTask(),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _encabezado(String title){
-    return Container(
-      margin: EdgeInsets.only(top:  Get.height * 0.06, bottom: Get.height * 0.02),
-      width: Get.width * 0.9,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 114, 114, 114)), textAlign: TextAlign.start,),
+        columns: const [
+          DataColumn(label: Text('Fecha', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
+          DataColumn(label: Text('Horario', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)),
         ],
+        rows: contrato.contratoItem?.map((e) => DataRow(
+          cells: [
+            DataCell(Text(e.horarioInicioPropuesto?.toString().isNotEmpty == true ? letter.formatearSoloFecha(e.horarioInicioPropuesto!.toString()) : '', 
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)
+            ),
+            DataCell(Text('${letter.formatearSoloHora(e.horarioInicioPropuesto!.toString())} - ${letter.formatearSoloHora(e.horarioFinPropuesto!.toString())}', 
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
+          ]
+        )).toList() ?? const [],
       ),
     );
   }
 
-  Widget tableForTask(){
+  Widget tableForTask(ContratoModel contrato){
     return SizedBox(
       // height: Get.height * 0.3,
       width: Get.width * 0.95,
@@ -60,9 +45,9 @@ class ContratosDetalle{
         columns: const [
           DataColumn(label: Text('Tarea', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
           DataColumn(label: Text('Hora', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
-          DataColumn(label: Text('N°', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
+          DataColumn(label: Text('N° Contrato', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
         ],
-        rows: _buildDataRows(con.contrato.value),
+        rows: _buildDataRows(contrato),
       ),
     );
   }
@@ -85,33 +70,27 @@ class ContratosDetalle{
   return rows;
 }
 
-  Widget tableForSchedules(){
-    return SizedBox(
-      // height: Get.height * 0.3,
-      width: Get.width * 0.95,
-      child: DataTable(
-        headingRowColor: WidgetStateProperty.resolveWith((states) => Colors.grey[100]!),
-        headingRowHeight: 40,
-        border: TableBorder.all(color: Colors.grey, width: 0.5, borderRadius: BorderRadius.circular(10)),
-
-        columns: const [
-          DataColumn(label: Text('Fecha', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
-          DataColumn(label: Text('Horario', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)),
+  Widget encabezado(String title){
+    return Container(
+      margin: EdgeInsets.only(top:  Get.height * 0.06, bottom: Get.height * 0.02),
+      width: Get.width * 0.9,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 114, 114, 114)), textAlign: TextAlign.start,),
         ],
-        rows: con.contrato.value.contratoItem?.map((e) => DataRow(
-          cells: [
-            DataCell(Text(e.horarioInicioPropuesto?.toString().isNotEmpty == true ? letter.formatearSoloFecha(e.horarioInicioPropuesto!.toString()) : '', 
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)
-            ),
-            DataCell(Text('${letter.formatearSoloHora(e.horarioInicioPropuesto!.toString())} - ${letter.formatearSoloHora(e.horarioFinPropuesto!.toString())}', 
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)),
-          ]
-        )).toList() ?? const [],
       ),
     );
   }
 
-  Widget cuidadorCard(){
+  Widget cuidadorCard({
+    required String nombrePersona,
+    required String subtitulo,
+    required List<String> masdatos,
+    required String costoTotal,
+    required String contratosLigados,
+    required String imagenPerfil
+  }){
     return SizedBox(
       height: Get.height * 0.25,
       width: Get.width * 0.9,
@@ -135,40 +114,24 @@ class ContratosDetalle{
                    children: [
                     SizedBox(
                       height: Get.height * 0.04,
-                      child: Text(
-                        con.contrato.value.personaCuidador!.nombre ?? '',
-                        style: const TextStyle(
-                          fontSize: 23,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black
-                        ), 
-                                 ),
+                      child: Text(nombrePersona,style: const TextStyle(fontSize: 23,fontWeight: FontWeight.bold,color: Colors.black)),
                     ),
                    ],
                  ),
           
                 SizedBox(
-                  // color: Colors.amber,
                   height: Get.height * 0.08,
                   width: Get.width * 0.9,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                             
-                      const Text(
-                        'Certificaciones',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey
-                        ),
+                      Text(subtitulo, textAlign: TextAlign.start,
+                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.grey),
                       ),
                             
                        Text(
-                        con.contrato.value.personaCuidador?.certificaciones?.isNotEmpty == true
-                          ? con.contrato.value.personaCuidador!.certificaciones![0].tipoCerficacion ?? ''
-                          : '',
+                        masdatos[0],
                         style: const TextStyle(
                           fontSize: 13,
                           color: Colors.black,
@@ -177,9 +140,7 @@ class ContratosDetalle{
 
                             
                       Text(
-                        con.contrato.value.personaCuidador?.certificaciones?.isNotEmpty == true
-                          ? con.contrato.value.personaCuidador!.certificaciones![1].tipoCerficacion ?? ''
-                          : 'Sin certificaciones',
+                        masdatos[0],
                         style: const TextStyle(
                           fontSize: 13,
                           color: Colors.black,
@@ -214,9 +175,7 @@ class ContratosDetalle{
                              ),
                       
                             Text(
-                              con.contrato.value.contratoItem?.isNotEmpty == true
-                                ? ' \$ ${con.contrato.value.contratoItem!.map((e) => e.importeCuidado).reduce((value, element) => value! + element!).toString()}'
-                                : '0',
+                              costoTotal,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.green[800]
@@ -244,9 +203,7 @@ class ContratosDetalle{
                             ),
                       
                             Text(
-                              con.contrato.value.contratoItem?.isNotEmpty == true
-                                ? con.contrato.value.contratoItem!.length.toString()
-                                : '0',
+                              contratosLigados,
                               style: const TextStyle(
                                 fontSize: 13,
                                 color: Colors.blueGrey
@@ -271,7 +228,7 @@ class ContratosDetalle{
               width: Get.width * 0.2,
               height: 76.69,
               decoration: ShapeDecoration(
-                image: DecorationImage(image: NetworkImage(con.contrato.value.personaCuidador?.avatarImage ?? ''), fit: BoxFit.fill),
+                image: DecorationImage(image: NetworkImage(imagenPerfil), fit: BoxFit.fill),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(100),
                 ),
@@ -291,8 +248,8 @@ class ContratosDetalle{
       ),
     );
   }
-  
-  Widget _observacionesCard(){
+
+  Widget observacionesCard(ContratoModel contrato){
     return Container(
       margin: EdgeInsets.only(top: Get.height * 0.02),
       width: Get.width * 0.95,
@@ -305,9 +262,9 @@ class ContratosDetalle{
           DataColumn(label: Text('Contrato', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
           DataColumn(label: Text('Observación', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),)),
         ],
-        rows: con.contrato.value.contratoItem?.map((e) => DataRow(
+        rows: contrato.contratoItem?.map((e) => DataRow(
           cells: [
-            DataCell(Text((con.contrato.value.contratoItem!.indexOf(e) + 1).toString(), 
+            DataCell(Text((contrato.contratoItem!.indexOf(e) + 1).toString(), 
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),)
             ),
             DataCell(Text(e.observaciones ?? '', 

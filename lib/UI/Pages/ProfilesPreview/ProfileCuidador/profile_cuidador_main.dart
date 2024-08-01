@@ -1,6 +1,7 @@
 import 'package:cuidador_app_mobile/Domain/Model/Perfiles/comentarios_model.dart';
 import 'package:cuidador_app_mobile/Domain/Utilities/letter_dates.dart';
 import 'package:cuidador_app_mobile/UI/Pages/ProfilesPreview/ProfileCuidador/Models/profile_cuidador_controller.dart';
+import 'package:cuidador_app_mobile/UI/Shared/Containers/summary_contract.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

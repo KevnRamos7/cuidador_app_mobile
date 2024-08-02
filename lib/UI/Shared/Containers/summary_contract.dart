@@ -45,7 +45,7 @@ class SummaryContract{
         columns: const [
           DataColumn(label: Text('Tarea', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
           DataColumn(label: Text('Hora', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
-          DataColumn(label: Text('N° Contrato', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
+          DataColumn(label: Text('Contrato', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
         ],
         rows: _buildDataRows(contrato),
       ),

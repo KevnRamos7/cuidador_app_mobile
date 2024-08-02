@@ -1,14 +1,15 @@
+
 import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Models/build_map.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../Models/list_contrato_controller.dart';
 
 class ContratosCvEstatus{
   ListContratoController controller = Get.put(ListContratoController());
-  BuildMap buildMap = BuildMap();
+  BuildMap buildMap = Get.put(BuildMap());
 
   Widget contenidoEstatus(RxBool estatus){
     return  Obx(()=> estatus.value ? _contenidoEstatusAceptado() : _contenidoEstatusBasico());
@@ -52,15 +53,20 @@ class ContratosCvEstatus{
         child: Column(
           children: [
             _dotCuidador(),
-            const SizedBox(height: 30),
-            Expanded(
+            SizedBox(
+              height: Get.height * 0.8,
               child: PageView(
+                onPageChanged: (value) async{
+                  if(value == 0){
+                    await buildMap.obtenerCoordenadas('La luz 223, El Coecillo, León, Guanajuato');
+                  }
+                },
                 children: [
                   _mapaUbicacion(),
                   _timeLine()
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -68,45 +74,114 @@ class ContratosCvEstatus{
   }
 
   Widget _mapaUbicacion(){
-    return Container(
-      height: Get.height * 0.4,
-      width: Get.width * 0.9,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x3F000000),
-            blurRadius: 4,
-            offset: Offset(0, 4),
-            spreadRadius: 0,
+    return Column(
+      children: [
+        const SizedBox(height: 30),
+        const Text('Ubicación', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 90, 89, 89)), textAlign: TextAlign.start),
+        Container(
+          margin: const EdgeInsets.all(16),
+          height: Get.height * 0.5,
+          width: Get.width * 0.8,
+          decoration: BoxDecoration(
+            // color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x3F000000),
+                blurRadius: 4,
+                offset: Offset(0, 4),
+                spreadRadius: 1,
+              )
+            ],
+          ),
+          child: Stack(
+            children: [
+              FlutterMap(
+                options: MapOptions(
+                  initialCenter: buildMap.coordenadasCuidador, // Coordenadas de ejemplo (San Francisco)
+                  initialZoom: 13,
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate: 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
+                    additionalOptions:  const{
+                      'accessToken':'pk.eyJ1Ijoia2V2bnJhbW9zNyIsImEiOiJjbHpjMnE1b3YwNzllMmlwdzZsMWhtdDJzIn0.vlk3ITyC7M374VPtt4DYtg',
+                      'id':'mapbox/streets-v11',
+                    },
+                  ),
+                  MarkerLayer(
+                    markers: [
+                      Marker(
+                        point: buildMap.coordenadasCuidador,
+                        child: Container(
+                          decoration: const BoxDecoration(shape: BoxShape.circle),
+                          child: Image.asset(
+                            'assets/img/testing/profile_image_test.png',
+                            height: 30,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                      Marker(
+                        point: buildMap.coordenadasCliente,
+                        child: Container(
+                          decoration: const BoxDecoration(shape: BoxShape.circle),
+                          child: Image.asset(
+                            'assets/img/testing/profile_image_test.png',
+                            height: 30,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  PolylineLayer(
+                    polylines: [
+                      Polyline(
+                        points: [buildMap.coordenadasCuidador, buildMap.coordenadasCliente],
+                        strokeWidth: 2,
+                        color: Colors.blueGrey,
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: FloatingActionButton(
+                  tooltip: 'Ver en mapa',
+                  onPressed: () async{
+                    await buildMap.googleMapsUtilities.openAplicationMap(buildMap.coordenadasCliente.latitude, buildMap.coordenadasCliente.longitude);
+                  },
+                  backgroundColor: const Color(0xFF1E6892),
+                  child: const Icon(CupertinoIcons.location, color: Colors.white),
+                ),
+              ),
+            ],
           )
-        ],
-      ),
-      child: GoogleMap(
-        initialCameraPosition: CameraPosition(target: buildMap.bounds.northeast, zoom: 15),
-        markers: buildMap.markers,
-        onMapCreated: (GoogleMapController controller){
-          buildMap.mapController = controller;
-          Future.delayed(const Duration(milliseconds: 200)).then((value) => controller.animateCamera(buildMap.cameraUpdate));
-        },
-      ),
+        ),
+        const Text('Desliza para ver el seguimiento del servicio', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.grey), textAlign: TextAlign.center),
+        const SizedBox(height: 30),
+        _formatoBotonCambioEstatus('Iniciar', Colors.blueGrey[700]!, (){}),
+        const SizedBox(height: 30),
+      ],
     );
   } 
 
   Widget _formatoBotonCambioEstatus(String texto, Color color, Function() evento){
     return SizedBox(
-      height: Get.height * 0.07,
-      width: Get.width * 0.6,
+      height: Get.height * 0.05,
+      width: Get.width * 0.5,
       child: ElevatedButton(
         onPressed: evento,
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
-        child: Text(texto, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w400),),
+        child: Text(texto, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white),),
       ),
     );
   }
@@ -173,19 +248,28 @@ class ContratosCvEstatus{
   } 
 
   Widget _timeLine(){
-    return SizedBox(
-      height: Get.height * 0.7,
-      child: CustomScrollView(
-        slivers: <Widget>[
-          SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              return controller.timeLineList[index];
-            }, 
-            childCount: controller.timeLineList.length
+    return Column(
+      children: [
+        const SizedBox(height: 30),
+        const Text('Seguimiento', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 90, 89, 89)), textAlign: TextAlign.start),
+        SizedBox(
+          height: Get.height * 0.6,
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return controller.timeLineList[index];
+                }, 
+                childCount: controller.timeLineList.length
+              ),
+              )
+            ],
           ),
-          )
-        ],
-      ),
+        ),
+        const SizedBox(height: 30),
+        _formatoBotonCambioEstatus('Completar', Colors.blueGrey[700]!, (){}),
+        const SizedBox(height: 30),
+      ],
     );
   }
 }

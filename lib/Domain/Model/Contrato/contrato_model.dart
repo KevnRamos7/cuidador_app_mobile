@@ -15,9 +15,9 @@ class ContratoModel{
 
   ContratoModel.fromJson(Map<String, dynamic> json){
     idContrato = json['id_contrato'];
-    personaCuidador = json['persona_cuidador'];
-    personaCliente = json['persona_cliente'];
-    estatus = json['estatus'];
+    personaCuidador = json['persona_cuidador'] != null ? PersonaModel.fromJson(json['persona_cuidador']) : null;
+    personaCliente = json['persona_cliente'] != null ? PersonaModel.fromJson(json['persona_cliente']) : null;
+    estatus = json['estatus'] != null ? EstatusModel.fromJson(json['estatus']) : null;
     if(json['contrato_item'] != null){
       contratoItem!.value = [];
       json['contrato_item'].forEach((v) {

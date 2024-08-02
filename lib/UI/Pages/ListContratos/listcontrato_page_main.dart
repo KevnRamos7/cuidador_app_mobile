@@ -20,24 +20,26 @@ class ListcontratoPageMain extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-            icon: const Icon(CupertinoIcons.calendar_circle_fill, size: 35,), 
-            onPressed: () {},
-          )
+          // IconButton(
+          //   icon: const Icon(CupertinoIcons.calendar_circle_fill, size: 35,), 
+          //   onPressed: () {
+
+          //   },
+          // )
         ],
       ),
       body: Column(
         children: [
           header.encabezado(),
           header.listaFechas(),
-          // usuario.salarioCuidador == 0 ? head.contenido() : 
+          // usuario.salarioCuidador == 0 ? 
+          // head.contenido() 
+          //: 
           headCv.contenido()
         ],
       ),
       bottomNavigationBar: BottomNavigationMain.instance.bottomNavigation(),
     );
   }
-
-  
 
 }

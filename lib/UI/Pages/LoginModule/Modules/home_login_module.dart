@@ -1,12 +1,17 @@
+import 'package:cuidador_app_mobile/Domain/Utilities/local_auth.dart';
+import 'package:cuidador_app_mobile/UI/Pages/LoginModule/Models/login_controller.dart';
 import 'package:cuidador_app_mobile/UI/Pages/LoginModule/Modules/bottom_model_login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeLoginModule {
 
   BottomModelLogin modelLogin = Get.put(BottomModelLogin());
+  LoginController con = Get.put(LoginController());
+
 
 Widget loginHomeModule() {
   return SizedBox(
@@ -51,18 +56,25 @@ Widget centerContainer(){
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-
-              SizedBox(
+  
+              GetStorage().read('credenciales') != null ? SizedBox(
                   width: Get.width * 0.7,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF395886),
-                      // elevation: 5,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       )
                     ),
-                    onPressed: (){}, 
+                    onPressed: () async {
+                      LocalAuth.authenticate().then((value) {
+                        if(value){
+                          String email = GetStorage().read('credenciales')['usuario'];
+                          String password = GetStorage().read('credenciales')['contrasenia'];
+                          con.login(email, password);
+                        }
+                      });
+                    }, 
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -78,7 +90,7 @@ Widget centerContainer(){
                       ],
                     )
                   ),
-                ),
+                ): const SizedBox(),
 
               const SizedBox(height: 10),
 

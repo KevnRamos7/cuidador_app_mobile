@@ -14,9 +14,9 @@ class ComentariosModel{
 
   factory ComentariosModel.fromJson(Map<String, dynamic> json){
     return ComentariosModel(
-      idComentarios: json['id_comentarios'],
-      personaReceptor: json['persona_receptor'] != null ? PersonaModel.fromJson(json['persona_receptor']) : null,
-      personaEmisor: json['persona_emisor'] != null ? PersonaModel.fromJson(json['persona_emisor']) : null,
+      idComentarios: json['idComentarios'],
+      personaReceptor: json['personaReceptor'] != null ? PersonaModel.fromJson(json['personaReceptor']) : null,
+      personaEmisor: json['personaEmisor'] != null ? PersonaModel.fromJson(json['personaEmisor']) : null,
       calificacion: json['calificacion'],
       comentario: json['comentario'],
       // fechaRegistro: json['fecha_registro'] != null ? DateTime.tryParse(json['fecha_registro']) : null

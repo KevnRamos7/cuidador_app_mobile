@@ -37,12 +37,13 @@ class BottomNavigationMain {
 
   RxList<MenuModel> parameters = <MenuModel>[].obs;
 
-  List<Map<String, IconData>> iconoMenu = [
-    {"FeedPage": CupertinoIcons.house},
-    {"Cuidados": CupertinoIcons.heart},
-    {"Perfil": CupertinoIcons.person},
-    {"CuidaHoras": CupertinoIcons.money_dollar_circle_fill}
-  ];
+  // List<Map<String, IconData>> iconoMenu = [
+  //   {"FeedPage": CupertinoIcons.house},
+  //   {"Dashboard": CupertinoIcons.house},
+  //   {"Cuidados": CupertinoIcons.heart},
+  //   {"Perfil": CupertinoIcons.person},
+  //   {"CuidaHoras": CupertinoIcons.money_dollar_circle_fill}
+  // ];
 
   Widget bottomNavigation() {
     return Container(
@@ -62,7 +63,7 @@ class BottomNavigationMain {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  iconoMenu[index].values.first,
+                  parameters[index].icono,
                   color: con.index.value == index ? Colors.blue : Colors.grey
                 ),
                 Text(

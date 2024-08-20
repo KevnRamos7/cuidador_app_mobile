@@ -10,50 +10,50 @@ String listaContratosToJson(List<ListaContratos> data) => json.encode(List<dynam
 
 class ListaContratos {
     int? idContrato;
+    int? idContratoItem;
+    DateTime? horarioInicio;
+    DateTime? horarioFin;
     PersonaModel? personaCuidador;
     PersonaModel? personaCliente;
     EstatusModel? estatus;
-    int? numeroDeContratos;
     int? numeroDeTareas;
-    int? costoTotal;
-    DateTime? fechaPrimerContrato;
-    DateTime? fechaUltimoContrato;
+    double? importeCuidado;
     Color? color;
 
     ListaContratos({
         this.idContrato,
+        this.idContratoItem,
+        this.horarioInicio,
+        this.horarioFin,
         this.personaCuidador,
         this.personaCliente,
         this.estatus,
-        this.numeroDeContratos,
         this.numeroDeTareas,
-        this.costoTotal,
-        this.fechaPrimerContrato,
-        this.fechaUltimoContrato,
+        this.importeCuidado,
         this.color,
     });
 
     factory ListaContratos.fromJson(Map<String, dynamic> json) => ListaContratos(
         idContrato: json["id_contrato"],
+        idContratoItem: json["id_contrato_item"],
+        horarioInicio: json["horario_inicio"] != null ? DateTime.parse(json["horario_inicio"]) : null,
+        horarioFin: json["horario_fin"] != null ? DateTime.parse(json["horario_fin"]) : null,
         personaCuidador: json["persona_cuidador"] != null ? PersonaModel.fromJson(json["persona_cuidador"]) : null,
         personaCliente: json["persona_cliente"] != null ? PersonaModel.fromJson(json["persona_cliente"]) : null,
         estatus: json["estatus"] != null ? EstatusModel.fromJson(json["estatus"]) : null,
-        numeroDeContratos: json["numero_de_contratos"],
-        numeroDeTareas: json["numero_de_tareas"],
-        costoTotal: json["costo_total"],
-        fechaPrimerContrato: DateTime.parse(json["fecha_primer_contrato"]),
-        fechaUltimoContrato: DateTime.parse(json["fecha_ultimo_contrato"]),
+        numeroDeTareas: json["numero_de_tareas"] ?? 0,
+        importeCuidado: json["importe_cuidado"] ?? 0,
     );
 
     Map<String, dynamic> toJson() => {
         "id_contrato": idContrato,
+        "id_contrato_item": idContratoItem,
+        "horario_inicio": horarioInicio!.toIso8601String(),
+        "horario_fin": horarioFin!.toIso8601String(),
         "persona_cuidador": personaCuidador,
         "persona_cliente": personaCliente,
         "estatus": estatus,
-        "numero_de_contratos": numeroDeContratos,
         "numero_de_tareas": numeroDeTareas,
-        "costo_total": costoTotal,
-        "fecha_primer_contrato": fechaPrimerContrato,
-        "fecha_ultimo_contrato": fechaUltimoContrato,
+        "importe_cuidado": importeCuidado,
     };
 }

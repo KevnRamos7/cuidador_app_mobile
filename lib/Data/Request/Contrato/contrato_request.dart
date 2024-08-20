@@ -1,8 +1,12 @@
+
+
 import 'dart:convert';
 
 import 'package:cuidador_app_mobile/Domain/Model/Contrato/contrato_model.dart';
+import 'package:cuidador_app_mobile/Domain/Utilities/connection_string.dart';
 import 'package:cuidador_app_mobile/UI/Shared/Snackbar/snackbar_ui.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 class ContratoRequest extends GetConnect{
 
@@ -10,52 +14,53 @@ class ContratoRequest extends GetConnect{
 
   Future<bool> saveContratoInDB(ContratoModel contrato) async{
 
-    String url = 'http://localhost:3000/contrato';
+    String url = '${ConnectionString.connectionString}ContratoItem/guardarContrato';
     Map<String, dynamic> jsonRequest = {
-      'persona_cuidador_id' : contrato.personaCuidador!.idPersona,
-      'persona_cliente_id' : contrato.personaCliente!.idPersona,
+      'persona_cuidador_id' : 6, //contrato.personaCuidador!.idPersona,
+      'persona_cliente_id' : 4, //contrato.personaCliente!.idPersona,
       'contrato_item' : contrato.contratoItem!.map((e) => {
         'observaciones' : e.observaciones,
-        'horario_inicio_propuesto' : e.horarioInicioPropuesto,
-        'horario_fin_propuesto' : e.horarioFinPropuesto,
+        'horario_inicio_propuesto' : e.horarioInicioPropuesto?.toIso8601String() ?? '',
+        'horario_fin_propuesto' : e.horarioFinPropuesto?.toIso8601String() ?? '',
         'tareas_contrato' : e.tareasContrato!.map((i) => {
-          'titulo_tarea' : i.tituloTarea,
-          'descripcion_tarea' : i.descripcionTarea,
-          'tipo_tarea' : i.tipoTarea,
-          'fecha_a_realizar' : i.fechaRealizar
+          'tituloTarea' : i.tituloTarea,
+          'descripcionTarea' : i.descripcionTarea,
+          'tipoTarea' : i.tipoTarea,
+          'fechaARealizar' : i.fechaRealizar?.toIso8601String() ?? ''
         }).toList()
-      })
+      }).toList()
     };
 
-    return true;
+    print(jsonRequest);
 
-    // try
-    // {
 
-      
-    //   return true;
+    try
+    {
 
-    //   // final response = await post(url, jsonRequest);
+      http.Response response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(jsonRequest));
 
-    //   // switch(response.statusCode)
-    //   // {
-    //   //   case 200:
-    //   //     return true;
-    //   //   case 400:
-    //   //     return false;
-    //   //   default:
-    //   //     snackbarUI.snackbarError('Ha Ocurrido Un Error', 'Error al guardar el contrato');
-    //   //     return false;
-    //   // }
+      if(response.statusCode == 200)
+      {
+        return true;
+      }
+      else
+      {
+        snackbarUI.snackbarError('Ha Ocurrido Un Error', 'Error al guardar el contrato');
+        return false;
+      }
 
-    // }
-    // catch(e)
-    // {
+    }
+    catch(e)
+    {
 
-    //   snackbarUI.snackbarError('Ha Ocurrido Un Error', 'Error al guardar el contrato');
-    //   return false;
+      snackbarUI.snackbarError('Ha Ocurrido Un Error', 'Error al guardar el contrato');
+      print(e);
+      return false;
 
-    // }
+    }
 
   }
 

@@ -1,124 +1,73 @@
+import 'package:cuidador_app_mobile/Data/Request/ListaContrato/lista_contrato_request.dart';
 import 'package:cuidador_app_mobile/Data/Response/ListContratos/list_contratos_response.dart';
-import 'package:cuidador_app_mobile/Domain/Model/Contrato/contrato_item_model.dart';
 import 'package:cuidador_app_mobile/Domain/Model/Contrato/contrato_model.dart';
-import 'package:cuidador_app_mobile/Domain/Model/Perfiles/persona_model.dart';
+import 'package:cuidador_app_mobile/Domain/Model/Contrato/tareas_contrato_model.dart';
 import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Models/build_timeline.dart';
+import 'package:cuidador_app_mobile/UI/Shared/Snackbar/snackbar_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
-import '../../../../Domain/Model/Contrato/tareas_contrato_model.dart';
 import '../../../../Domain/Model/Objects/eventos_contrato_model.dart';
 import '../../../../Domain/Model/Objects/lista_contratos.dart';
 
 class ListContratoController extends GetxController{
 
   BuildTimeline buildTimeline = BuildTimeline();
+  SnackbarUI snackbarUI = SnackbarUI();
   List<TimelineTile> timeLineList = [];
   ListContratosResponse listContratosResponse = ListContratosResponse();
+  ListaContratoRequest listContratoRequest = ListaContratoRequest();
 
   RxList<ListaContratos> contratos = <ListaContratos>[].obs;
   RxList<ListaContratos> contratosFiltrados = <ListaContratos>[].obs;
   DateTime fechaSeleccionada = DateTime.now();
-  List<EventosContratoModel> eventos = [
-    EventosContratoModel(titulo: 'Contrato aceptado!', fecha: 'Viernes 16 de julio a las 08:09', estatus: 'Finalizado'),
-    EventosContratoModel(titulo: 'Cuidador en camino', fecha: 'Martes 22 de julio a las 12:00', estatus: 'En curso'),
-    EventosContratoModel(titulo: 'Inicio de contrato', fecha: 'Martes 22 de julio a las 13:00', estatus: 'Inactivo'),
-    EventosContratoModel(titulo: 'Tarea: Limpiar habitación', fecha: 'Martes 22 de julio a las 13:20', estatus: 'Inactivo'),
-    EventosContratoModel(titulo: 'Tarea: Limpiar habitación', fecha: 'Martes 22 de julio a las 13:20', estatus: 'Inactivo'),
-    EventosContratoModel(titulo: 'Fin de contrato', fecha: 'Martes 22 de julio a las 18:20', estatus: 'Inactivo'),
-  ];
+  Rx<ContratoModel> contrato = ContratoModel().obs;
 
-  Rx<ContratoModel> contrato = ContratoModel(
-    personaCuidador: PersonaModel(
-      nombre: 'Juan',
-      apellidoMaterno: 'Perez',
-      apellidoPaterno: 'Lopez',
-      avatarImage: 'https://gravatar.com/avatar/27205e5c51cb03f862138b22bcb5dc20f94a342e744ff6df1b8dc8af3c865109'
-    ),
-    contratoItem:  RxList<ContratoItemModel>(
-      [
-        ContratoItemModel(
-          horarioInicioPropuesto: DateTime.now(),
-          horarioFinPropuesto: DateTime.now(),
-          importeCuidado: 300,
-          observaciones: 'Cuidarlo Bien',
-          tareasContrato: RxList<TareasContratoModel>(
-            [
-              TareasContratoModel(
-                tituloTarea: 'Limpiar habitación',
-                descripcionTarea: 'Limpiar la habitación del adulto mayor',
-                fechaRealizar: DateTime.now(),
-              ),
-              TareasContratoModel(
-                tituloTarea: 'Lavar ropa',
-                descripcionTarea: 'Lavar la ropa del adulto mayor',
-                fechaRealizar: DateTime.now(),
-              ),
-              TareasContratoModel(
-                tituloTarea: 'Cocinar',
-                descripcionTarea: 'Cocinar para el adulto mayor',
-                fechaRealizar: DateTime.now()
-              ),
-            ]
-          )
-        ),
-        ContratoItemModel(
-          horarioInicioPropuesto: DateTime.now(),
-          horarioFinPropuesto: DateTime.now(),
-          importeCuidado: 300,
-          observaciones: 'Cuidarlo Bien',
-          tareasContrato: RxList<TareasContratoModel>(
-            [
-              TareasContratoModel(
-                tituloTarea: 'Limpiar habitación',
-                descripcionTarea: 'Limpiar la habitación del adulto mayor',
-                fechaRealizar: DateTime.now(),
-              ),
-              TareasContratoModel(
-                tituloTarea: 'Lavar ropa',
-                descripcionTarea: 'Lavar la ropa del adulto mayor',
-                fechaRealizar: DateTime.now(),
-              ),
-              TareasContratoModel(
-                tituloTarea: 'Cocinar',
-                descripcionTarea: 'Cocinar para el adulto mayor',
-                fechaRealizar: DateTime.now()
-              ),
-            ]
-          )
-        )
-      ]
-    ),
-  ).obs;
+  List<EventosContratoModel> eventos = [];
+
+
+  RxBool statusLoading = false.obs;
+  RxBool statusDetalleLoading = false.obs;
+  RxBool statusContratoLoading = false.obs;
+  RxBool statusTareaLoading = false.obs;
 
   @override
   void onInit() async{
     super.onInit();
-    await getContratosPorCliente();
+    // await getContratosPorCliente();
     timeLineList = buildTimeline.construirLista(eventos);
+    await getContratosPorCliente();
   }
 
   Future<void> getContratosPorCliente() async{
-    contratos.assignAll(await listContratosResponse.getListaContratos());
-    // fechaSeleccionada = contratos[0].fechaPrimerContrato!;
-    for(ListaContratos c in contratos){
-      c.color = asignarColor(c.estatus?.nombre ?? '');
+    statusLoading.value = true;
+    fechaSeleccionada = DateTime.now();
+    try{
+      contratos.assignAll(await listContratosResponse.getListaContratos());
+      // fechaSeleccionada = contratos[0].fechaPrimerContrato!;
+      for(ListaContratos c in contratos){
+        c.color = asignarColor(c.estatus?.nombre ?? '');
+      }
+      contratos.refresh();
+      contratosFiltrados.assignAll(contratos.where((element) => 
+      element.horarioInicio!.day == fechaSeleccionada.day &&
+      element.horarioInicio!.month == fechaSeleccionada.month &&
+      element.horarioInicio!.year == fechaSeleccionada.year
+      ).toList());
+      contratosFiltrados.refresh();
+
+      update();
+    }catch(e){
+      statusLoading.value = false;
     }
-    contratos.refresh();
-    contratosFiltrados.assignAll(contratos.where((element) => 
-    element.fechaPrimerContrato!.day == fechaSeleccionada.day &&
-    element.fechaPrimerContrato!.month == fechaSeleccionada.month &&
-    element.fechaPrimerContrato!.year == fechaSeleccionada.year
-    ).toList());
-    contratosFiltrados.refresh();
-    update();
+    statusLoading.value = false;
   }
 
   Color asignarColor(String estatus){
     switch (estatus.toUpperCase()) {
-      case 'NO ACEPTADA':
+      case 'ESPERA':
         return Colors.black;
       case 'ACEPTADA':
         return Colors.green;
@@ -126,6 +75,8 @@ class ListContratoController extends GetxController{
         return Colors.orange[700]!;
       case 'RECHAZADA':
         return Colors.red[900]!;
+      case 'CONCLUIDA':
+        return Colors.grey;
       default:
         return Colors.blueGrey;
     }
@@ -134,12 +85,62 @@ class ListContratoController extends GetxController{
   void changeFechaSeleccionada(DateTime fecha){
     fechaSeleccionada = fecha;
     contratosFiltrados.assignAll(contratos.where((element) => 
-    element.fechaPrimerContrato!.day == fechaSeleccionada.day &&
-    element.fechaPrimerContrato!.month == fechaSeleccionada.month &&
-    element.fechaPrimerContrato!.year == fechaSeleccionada.year
+    element.horarioInicio!.day == fechaSeleccionada.day &&
+    element.horarioInicio!.month == fechaSeleccionada.month &&
+    element.horarioInicio!.year == fechaSeleccionada.year
     ).toList());
     contratosFiltrados.refresh();
     update();
   }
+
+  Future<void> getDetalleContrato(int idContrato) async{
+    statusDetalleLoading.value = true;
+    try{
+      contrato.value = await listContratosResponse.getDetalleContrato(idContrato);
+      statusDetalleLoading.value = false;
+    }catch(e){
+      statusDetalleLoading.value = false;
+    }
+  }
+
+  Future<void> eventosPorContrato(int indice) async{
+    eventos.clear();
+    timeLineList.clear();
+    eventos.assignAll(await listContratosResponse.getEventosContrato(indice));
+    timeLineList = buildTimeline.construirLista(eventos);
+    update();
+  }
+
+  Future<void> cambiarEstatusContrato(int idContrato, int idEstatus) async{
+    statusContratoLoading.value = true;
+    try{
+      await listContratoRequest.cambiarEstatusContrato(idContrato, idEstatus);
+      Get.back();
+      await getContratosPorCliente();
+      snackbarUI.snackbarSuccess('Estatus cambiado!', 'Se ha cambiado el estatus del contrato');
+    }catch(e){
+      snackbarUI.snackbarError('Ups! ha ocurrido un error!', 'No se ha cambiado el estatus del contrato');
+      statusContratoLoading.value = false;
+    }
+    statusContratoLoading.value = false;
+  }
+
+  Future<void> cambiarEstatusTarea(int estatus) async{
+    
+    statusTareaLoading.value = true;
+    int tarea = eventos.firstWhere((element) => element.esTarea == true).id!;
+
+    try{
+      await listContratoRequest.cambiarEstatusTarea(tarea, estatus);
+      Get.back();
+      await getContratosPorCliente();
+      snackbarUI.snackbarSuccess('Estatus cambiado!', 'Se ha cambiado el estatus del contrato');
+    }catch(e){
+      snackbarUI.snackbarError('Ups! ha ocurrido un error!', 'No se ha cambiado el estatus del contrato');
+      statusTareaLoading.value = false;
+    }
+    statusTareaLoading.value = false;
+  }
+
 
 }

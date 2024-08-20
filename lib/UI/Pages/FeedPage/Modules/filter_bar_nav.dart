@@ -2,6 +2,7 @@ import 'package:cuidador_app_mobile/UI/Pages/FeedPage/Models/feed_controller.dar
 import 'package:cuidador_app_mobile/UI/Shared/TextFields/search_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FilterBarNav{
@@ -34,9 +35,34 @@ class FilterBarNav{
               icon: CupertinoIcons.search,
               onChanged: (value) => { feedController.buscarCuidador(value) },
             ),
-            _scrollIconsFilter(),
+            _logotipoTemp(),
+            // _scrollIconsFilter(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _logotipoTemp(){
+    dynamic perfil = GetStorage().read('perfil');
+    return Container(
+      margin: const EdgeInsets.only(top: 10, left: 16, right: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image.asset('assets/img/introductions/logotipo.png', height: Get.height * 0.07,),
+              const SizedBox(width: 8,),
+              Text('Bienvenido de nuevo', style: GoogleFonts.roboto(fontSize: 20, fontWeight: FontWeight.bold),),
+              Text(perfil['nombre'], style: GoogleFonts.roboto(fontSize: 17, fontWeight: FontWeight.w400),)
+            ],
+          ),
+          // const Spacer(),
+          Image.asset('assets/img/introductions/logotipo.png', height: Get.height * 0.05,),
+        ],
       ),
     );
   }

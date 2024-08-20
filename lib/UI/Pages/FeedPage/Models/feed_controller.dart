@@ -17,22 +17,35 @@ class FeedController extends GetxController{
   RxList<UsuarioModel> cuidadoresListSearch = <UsuarioModel>[].obs;
   String testRuta = "assets/img/testing/profile_image_test.png";
 
+  RxBool isLoading = false.obs;
+
 
   @override
   void onInit() async{
     super.onInit();
-    // PersonaModel().getColorBh();
     await setPerfilesCuidadores();
     buscarCuidador('');
   }
 
   Future<void> setPerfilesCuidadores() async{
-    cuidadoresList.assignAll(await homeResponse.getFeedPage()); 
-    for(var i in cuidadoresList){
-      PaletteGenerator paletteGenerator = await PaletteGenerator.fromImageProvider(NetworkImage(i.persona!.first.avatarImage.toString())); 
-      i.persona!.first.colorBg = paletteGenerator.dominantColor!.color;
+    isLoading.value = true;
+    try{
+      cuidadoresList.assignAll(await homeResponse.getFeedPage()); 
+      for(var i in cuidadoresList){
+        if(i.persona!.first.avatarImage == null){
+          PaletteGenerator paletteGenerator = await PaletteGenerator.fromImageProvider(NetworkImage(i.persona!.first.avatarImage.toString())); 
+          i.persona!.first.colorBg = paletteGenerator.dominantColor!.color;
+        }
+        else{
+          i.persona!.first.colorBg = Colors.grey;
+        }
+      }
+      cuidadoresList.refresh();
+      isLoading.value = false;
+    }catch(e){
+      isLoading.value = false;
+      // snackbarUI.snackbarError('Error', 'No se pudo cargar la lista de cuidadores');
     }
-    cuidadoresList.refresh();
   }
 
   void buscarCuidador(String query){

@@ -6,7 +6,7 @@ class TareasContratoModel{
   String? tituloTarea;
   String? descripcionTarea;
   String? tipoTarea;
-  EstatusModel? estatus;
+  int? estatus;
   DateTime? fechaRealizar;
   DateTime? fechaInicio;
   DateTime? fechaFinalizacion;
@@ -25,28 +25,28 @@ class TareasContratoModel{
   });
 
   TareasContratoModel.fromJson(Map<String, dynamic> json){
-    idTareasContrato = json['id_tareas_contrato'];
-    tituloTarea = json['titulo_tarea'];
-    descripcionTarea = json['descripcion_tarea'];
-    tipoTarea = json['tipo_tarea'];
-    estatus = json['estatus'];
-    fechaRealizar = DateTime.tryParse(json['fecha_a_realizar'].toString().replaceAll('T', " "));
-    fechaInicio = DateTime.tryParse(json['fecha_inicio'].toString().replaceAll('T', " "));
-    fechaFinalizacion = DateTime.tryParse(json['fecha_inicio'].toString().replaceAll('T', " "));
-    fechaPospuesta = DateTime.tryParse(json['fecha_pospuesta'].toString().replaceAll('T', " "));
+    idTareasContrato = json['idTareas'];
+    tituloTarea = json['tituloTarea'];
+    descripcionTarea = json['descripcionTarea'];
+    tipoTarea = json['tipoTarea'];
+    estatus = json['estatusId'];
+    fechaRealizar = DateTime.tryParse(json['fechaARealizar'].toString().replaceAll('T', " "));
+    fechaInicio = DateTime.tryParse(json['fechaInicio'].toString().replaceAll('T', " "));
+    fechaFinalizacion = DateTime.tryParse(json['fechaFinalizacion'].toString().replaceAll('T', " "));
+    fechaPospuesta = DateTime.tryParse(json['fechaPospuesta'].toString().replaceAll('T', " "));
   }
 
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id_tareas_contrato'] = idTareasContrato;
-    data['titulo_tarea'] = tituloTarea;
-    data['descripcion_tarea'] = descripcionTarea;
-    data['tipo_tarea'] = tipoTarea;
+    data['tituloTarea'] = tituloTarea;
+    data['descripcionTarea'] = descripcionTarea;
+    data['tipoTarea'] = tipoTarea;
     data['estatus'] = estatus;
-    data['fecha_a_realizar'] = fechaRealizar.toString();
-    data['fecha_inicio'] = fechaInicio.toString();
-    data['fecha_finalizacion'] = fechaFinalizacion.toString();
-    data['fecha_pospuesta'] = fechaPospuesta.toString();
+    data['fechaARealizar'] = fechaRealizar?.toIso8601String() ?? '';
+    data['fecha_inicio'] = fechaInicio?.toIso8601String() ?? '';
+    data['fecha_finalizacion'] = fechaFinalizacion?.toIso8601String() ?? '';
+    data['fecha_pospuesta'] = fechaPospuesta?.toIso8601String() ?? '';
     return data;
   }
 

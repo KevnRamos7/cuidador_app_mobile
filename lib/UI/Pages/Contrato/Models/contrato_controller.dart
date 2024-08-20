@@ -63,7 +63,7 @@ class ContratoController extends GetxController{
     {
       personaCuidador = Get.arguments as UsuarioModel;
 
-      fechasConCita = await contratoResponse.getFechasNoDisponibles();
+      fechasConCita = await contratoResponse.getFechasNoDisponibles(personaCuidador.persona!.first.idPersona!);
       fechasNoDisponiblesSet.assignAll(extraFunctions.findDatesWithLessThanOneHour(fechasConCita, date));
       fechasNoDisponiblesSet.refresh();
       horariosInicialesDisponibles.value = extraFunctions.onlyForStartTime(fechasConCita, date);

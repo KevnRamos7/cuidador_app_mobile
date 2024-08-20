@@ -1,41 +1,53 @@
-// import 'package:cuidador_app_mobile/Domain/Utilities/connection_string.dart';
-import 'package:cuidador_app_mobile/Domain/Model/Perfiles/menu_model.dart';
-import 'package:cuidador_app_mobile/Domain/Model/Perfiles/persona_model.dart';
+import 'package:cuidador_app_mobile/Domain/Model/Perfiles/usuario_model.dart';
+import 'package:cuidador_app_mobile/UI/Shared/Snackbar/snackbar_ui.dart';
 import 'package:get/get.dart';
+
+import '../../../Domain/Utilities/connection_string.dart';
 
 class LoginResponse extends GetConnect{
 
-  Future<List<PersonaModel>> login(String email, String password) async {
-    List<PersonaModel> listadoPerfiles = <PersonaModel>[];
+  SnackbarUI snackbarDark = SnackbarUI();
 
+  Future<UsuarioModel> login(String usuario, String contrasenia) async {
     try
     {
-      final response = await get('https://mocki.io/v1/6e29936f-39bd-4e1a-9a9b-667492557b27');
-      for(var item in response.body){
-        listadoPerfiles.add(PersonaModel.fromJson(item));
-      }
+      Response response = await post( '${ConnectionString.connectionString}/Usuario/login', {
+        'usuario': usuario,
+        'contrasenia': contrasenia
+      }, headers: {
+        'Content-Type': 'application/json'
+      });
+
+      switch(response.statusCode){
+
+          case 200:
+            UsuarioModel usuarioModel = UsuarioModel.fromJson(response.body);
+            return usuarioModel;
+            
+          case 404: 
+            snackbarDark.snackbarError('Error Interno del Servidor', '');
+            return UsuarioModel();
+          
+          case 500: 
+            snackbarDark.snackbarError('Error Interno del Servidor', '');
+            return UsuarioModel();
+          
+          case 400: 
+            snackbarDark.snackbarError('Usuario o contraseña incorrectos', '');
+            return UsuarioModel();
+
+          default:
+            snackbarDark.snackbarError('Error Interno del Servidor', '');
+            return UsuarioModel();
+
+        }
+
     }
     catch(e)
     {
-      Get.snackbar('Ups! Ha Ocurrido un error!', e.toString());
+      snackbarDark.snackbarError('Se ha producido un error dentro de la app', '');
+      return UsuarioModel();
     }
-    return listadoPerfiles;
-  }
-
-  Future <List<MenuModel>> getMenus() async {
-    List<MenuModel> menus = <MenuModel>[];
-    try
-    {
-      final response = await get('https://mocki.io/v1/b2421eff-8bb3-410a-a6f8-f219fcc1a2d6');
-      for(var item in response.body){
-        menus.add(MenuModel.fromJson(item));
-      }
-    }
-    catch(e)
-    {
-      Get.snackbar('Ups! Ha Ocurrido un error!', e.toString());
-    }
-    return menus;
   }
 
 }

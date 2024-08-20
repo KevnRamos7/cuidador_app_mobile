@@ -18,7 +18,7 @@ class ContratosCvHead{
   ListContratoController con = Get.put(ListContratoController());
   LetterDates letter = LetterDates();
 
-  Widget contenido(){
+  Widget contenido(){ 
     return Expanded(
       child: Obx(()=>
         con.contratosFiltrados.isEmpty ? _notFoundContratos() :
@@ -42,11 +42,12 @@ class ContratosCvHead{
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(letter.formatearSoloHora(contrato.fechaPrimerContrato.toString()), 
+              Text(letter.formatearSoloHora(contrato.horarioInicio.toString()), 
               style: const TextStyle(color: Colors.white, fontSize: 20),),
               Text('${contrato.personaCliente!.nombre} ${contrato.personaCliente!.apellidoPaterno} ${contrato.personaCliente!.apellidoMaterno}', 
               style: const TextStyle(color: Colors.white, fontSize: 15),),
-              _showPullMenu(),
+              con.statusDetalleLoading.value == true || con.statusContratoLoading.value == true ? const CupertinoActivityIndicator() :
+              _showPullMenu(contrato.idContratoItem!, contrato),
             ],
           ),
         ),
@@ -54,7 +55,32 @@ class ContratosCvHead{
     );
   }
 
-  PullDownButton _showPullMenu(){
+  PullDownButton _showPullMenu(int index, ListaContratos contrato){
+
+    Map<int, Map<IconData, Color>> iconos = {
+      7: {CupertinoIcons.check_mark_circled_solid: Colors.green},
+      8: {CupertinoIcons.xmark_circle_fill: Colors.red},
+      9: {CupertinoIcons.checkmark_shield_fill: Colors.grey},
+      18: {CupertinoIcons.clock_solid: Colors.yellow[800]!},
+      19: {CupertinoIcons.timer_fill: Colors.orange},
+    };
+
+    int idEstatus = contrato.estatus!.idEstatus!;
+
+    // Obtener el ícono y color correspondiente al estatus usando el idEstatus
+    var estatusData = iconos[contrato.estatus!.idEstatus];
+    IconData? iconData;
+    Color? iconColor;
+
+    if (estatusData != null) {
+      iconData = estatusData.keys.first;
+      iconColor = estatusData.values.first;
+    } else {
+      // Opcional: Define un ícono y color por defecto si el estatus no está en el mapa
+      iconData = CupertinoIcons.question_circle;
+      iconColor = Colors.grey;
+    }
+  
     return PullDownButton(
       buttonBuilder: (context, showMenu) => CupertinoButton(
         onPressed: showMenu,
@@ -64,7 +90,13 @@ class ContratosCvHead{
       itemBuilder: (context) {
         return [
           PullDownMenuItem( //Interactuar con el contrato
-            onTap: (){modalComponents.showModal(estatus.contenidoEstatus(true.obs));},
+            onTap: (){
+              con.eventosPorContrato(index);
+              modalComponents.showModal(estatus.contenidoEstatus(
+                (contrato.estatus!.idEstatus == 7 || contrato.estatus!.idEstatus == 19).obs,
+                contrato
+              ));
+            },
             title: 'Entrar',
             icon: CupertinoIcons.square_arrow_right_fill,
             iconColor: Colors.blueGrey,
@@ -77,21 +109,30 @@ class ContratosCvHead{
             icon: CupertinoIcons.person_alt_circle_fill,
           ),
           PullDownMenuItem(
-            onTap: (){},
+            onTap: (){
+              con.getDetalleContrato(index);
+              modalComponents.showModal(detalle.contenidoDetalle());
+            },
             title: 'Detalle',
             icon: CupertinoIcons.square_list_fill,
           ),
+          idEstatus != 8 && idEstatus != 9 && idEstatus != 19 ? 
           PullDownMenuItem(
             onTap: (){modalComponents.showConfirmCancel(
               message: '¿Estás seguro de rechazar el contrato?',
-              onConfirm: (){},
-              onCancel: (){}
+              onConfirm: (){
+                Get.back();
+                con.cambiarEstatusContrato(contrato.idContratoItem!, 8);
+              },
+              onCancel: (){
+                Get.back();
+              }
             );},
             title: 'Rechazar',
             icon: CupertinoIcons.xmark_circle_fill,
             iconColor: Colors.red,
             isDestructive: true,
-          ),
+          ) : const PullDownMenuActionsRow.small(items: []),
         ];
       },
     );

@@ -225,21 +225,17 @@ class SummaryContract{
             left: Get.width * 0.69,
             top: 5,
             child: Container(
-              width: Get.width * 0.2,
-              height: 76.69,
-              decoration: ShapeDecoration(
-                image: DecorationImage(image: NetworkImage(imagenPerfil), fit: BoxFit.fill),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100),
+              width: 50,
+              height: 50,
+              decoration: const BoxDecoration(shape: BoxShape.circle),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Image.network(imagenPerfil, 
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Image(image: AssetImage('assets/img/shared/avatar_default.jpg'), width: 150, height: 150, fit: BoxFit.cover);
+                  },
                 ),
-                shadows: const [
-                  BoxShadow(
-                    color: Color(0x3F000000),
-                    blurRadius: 4,
-                    offset: Offset(0, 4),
-                    spreadRadius: 0,
-                  )
-                ],
               ),
             ),
           ),

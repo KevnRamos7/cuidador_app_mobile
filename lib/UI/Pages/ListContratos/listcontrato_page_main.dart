@@ -1,4 +1,4 @@
-import 'package:cuidador_app_mobile/Domain/Model/Perfiles/usuario_model.dart';
+import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Models/list_contrato_controller.dart';
 import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Modules/ClienteView/contratos_head.dart';
 import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Modules/CuidadorView/contratos_cv_head.dart';
 import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Modules/header_listcontrato.dart';
@@ -16,29 +16,29 @@ class ListcontratoPageMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // UsuarioModel usuario = UsuarioModel.fromJson(GetStorage().read('usuario'));
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          // IconButton(
-          //   icon: const Icon(CupertinoIcons.calendar_circle_fill, size: 35,), 
-          //   onPressed: () {
-
-          //   },
-          // )
-        ],
+    Get.lazyPut<ListContratoController>(() => ListContratoController());
+    ListContratoController con = Get.find();
+    dynamic usuario = GetStorage().read('usuario');
+    return RefreshIndicator(
+      onRefresh: () async{
+        await con.getContratosPorCliente();
+        con.timeLineList = con.buildTimeline.construirLista(con.eventos);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [],
+        ),
+        body: Obx(()=>
+          con.statusLoading.value == true ? const Center(child: CupertinoActivityIndicator()) : Column(
+            children: [
+              header.encabezado(),
+              header.listaFechas(),
+              usuario['tipoUsuarioid'] == 2 ? head.contenido() : headCv.contenido()
+            ],
+          ),
+        ),
+        bottomNavigationBar: BottomNavigationMain.instance.bottomNavigation(),
       ),
-      body: Column(
-        children: [
-          header.encabezado(),
-          header.listaFechas(),
-          // usuario.salarioCuidador == 0 ? 
-          // head.contenido() 
-          //: 
-          headCv.contenido()
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationMain.instance.bottomNavigation(),
     );
   }
 

@@ -8,7 +8,7 @@ class EstatusModel{
   EstatusModel({this.idEstatus, this.codigo, this.nombre, this.color});
 
   EstatusModel.fromJson(Map<String, dynamic> json){
-    idEstatus = json['id_estatus'];
+    idEstatus = json['idEstatus'];
     codigo = json['codigo'];
     nombre = json['nombre'];
     color = json['color'];

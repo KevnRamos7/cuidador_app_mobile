@@ -15,22 +15,19 @@ class ContratoModel{
 
   ContratoModel.fromJson(Map<String, dynamic> json){
     idContrato = json['id_contrato'];
-    personaCuidador = json['persona_cuidador'] != null ? PersonaModel.fromJson(json['persona_cuidador']) : null;
+    personaCuidador = (json['persona_cuidador'] != null && json['persona_cuidador'].isNotEmpty)
+    ? PersonaModel.fromJson(json['persona_cuidador'][0])
+    : null;
     personaCliente = json['persona_cliente'] != null ? PersonaModel.fromJson(json['persona_cliente']) : null;
     estatus = json['estatus'] != null ? EstatusModel.fromJson(json['estatus']) : null;
-    if(json['contrato_item'] != null){
-      contratoItem!.value = [];
-      json['contrato_item'].forEach((v) {
-        contratoItem!.add(ContratoItemModel.fromJson(v));
-      });
-    }
+    contratoItem = json['contrato_item'] != null ? (json['contrato_item'] as List).map((v) => ContratoItemModel.fromJson(v)).toList().obs : null;
   }
 
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id_contrato'] = idContrato;
-    data['persona_cuidador'] = personaCuidador;
-    data['persona_cliente'] = personaCliente;
+    data['persona_cuidador_id'] = personaCuidador;
+    data['persona_cliente_id'] = personaCliente;
     data['estatus'] = estatus;
     if(contratoItem != null){
       data['contrato_item'] = contratoItem!.map((v) => v.toJson()).toList();

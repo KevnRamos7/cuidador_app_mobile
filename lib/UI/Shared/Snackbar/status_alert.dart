@@ -9,7 +9,7 @@ class StatusAlert{
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       radius: 8,
       content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.error, color: Colors.red, size: 50),
           const SizedBox(height: 30),

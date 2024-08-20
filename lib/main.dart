@@ -33,7 +33,9 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       title: "Cuidador",
       debugShowCheckedModeBanner: false,
-      initialRoute: 'login',
+      initialRoute: 
+      '/login',
+      // 'login',
       //'/list_contratos', 
       getPages: Routes.routes, // Rutas de la aplicacion
       theme: ColorsThemeData().adultoMayorThemeData, // Cambiará dependiendo del valor recolectado del localstorage

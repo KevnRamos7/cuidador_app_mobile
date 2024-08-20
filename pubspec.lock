@@ -57,6 +57,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  community_charts_common:
+    dependency: transitive
+    description:
+      name: community_charts_common
+      sha256: d997ade57f15490346de46efbe23805d378a672aafbf5e47e19517964b671009
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
+  community_charts_flutter:
+    dependency: transitive
+    description:
+      name: community_charts_flutter
+      sha256: "4614846b99782ab79b613687704865e5468ecada3f0ad1afe1cdc3ff5b727f72"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   cross_file:
     dependency: transitive
     description:
@@ -81,6 +97,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  d_chart:
+    dependency: "direct main"
+    description:
+      name: d_chart
+      sha256: c19648d092a061f75a48d78a69921b2d18d3aa27b31efa2f81bb7009c0c6d2ff
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.8.0"
   dart_earcut:
     dependency: transitive
     description:
@@ -89,6 +113,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  dashed_circular_progress_bar:
+    dependency: "direct main"
+    description:
+      name: dashed_circular_progress_bar
+      sha256: "65f72cedcfa4250a45af63d8e98af827dc24f965ef453c3ea4c7fc7bfba40ae1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   dropdown_button2:
     dependency: "direct main"
     description:
@@ -97,6 +129,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.9"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      sha256: c2b87cb7756efdf69892005af546c56c0b5037f54d2a88269b4f347a505e3ca2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.5"
+  fade_shimmer:
+    dependency: "direct main"
+    description:
+      name: fade_shimmer
+      sha256: "7410220ba0ccfa3abef630ec64e2398b9e136fbeb6fe2f8ce86d939f46b3491e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   fake_async:
     dependency: transitive
     description:
@@ -153,11 +201,27 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  fl_chart:
+    dependency: "direct main"
+    description:
+      name: fl_chart
+      sha256: d0f0d49112f2f4b192481c16d05b6418bd7820e021e265a3c22db98acf7ed7fb
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.68.0"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_credit_card:
+    dependency: "direct main"
+    description:
+      name: flutter_credit_card
+      sha256: dffaee369b0e64fb81e63e78d6410762f73b67346692bd2ae7bdcc6d911452e3
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -493,6 +557,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.0"
+  logging:
+    dependency: transitive
+    description:
+      name: logging
+      sha256: "623a88c9594aa774443aa3eb2d41807a48486b5613e67599fb4c41c0ad47c340"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   map_launcher:
     dependency: "direct main"
     description:
@@ -517,6 +589,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.8.0"
+  message_pack_dart:
+    dependency: transitive
+    description:
+      name: message_pack_dart
+      sha256: "71b9f0ff60e5896e60b337960bb535380d7dba3297b457ac763ccae807385b59"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   meta:
     dependency: transitive
     description:
@@ -637,6 +717,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  pool:
+    dependency: transitive
+    description:
+      name: pool
+      sha256: "20fe868b6314b322ea036ba325e6fc0711a22948856475e2c2b6306e8ab39c2a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.1"
   proj4dart:
     dependency: transitive
     description:
@@ -661,6 +749,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.8"
+  shelf:
+    dependency: transitive
+    description:
+      name: shelf
+      sha256: ad29c505aee705f41a4d8963641f91ac4cee3c8fad5947e033390a7bd8180fa4
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.1"
+  signalr_netcore:
+    dependency: "direct main"
+    description:
+      name: signalr_netcore
+      sha256: c41052a7b3dfa9c5f3fa292d6fc0f44556dff988c385bf09c5dcf64257eb0c2d
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.9"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -682,6 +786,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+  sse:
+    dependency: transitive
+    description:
+      name: sse
+      sha256: "111a05843ea9035042975744fe61d5e8b95bc4d38656dbafc5532da77a0bb89a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.6"
+  sse_channel:
+    dependency: transitive
+    description:
+      name: sse_channel
+      sha256: "9aad5d4eef63faf6ecdefb636c0f857bd6f74146d2196087dcf4b17ab5b49b1b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   stack_trace:
     dependency: transitive
     description:
@@ -730,6 +850,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  tuple:
+    dependency: transitive
+    description:
+      name: tuple
+      sha256: a97ce2013f240b2f3807bcbaf218765b6f301c3eff91092bcfa23a039e7dd151
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   typed_data:
     dependency: transitive
     description:
@@ -738,6 +866,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+  u_credit_card:
+    dependency: "direct main"
+    description:
+      name: u_credit_card
+      sha256: "6c68d08c7d3b9eeb085e50bbc7d67c84acbd4326247f539dfd55710318620bd4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.1"
   unicode:
     dependency: transitive
     description:
@@ -778,6 +914,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+  web_socket:
+    dependency: transitive
+    description:
+      name: web_socket
+      sha256: "3c12d96c0c9a4eec095246debcea7b86c0324f22df69893d538fcc6f1b8cce83"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.6"
+  web_socket_channel:
+    dependency: transitive
+    description:
+      name: web_socket_channel
+      sha256: "9f187088ed104edd8662ca07af4b124465893caf063ba29758f97af57e61da8f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   win32:
     dependency: transitive
     description:
@@ -803,5 +955,5 @@ packages:
     source: hosted
     version: "1.0.4"
 sdks:
-  dart: ">=3.4.1 <4.0.0"
+  dart: ">=3.4.3 <4.0.0"
   flutter: ">=3.22.0"

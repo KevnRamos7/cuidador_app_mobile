@@ -69,9 +69,7 @@ Widget centerContainer(){
                     onPressed: () async {
                       LocalAuth.authenticate().then((value) {
                         if(value){
-                          String email = GetStorage().read('credenciales')['usuario'];
-                          String password = GetStorage().read('credenciales')['contrasenia'];
-                          con.login(email, password);
+                          con.loginBiometrico();
                         }
                       });
                     }, 

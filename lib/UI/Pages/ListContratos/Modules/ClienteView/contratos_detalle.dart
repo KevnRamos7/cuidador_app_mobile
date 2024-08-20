@@ -12,7 +12,8 @@ class ContratosDetalle{
   SummaryContract summary = SummaryContract();
 
   Widget contenidoDetalle(){
-    return Expanded(
+    return SizedBox(
+      height: Get.height * 0.8,
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -21,12 +22,12 @@ class ContratosDetalle{
               subtitulo: 'Certificaciones', 
               masdatos: [
                 con.contrato.value.personaCuidador?.certificaciones?.isNotEmpty == true
-                  ? con.contrato.value.personaCuidador!.certificaciones![0].tipoCerficacion ?? ''
+                  ? con.contrato.value.personaCuidador!.certificaciones![0].descripcion ?? ''
                   : '',
                 con.contrato.value.personaCuidador?.certificaciones?.isNotEmpty == true
-                  ? con.contrato.value.personaCuidador!.certificaciones![1].tipoCerficacion ?? ''
+                  ? con.contrato.value.personaCuidador!.certificaciones![1].descripcion ?? ''
                   : 'Sin certificaciones'
-              ],
+              ], 
               costoTotal: con.contrato.value.contratoItem?.isNotEmpty == true
                           ? ' \$ ${con.contrato.value.contratoItem!.map((e) => e.importeCuidado).reduce((value, element) => value! + element!).toString()}'
                           : '0', 

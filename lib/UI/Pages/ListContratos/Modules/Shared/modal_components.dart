@@ -33,11 +33,11 @@ class ModalComponents{
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   CupertinoButton(
-                    onPressed: (){},
+                    onPressed: () => onCancel(),
                     child: const Text('Cancelar', style: TextStyle(color: Colors.grey),),
                   ),
                   CupertinoButton(
-                    onPressed: (){},
+                    onPressed: () => onConfirm(),
                     child: const Text('Aceptar', style: TextStyle(color: Colors.green),),
                   ),
                 ],

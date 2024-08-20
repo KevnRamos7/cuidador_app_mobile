@@ -9,6 +9,7 @@ class ProfileCuidadorController extends GetxController{
   ProfileResponse profileResponse = ProfileResponse();
   Rx<UsuarioModel> profileCuidador = UsuarioModel().obs;
   Rx<Color> colorBg = Colors.white.obs;
+  RxBool isLoading = false.obs;
 
   Map<String, Color> colorNames = {
     "Bronce": const Color.fromARGB(255, 118, 61, 11),
@@ -20,9 +21,16 @@ class ProfileCuidadorController extends GetxController{
   @override
   void onInit() async{
     super.onInit();
-    profileCuidador.value = await profileResponse.getProfileCuidador();
-    profileCuidador.refresh();
-    colorBg.value = colorNames[profileCuidador.value.nivelUsuario] ?? Colors.grey;
+    isLoading.value = true;
+    try{
+      int id = Get.arguments;
+      profileCuidador.value = await profileResponse.getProfileCuidador(id);
+      profileCuidador.refresh();
+      colorBg.value = colorNames[profileCuidador.value.nivelUsuario] ?? Colors.grey;
+    }catch(e){
+      isLoading.value = false;
+    }
+    isLoading.value = false;
   }
 
 }

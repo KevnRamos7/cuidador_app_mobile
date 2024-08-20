@@ -8,11 +8,11 @@ class ContratoResponse extends GetConnect{
 
   SnackbarUI snackbarUI = SnackbarUI();
 
-  Future<RxList<ContratoItemModel>> getFechasNoDisponibles() async{
+  Future<RxList<ContratoItemModel>> getFechasNoDisponibles(int idpersona) async{
     List<ContratoItemModel> contratos = [];
     try
     {
-      final response = await get('https://mocki.io/v1/6a3e25d1-5b63-457e-86f2-3ec871c6a1cf');
+      final response = await get('https://cuidadorapi.azurewebsites.net/api/ContratoItem/fechasOcupadasCuidador/$idpersona');
       
       for(var item in response.body){
         contratos.add(ContratoItemModel.fromJson(item));

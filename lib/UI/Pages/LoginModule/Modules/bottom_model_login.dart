@@ -11,6 +11,7 @@ class BottomModelLogin{
   LoginController loginController = Get.put(LoginController());
 
   Future<void> modalLoginBottom() async {
+    RxBool isVisible = false.obs;
     return await Get.bottomSheet(
       Container(
         padding: const EdgeInsets.all(20),
@@ -28,27 +29,32 @@ class BottomModelLogin{
           children: [
             const Text('Ingresa tus Datos!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
 
-            _textFieldsFormat('Usuario', Icons.person, false),
-            _textFieldsFormat('Contraseña', Icons.lock, true),
+            _textFieldsFormat('Usuario', Icons.person, false, loginController.usuarioController, (){}),
+            Obx(()=> _textFieldsFormat('Contraseña', isVisible.value == false ? Icons.visibility : Icons.visibility, !isVisible.value, loginController.passwordController, (){
+              isVisible.value = !isVisible.value;}
+            )),
 
             SizedBox(
               width: Get.width * 0.7,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF395886),
-                  // elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  )
+              child: Obx(()=>
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: loginController.isLoad.value == true ? Colors.grey : const Color(0xFF395886),
+                    // elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    )
+                  ),
+                  onPressed: () => loginController.login(),
+                  child: loginController.isLoad.value == true ? const SizedBox(height: 15, width: 15, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 0.9,)) :
+                    Text('Ingresar', 
+                    style: GoogleFonts.anekMalayalam(
+                      fontSize: 15, 
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white),
+                      textAlign: TextAlign.center,
+                    )
                 ),
-                onPressed: () => loginController.login('email', 'password'),
-                child: Text('Ingresar', 
-                style: GoogleFonts.anekMalayalam(
-                  fontSize: 15, 
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white),
-                  textAlign: TextAlign.center,
-                )
               ),
             ),
           ],
@@ -57,13 +63,16 @@ class BottomModelLogin{
     );
   }
 
-  Widget _textFieldsFormat(String titulo, IconData icono, bool obscureText){
+  Widget _textFieldsFormat(String titulo, IconData icono, bool obscureText, TextEditingController controller, Function()? onTap){
     return TextField(
+      controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
         hintText: titulo,
         hintStyle: const TextStyle(fontSize: 15, color: Colors.grey),
-        suffixIcon: Icon(icono, size: 15, color: Colors.grey,),
+        suffixIcon: GestureDetector(
+          onTap: onTap!(),
+          child: Icon(icono, size: 15, color: Colors.grey,)),
       ),
     );
   }

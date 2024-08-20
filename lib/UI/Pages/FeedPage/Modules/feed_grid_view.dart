@@ -1,4 +1,5 @@
 import 'package:cuidador_app_mobile/Domain/Model/Perfiles/usuario_model.dart';
+import 'package:cuidador_app_mobile/Domain/Utilities/format_money_number.dart';
 import 'package:cuidador_app_mobile/UI/Pages/FeedPage/Models/feed_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:get/get.dart';
 
 class FeedGridView{
   FeedController con = Get.put(FeedController());
+  FormatMoneyNumber money = FormatMoneyNumber();
 
   Widget feedGridView(){
     return Expanded(
@@ -69,7 +71,7 @@ class FeedGridView{
                           children: [
                             Text('${usuario.persona!.first.nombre.toString()} ${usuario.persona!.first.apellidoMaterno.toString()}', style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.start,),
                             // Text(usuario.nivelUsuario ?? '', style: const TextStyle(fontWeight: FontWeight.w300)),
-                            Text(usuario.salarioCuidador.toString(), style: const TextStyle(fontWeight: FontWeight.w300)),
+                            Text('Costo: ${money.formatCurrencyInMXN(usuario.salarioCuidador ?? 0)} /h.', style: const TextStyle(fontWeight: FontWeight.w300)),
                           ],
                         ),
                         Container(
@@ -79,9 +81,9 @@ class FeedGridView{
                             children: [
                               SizedBox(
                                 height: 20,
-                                width: 15 * (usuario.comentariosUsuario!.isNotEmpty ? usuario.comentariosUsuario!.map((c) => c.calificacion!.toDouble()).reduce((a, b) => a + b) / 5 : 0),
+                                width: 15 * (usuario.comentariosUsuario?.isNotEmpty == true ? usuario.comentariosUsuario!.map((c) => c.calificacion!.toDouble()).reduce((a, b) => a + b) / usuario.comentariosUsuario!.length : 1),
                                 child: ListView.builder(
-                                  itemCount: (usuario.comentariosUsuario!.isNotEmpty ? usuario.comentariosUsuario!.map((c) => c.calificacion!.toDouble()).reduce((a, b) => a + b) / 5 : 0).toInt(),
+                                  itemCount: (usuario.comentariosUsuario?.isNotEmpty == true ? usuario.comentariosUsuario!.map((c) => c.calificacion!.toDouble()).reduce((a, b) => a + b) / 5 : 1).toInt(),
                                   shrinkWrap: true,
                                   scrollDirection: Axis.horizontal,
                                   itemBuilder: (context, index){
@@ -139,23 +141,19 @@ class FeedGridView{
                 left: (Get.width * 0.45 - Get.width * 0.2) / 2,
                 top: 0,
                 child: GestureDetector(
-                  onTap: () => Get.toNamed('/previewProfileCuidador'),
+                  onTap: () => Get.toNamed('/previewProfileCuidador', arguments: usuario.idUsuario),
                   child: Container(
                     width: Get.width * 0.2,
                     height: 76.69,
-                    decoration: ShapeDecoration(
-                      image: DecorationImage(image: NetworkImage(usuario.persona!.first.avatarImage.toString()), fit: BoxFit.fill),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100),
+                    decoration: const BoxDecoration(shape: BoxShape.circle),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Image.network(usuario.persona?.first.avatarImage ?? '', 
+                        width: 150, height: 150, fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Image(image: AssetImage('assets/img/shared/avatar_default.jpg'), width: 150, height: 150, fit: BoxFit.cover);
+                        },
                       ),
-                      shadows: const [
-                        BoxShadow(
-                          color: Color(0x3F000000),
-                          blurRadius: 4,
-                          offset: Offset(0, 4),
-                          spreadRadius: 0,
-                        )
-                      ],
                     ),
                   ),
                 ),

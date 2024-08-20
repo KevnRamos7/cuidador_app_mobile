@@ -16,12 +16,12 @@ class CertificacionesModel{
   CertificacionesModel({this.idCertificacion, this.tipoCerficacion, this.institucionEmisora, this.fechaCerficacion, this.vigente, this.experienciaAnios, this.descripcion, this.documentacion});
 
   CertificacionesModel.fromJson(Map<String, dynamic> json){
-    idCertificacion = json['id_certificacion'];
-    tipoCerficacion = json['tipo_certificacion'];
-    institucionEmisora = json['institucion_emisora'];
-    fechaCerficacion = json['fecha_certificacion'];
+    idCertificacion = json['idCertificado'];
+    tipoCerficacion = json['tipoCertificacion'];
+    institucionEmisora = json['institucionEmisora'];
+    fechaCerficacion = json['fechaCertificacion'];
     vigente = json['vigente'];
-    experienciaAnios = json['experiencia_anios'];
+    experienciaAnios = json['experienciaAnios'];
     descripcion = json['descripcion'];
     documentacion = json['documentacion'] != null ? DocumentacionModel.fromJson(json['documentacion']) : null;
   }

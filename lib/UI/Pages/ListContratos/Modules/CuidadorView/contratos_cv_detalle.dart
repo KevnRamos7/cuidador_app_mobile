@@ -28,10 +28,10 @@ class ContratosCvDetalle{
                           : '0', 
               contratosLigados: con.contrato.value.contratoItem?.isNotEmpty == true
                           ? con.contrato.value.contratoItem!.length.toString()
-                          : '0', 
+                          : '0',  
               imagenPerfil: con.contrato.value.personaCliente?.avatarImage ?? ''
             ),
-              
+            
             summary.encabezado('Fechas y Horarios'),
         
             summary.tableForSchedules(con.contrato.value),

@@ -36,16 +36,16 @@ class DomicilioModel {
   /// Crea una instancia de DomicilioModel a partir de un Map JSON.
   factory DomicilioModel.fromJson(Map<String, dynamic> json) {
     return DomicilioModel(
-      idDomicilio: json['id_domicilio'],
+      idDomicilio: json['id_domicilio'] ?? json['idDomicilio'],
       calle: json['calle'],
       colonia: json['colonia'],
-      numeroInterior: json['numero_interior'],
-      numeroExterior: json['numero_exterior'],
+      numeroInterior: json['numero_interior'] ?? json['numeroInterior'],
+      numeroExterior: json['numero_exterior'] ?? json['numeroExterior'],
       ciudad: json['ciudad'],
       estado: json['estado'],
       pais: json['pais'] ?? "MÉXICO",
       referencias: json['referencias'],
-      estatusId: json['estatus_id'],
+      estatusId: json['estatus_id'] ?? json['estatusId'],
       // fechaRegistro: DateTime.parse(json['fecha_registro']),
       // usuarioRegistro: json['usuario_registro'],
       // fechaModificacion: json['fecha_modificacion'] != null ? DateTime.parse(json['fecha_modificacion']) : null,

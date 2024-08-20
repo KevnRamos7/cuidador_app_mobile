@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// Modelo de datos para un menú.
 class MenuModel {
   int? idMenu;
@@ -6,6 +8,7 @@ class MenuModel {
   String? descripcionMenu;
   String? rutaMenu;
   String? endpoint;
+  IconData? icono;
 
   /// Constructor de la clase MenuModel.
   MenuModel({
@@ -15,16 +18,17 @@ class MenuModel {
     this.descripcionMenu,
     this.rutaMenu,
     this.endpoint,
+    this.icono,
   });
 
   /// Crea una instancia de MenuModel a partir de un Map JSON.
   factory MenuModel.fromJson(Map<String, dynamic> json) {
     return MenuModel(
-      idMenu: json['id_menu'],
-      estatusId: json['estatus_id'],
-      nombreMenu: json['nombre_menu'],
-      descripcionMenu: json['descripcion_menu'],
-      rutaMenu: json['ruta_menu'],
+      idMenu: json['idMenu'],
+      estatusId: json['estatusId'],
+      nombreMenu: json['nombreMenu'],
+      descripcionMenu: json['descripcionMenu'],
+      rutaMenu: json['rutaMenu'],
       endpoint: json['endpoint'],
     );
   }

@@ -1,7 +1,7 @@
 import 'package:cuidador_app_mobile/Domain/Model/Perfiles/comentarios_model.dart';
 import 'package:cuidador_app_mobile/Domain/Utilities/letter_dates.dart';
 import 'package:cuidador_app_mobile/UI/Pages/ProfilesPreview/ProfileCuidador/Models/profile_cuidador_controller.dart';
-import 'package:cuidador_app_mobile/UI/Shared/Containers/summary_contract.dart';
+import 'package:cuidador_app_mobile/UI/Pages/ProfilesPreview/shimmer_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,11 +10,14 @@ class ProfileCuidadorMain extends StatelessWidget {
 
   ProfileCuidadorController con = Get.put(ProfileCuidadorController());
   LetterDates letterDates = LetterDates();
+  ShimmerProfile shimmers = Get.put(ShimmerProfile());
 
   @override
   Widget build(BuildContext context){
     
     return Obx(()=>
+
+      con.isLoading.value == true ? shimmers.shimmerContenedor() :
       Scaffold(
         appBar: AppBar(
           backgroundColor: con.colorBg.value,
@@ -84,10 +87,14 @@ class ProfileCuidadorMain extends StatelessWidget {
                   left: (Get.width - 150) / 2, // Ajusta este valor para centrar la imagen
                   child: Container(
                     decoration: const BoxDecoration(shape: BoxShape.circle),
-                    child: Image.asset(
-                      'assets/img/testing/profile_image_test.png',
-                      height: 150,
-                      fit: BoxFit.contain,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Image.network(con.profileCuidador.value.persona?.first.avatarImage ?? '', 
+                        width: 150, height: 150, fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Image(image: AssetImage('assets/img/shared/avatar_default.jpg'), width: 150, height: 150, fit: BoxFit.cover);
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -193,7 +200,11 @@ class ProfileCuidadorMain extends StatelessWidget {
         children: [
           const Text('Reseñas', style: TextStyle(color: Colors.grey, fontSize: 18),),
           Expanded(
-            child: ListView.builder(
+            child:  
+            con.profileCuidador.value.comentariosUsuario == null ? 
+              _notFound('El cuidador aún no cuenta con reseñas')
+            :
+            ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: con.profileCuidador.value.comentariosUsuario?.length ?? 0,
               itemBuilder: (context, index){
@@ -206,6 +217,26 @@ class ProfileCuidadorMain extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _notFound(String text){
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Text(text, style: const TextStyle(color: Colors.black, fontSize: 15),),
       ),
     );
   }

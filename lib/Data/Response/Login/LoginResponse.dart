@@ -11,7 +11,7 @@ class LoginResponse extends GetConnect{
   Future<UsuarioModel> login(String usuario, String contrasenia) async {
     try
     {
-      Response response = await post( '${ConnectionString.connectionString}/Usuario/login', {
+      Response response = await post('${ConnectionString.connectionString}Usuario/login', {
         'usuario': usuario,
         'contrasenia': contrasenia
       }, headers: {

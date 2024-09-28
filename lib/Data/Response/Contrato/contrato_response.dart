@@ -1,4 +1,5 @@
 import 'package:cuidador_app_mobile/Domain/Model/Contrato/contrato_item_model.dart';
+import 'package:cuidador_app_mobile/Domain/Utilities/connection_string.dart';
 // import 'package:cuidador_app_mobile/Domain/Model/Contrato/contrato_model.dart';
 // import 'package:cuidador_app_mobile/UI/Pages/Contrato/Modules/contrato_item_list.dart';
 import 'package:cuidador_app_mobile/UI/Shared/Snackbar/snackbar_ui.dart';
@@ -12,7 +13,7 @@ class ContratoResponse extends GetConnect{
     List<ContratoItemModel> contratos = [];
     try
     {
-      final response = await get('https://cuidadorapi.azurewebsites.net/api/ContratoItem/fechasOcupadasCuidador/$idpersona');
+      final response = await get('${ConnectionString.connectionString}api/ContratoItem/fechasOcupadasCuidador/$idpersona');
       
       for(var item in response.body){
         contratos.add(ContratoItemModel.fromJson(item));

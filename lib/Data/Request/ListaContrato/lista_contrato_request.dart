@@ -23,7 +23,7 @@ class ListaContratoRequest extends GetConnect{
 
   Future<bool> cambiarEstatusTarea(int idTarea, int idEstatus) async{
     try{
-      Response response = await post('${ConnectionString.connectionString}/cambiarEstatusTarea', {
+      Response response = await post('${ConnectionString.connectionString}cambiarEstatusTarea', {
         'id1': idTarea,
         'id2': idEstatus
       });

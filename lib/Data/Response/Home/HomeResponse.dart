@@ -17,8 +17,27 @@ class HomeResponse extends GetConnect{
       // final response = await get('https://mocki.io/v1/4d570bfa-2969-4b58-8e95-0d78db7eb969');
       final response = await get('${ConnectionString.connectionString}Usuario/verCuidadores');
       
-      for(var item in response.body){
-        usuarios.add(UsuarioModel.fromJson(item));
+      switch(response.statusCode){
+        case 200:
+          List<dynamic> data = response.body;
+          usuarios = data.map((e) => UsuarioModel.fromJson(e)).toList();
+          return usuarios;
+          
+        case 404: 
+          snackbarUI.snackbarError('Error Interno del Servidor', '');
+          return usuarios;
+        
+        case 500: 
+          snackbarUI.snackbarError('Error Interno del Servidor', '');
+          return usuarios;
+        
+        case 400: 
+          snackbarUI.snackbarError('Usuario o contraseña incorrectos', '');
+          return usuarios;
+
+        default:
+          snackbarUI.snackbarError('Error Interno del Servidor', '');
+          return usuarios;
       }
 
     }

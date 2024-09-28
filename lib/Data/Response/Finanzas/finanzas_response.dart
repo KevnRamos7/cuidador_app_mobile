@@ -13,7 +13,7 @@ class FinanzasResponse extends GetConnect{
       dynamic usuario = GetStorage().read('usuario');
       FinanzasCliente finanzasCliente = FinanzasCliente();
       try{
-        Response response = await get('${ConnectionString.connectionString}/Finanzas/finanzasUsuarioCliente/$idUsuario');
+        Response response = await get('${ConnectionString.connectionString}Finanzas/finanzasUsuarioCliente/$idUsuario');
 
         if(response.status.hasError){
           return Future.error('Error al obtener la lista de finanzas');
@@ -32,7 +32,7 @@ class FinanzasResponse extends GetConnect{
       dynamic usuario = GetStorage().read('usuario');
       FinanzasCuidador finanzasCliente = FinanzasCuidador();
       try{
-        Response response = await get('${ConnectionString.connectionString}/Finanzas/finanzasUsuarioCuidador/${usuario['idUsuario']}');
+        Response response = await get('${ConnectionString.connectionString}Finanzas/finanzasUsuarioCuidador/${usuario['idUsuario']}');
 
         if(response.status.hasError){
           return Future.error('Error al obtener la lista de finanzas');
@@ -51,7 +51,7 @@ class FinanzasResponse extends GetConnect{
       dynamic usuario = GetStorage().read('usuario');
       SalarioCuidador salarioCuidador = SalarioCuidador();
       try{
-        Response response = await get('${ConnectionString.connectionString}/Finanzas/salarioCuidador/$idUsuario}');
+        Response response = await get('${ConnectionString.connectionString}Finanzas/salarioCuidador/$idUsuario}');
 
         if(response.status.hasError){
           return Future.error('Error al obtener el salario');

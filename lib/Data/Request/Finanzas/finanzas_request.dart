@@ -13,7 +13,7 @@ class FinanzasRequest extends GetConnect{
     String numero = tarjeta.numeroTarjeta!.replaceAll(' ', '');
     int usuarioId = usuario['idUsuario'].toInt();
     try{
-      Response response = await post('${ConnectionString.connectionString}/Finanzas/añadirTarjeta',
+      Response response = await post('${ConnectionString.connectionString}Finanzas/añadirTarjeta',
       {
         'numeroTarjeta': numero,
         'fechaVencimiento': vencimiento,
@@ -34,7 +34,7 @@ class FinanzasRequest extends GetConnect{
   Future<bool> recargarSaldo(int idMetodoPago, double importe) async{
     int usuarioId = usuario['idUsuario'].toInt();
     try{
-      Response response = await post('${ConnectionString.connectionString}/Finanzas/recargarSaldo',
+      Response response = await post('${ConnectionString.connectionString}Finanzas/recargarSaldo',
       {
         'idUsuario': usuarioId,
         'idMetodoPago': idMetodoPago,
@@ -53,7 +53,7 @@ class FinanzasRequest extends GetConnect{
   Future<bool> retirarSaldo(int idCuentaBancaria, double importe, int idSaldo) async{
     int usuarioId = usuario['idUsuario'].toInt();
     try{
-      Response response = await post('${ConnectionString.connectionString}/Finanzas/retirarSaldo',
+      Response response = await post('${ConnectionString.connectionString}Finanzas/retirarSaldo',
       {
         'idCuentaBancaria': idCuentaBancaria,
         'importe' : importe,
@@ -72,7 +72,7 @@ class FinanzasRequest extends GetConnect{
 
   Future<bool> modificarCuentaBancaria(int idCuentaBancaria, String numeroCuenta, double clabe, String banco) async{
     try{
-      Response response = await post('${ConnectionString.connectionString}/Finanzas/modificarCuentaBancaria',
+      Response response = await post('${ConnectionString.connectionString}Finanzas/modificarCuentaBancaria',
       {
         'idCuentaBancaria': idCuentaBancaria,
         'numeroCuenta' : numeroCuenta,

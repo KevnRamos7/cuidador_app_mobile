@@ -30,16 +30,24 @@ class FinanzasController extends GetxController{
   RxBool loadingAddBankAccount = false.obs;
   RxBool loadingDisposeCash = false.obs;
   RxBool loadingModifyAccount = false.obs;
+  RxBool loadingScreen = false.obs;
 
   @override
   void onInit() async{
     super.onInit();
-    dynamic usuario = GetStorage().read('usuario');
-    if(usuario['tipoUsuarioid'] == 2){ 
-      await cargarFinanzasCliente();
-    }
-    else{
-      await cargarFinanzasCuidador();
+    loadingScreen.value = true;
+    try{
+      dynamic usuario = GetStorage().read('usuario');
+      if(usuario['tipoUsuarioid'] == 2){ 
+        await cargarFinanzasCliente();
+      }
+      else{
+        await cargarFinanzasCuidador();
+      }
+      loadingScreen.value = false;
+    }catch(e){
+      loadingScreen.value = false;
+      snackbarUI.snackbarError('Error al cargar las finanzas', e.toString());
     }
   }
 

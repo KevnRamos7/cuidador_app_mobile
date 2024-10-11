@@ -9,7 +9,7 @@ import 'Domain/Utilities/route.dart';
 
 void main() async{
   runApp(const MyApp());
-  await GetStorage.init();
+  await GetStorage.init(); 
 
 }
 

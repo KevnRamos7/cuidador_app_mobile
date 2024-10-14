@@ -69,7 +69,13 @@ class FeedGridView{
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('${usuario.persona!.first.nombre.toString()} ${usuario.persona!.first.apellidoMaterno.toString()}', style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.start,),
+                            Text(
+                            '${usuario.persona!.first.nombre.toString()} ${usuario.persona!.first.apellidoMaterno.toString()}', 
+                              style: const TextStyle(fontWeight: FontWeight.bold), 
+                              textAlign: TextAlign.start,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                             // Text(usuario.nivelUsuario ?? '', style: const TextStyle(fontWeight: FontWeight.w300)),
                             Text('Costo: ${money.formatCurrencyInMXN(usuario.salarioCuidador ?? 0)} /h.', style: const TextStyle(fontWeight: FontWeight.w300)),
                           ],

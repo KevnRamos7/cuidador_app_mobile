@@ -1,4 +1,4 @@
-import 'package:cuidador_app_mobile/Domain/Model/Catalogos/metodo_pago_usuario.dart';
+
 import 'package:cuidador_app_mobile/Domain/Model/Objects/finanzas_cliente.dart';
 import 'package:cuidador_app_mobile/Domain/Model/Objects/finanzas_cuidador.dart';
 import 'package:cuidador_app_mobile/Domain/Utilities/connection_string.dart';
@@ -10,7 +10,6 @@ import '../../../Domain/Model/Catalogos/salario_cuidador.dart';
 class FinanzasResponse extends GetConnect{
 
   Future<FinanzasCliente> getFinanzasCliente(int idUsuario) async{
-      dynamic usuario = GetStorage().read('usuario');
       FinanzasCliente finanzasCliente = FinanzasCliente();
       try{
         Response response = await get('${ConnectionString.connectionString}Finanzas/finanzasUsuarioCliente/$idUsuario');

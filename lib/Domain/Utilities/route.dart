@@ -23,14 +23,14 @@ class Routes {
     GetPage(name: '/contratar', page: () => ContratoPageMain()),
     GetPage(name: '/select_profile', page: () => SelectProfilePage()),
     GetPage(name: '/resumen_contrato', page: () => ResumenContPageMain()),
-    GetPage(name: '/confirmacion_cont', page: () => ConfirmacionContPage()),
+    GetPage(name: '/confirmacion_cont', page: () => const ConfirmacionContPage()),
     GetPage(name: '/previewProfileCuidador', page: () => ProfileCuidadorMain()),
     // GetPage(name: '/previewProfileCliente', page: () => ProfileCuidadorMain()),
     GetPage(name: '/list_contratos', page: () => ListcontratoPageMain()),
     GetPage(name: '/my_profile_cliente', page: () => MyProfileClientePage()),
     GetPage(name: '/dashboard', page: () => DashboardPage()),
     GetPage(name: '/finanzas', page: () => FinanzasPage()),
-    GetPage(name: '/add_credit_card', page: () => AddCreditCardPage()),
+    GetPage(name: '/add_credit_card', page: () => const AddCreditCardPage()),
   ];
 
 }

@@ -316,7 +316,7 @@ class ContratosCvEstatus{
     ListContratoController con = Get.find();
     switch (typeDisplay) {
       case 1:
-      return SizedBox();
+      return const SizedBox();
         // return SizedBox(
         //   height: Get.height * 0.05,
         //   width: Get.width * 0.5,
@@ -330,7 +330,7 @@ class ContratosCvEstatus{
         //   ),
         // );
       case 2:
-        return SizedBox();
+        return const SizedBox();
         // return SizedBox(
         //   height: Get.height * 0.05,
         //   width: Get.width * 0.5,

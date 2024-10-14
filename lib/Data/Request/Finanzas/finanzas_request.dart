@@ -1,3 +1,4 @@
+import 'package:cuidador_app_mobile/UI/Shared/Snackbar/snackbar_ui.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -7,6 +8,7 @@ import '../../../Domain/Utilities/connection_string.dart';
 class FinanzasRequest extends GetConnect{
 
   dynamic usuario = GetStorage().read('usuario');
+  SnackbarUI snackbar = SnackbarUI();
 
   Future<bool> addCreditCard(MetodoPagoUsuario tarjeta) async{
     String vencimiento = convertToDate(tarjeta.fechaVencimiento!);
@@ -21,12 +23,24 @@ class FinanzasRequest extends GetConnect{
         'nombreTitular' : tarjeta.nombreBeneficiario,
         'usuarioId' : usuarioId
       });
-      if(response.status.hasError){
-        return Future.error('Error al agregar la tarjeta de credito');
+      
+      switch(response.statusCode){
+        case 200:
+          return true;
+        case 400:
+          snackbar.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+          return Future.error('Error al añadir la tarjeta');
+        case 500:
+          snackbar.snackbarError('Error Interno del Servidor.', 'Intenta más tarde');
+          return Future.error('Error al añadir la tarjeta');
+        default:
+          snackbar.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+          return false;
       }
-      return true;
+
     }
     catch(e){
+      snackbar.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
       return false;
     }
   }
@@ -40,12 +54,24 @@ class FinanzasRequest extends GetConnect{
         'idMetodoPago': idMetodoPago,
         'importe' : importe
       });
-      if(response.status.hasError){
-        return Future.error('Error al recargar el saldo');
+      
+
+      switch(response.statusCode){
+        case 200:
+          return true;
+        case 400:
+          snackbar.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+          return Future.error('Error al recargar el saldo');
+        case 500:
+          snackbar.snackbarError('Error Interno del Servidor.', 'Intenta más tarde');
+          return Future.error('Error al recargar el saldo');
+        default:
+          snackbar.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+          return false;
       }
-      return true;
     }
     catch(e){
+      snackbar.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
       return false;
     }
   }
@@ -60,12 +86,23 @@ class FinanzasRequest extends GetConnect{
         'idSaldo' : idSaldo,
         'usuarioId': usuarioId
       });
-      if(response.status.hasError){
-        return Future.error('Error al retirar el saldo');
+      
+      switch(response.statusCode){
+        case 200:
+          return true;
+        case 400:
+          snackbar.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+          return Future.error('Error al retirar el saldo');
+        case 500:
+          snackbar.snackbarError('Error Interno del Servidor.', 'Intenta más tarde');
+          return Future.error('Error al retirar el saldo');
+        default:
+          snackbar.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+          return false;
       }
-      return true;
     }
     catch(e){
+      snackbar.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
       return false;
     }
   }
@@ -79,12 +116,24 @@ class FinanzasRequest extends GetConnect{
         'clabeInterbancaria' : clabe,
         'nombreBanco' : banco
       });
-      if(response.status.hasError){
-        return Future.error('Error al modificar la cuenta bancaria');
+      
+      switch(response.statusCode){
+        case 200:
+          return true;
+        case 400:
+          snackbar.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+          return Future.error('Error al modificar la cuenta bancaria');
+        case 500:
+          snackbar.snackbarError('Error Interno del Servidor.', 'Intenta más tarde');
+          return Future.error('Error al modificar la cuenta bancaria');
+        default:
+          snackbar.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+          return false;
       }
-      return true;
+
     }
     catch(e){
+      snackbar.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
       return false;
     }
   }

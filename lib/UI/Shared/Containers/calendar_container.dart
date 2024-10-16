@@ -41,7 +41,7 @@ class CalendarContainer {
               String sanitizedDate = sanitizeDateTime(dateTime);
               bool isDisabled = disabledDates.value.contains(sanitizedDate);
               //quitar fechas anteriores a la fecha actual
-              if (dateTime.isBefore(DateTime.now())) {
+              if (dateTime.isBefore(DateTime.now()) || dateTime.isAtSameMomentAs(DateTime.now())) {
                 return false;
               }
               return !isDisabled;
@@ -58,7 +58,7 @@ class CalendarContainer {
             fontWeight: FontWeight.bold,
           ),
         ),
-        value: [DateTime.now()],
+        value: [DateTime.now().add(const Duration(days: 1))],
         onValueChanged: (value) {
           onDateChanged(value[0]);
         },

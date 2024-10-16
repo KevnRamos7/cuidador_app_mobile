@@ -27,49 +27,37 @@ class DomicilioModel {
     this.pais = "MÉXICO", // Valor por defecto
     this.referencias,
     this.estatusId,
-    // required this.fechaRegistro,
-    // required this.usuarioRegistro,
-    // this.fechaModificacion,
-    // this.usuarioModifico,
   });
 
   /// Crea una instancia de DomicilioModel a partir de un Map JSON.
   factory DomicilioModel.fromJson(Map<String, dynamic> json) {
     return DomicilioModel(
-      idDomicilio: json['id_domicilio'] ?? json['idDomicilio'],
+      idDomicilio: json['idDomicilio'],
       calle: json['calle'],
       colonia: json['colonia'],
-      numeroInterior: json['numero_interior'] ?? json['numeroInterior'],
-      numeroExterior: json['numero_exterior'] ?? json['numeroExterior'],
+      numeroInterior: json['numeroInterior'],
+      numeroExterior: json['numeroExterior'],
       ciudad: json['ciudad'],
       estado: json['estado'],
       pais: json['pais'] ?? "MÉXICO",
       referencias: json['referencias'],
-      estatusId: json['estatus_id'] ?? json['estatusId'],
-      // fechaRegistro: DateTime.parse(json['fecha_registro']),
-      // usuarioRegistro: json['usuario_registro'],
-      // fechaModificacion: json['fecha_modificacion'] != null ? DateTime.parse(json['fecha_modificacion']) : null,
-      // usuarioModifico: json['usuario_modifico'],
+      estatusId: json['estatusId'],
     );
   }
 
   /// Convierte una instancia de DomicilioModel a un Map JSON.
   Map<String, dynamic> toJson() {
     return {
-      'id_domicilio': idDomicilio,
+      'idDomicilio': idDomicilio,
       'calle': calle,
       'colonia': colonia,
-      'numero_interior': numeroInterior,
-      'numero_exterior': numeroExterior,
+      'numeroInterior': numeroInterior,
+      'numeroExterior': numeroExterior,
       'ciudad': ciudad,
       'estado': estado,
       'pais': pais,
       'referencias': referencias,
-      'estatus_id': estatusId,
-      'fecha_registro': fechaRegistro?.toIso8601String(),
-      'usuario_registro': usuarioRegistro,
-      'fecha_modificacion': fechaModificacion?.toIso8601String(),
-      'usuario_modifico': usuarioModifico,
+      'estatusId': estatusId,
     };
   }
 }

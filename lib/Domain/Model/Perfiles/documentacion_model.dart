@@ -10,22 +10,22 @@ class DocumentacionModel{
   DocumentacionModel({this.idDocumentacion, this.tipoDocumento, this.nombreDocumento, this.urlDocumento, this.fechaEmision, this.fechaExpiracion});
 
   DocumentacionModel.fromJson(Map<String, dynamic> json){
-    idDocumentacion = json['id_documentacion'];
-    tipoDocumento = json['tipo_documento'];
-    nombreDocumento = json['nombre_documento'];
-    urlDocumento = json['url_documento'];
-    fechaEmision = json['fecha_emision'];
-    fechaExpiracion = json['fecha_expiracion'];
+    idDocumentacion = json['idDocumentacion'];
+    tipoDocumento = json['tipoDocumento'];
+    nombreDocumento = json['nombreDocumento'];
+    urlDocumento = json['urlDocumento'];
+    fechaEmision = json['fechaEmision'];
+    fechaExpiracion = json['fechaExpiracion'];
   }
 
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id_documentacion'] = idDocumentacion;
-    data['tipo_documento'] = tipoDocumento;
-    data['nombre_documento'] = nombreDocumento;
-    data['url_documento'] = urlDocumento;
-    data['fecha_emision'] = fechaEmision;
-    data['fecha_expiracion'] = fechaExpiracion;
+    data['idDocumentacion'] = idDocumentacion;
+    data['tipoDocumento'] = tipoDocumento;
+    data['nombreDocumento'] = nombreDocumento;
+    data['urlDocumento'] = urlDocumento;
+    data['fechaEmision'] = fechaEmision;
+    data['fechaExpiracion'] = fechaExpiracion;
     return data;
   }
 

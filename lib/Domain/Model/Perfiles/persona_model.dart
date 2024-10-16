@@ -51,7 +51,6 @@ class PersonaModel {
     this.datosMedicos,
     this.certificaciones,
     this.avatarImage,
-    // required this.colorBg,
     this.estatus,
     this.documentacion,
     this.fechaRegistro
@@ -76,20 +75,18 @@ class PersonaModel {
       nombreCompletoFamiliar: json['nombreCompletoFamiliar'],
       domicilio: json['domicilio'] != null ? DomicilioModel.fromJson(json['domicilio']) : null,
       datosMedicos: json['datosMedicos'] != null ? DatosMedicosModel.fromJson(json['datosMedicos']) : null,
-      certificaciones: json['certificaciones'] != null ? (json['certificaciones'] as List).map((v) => CertificacionesModel.fromJson(v)).toList().obs : (json['certificacionesExperiencia'] != null ? (json['certificacionesExperiencia'] as List).map((v) => CertificacionesModel.fromJson(v)).toList().obs : null),
+      certificaciones: json['certificacionesExperiencia'], 
       avatarImage: json['avatarImage'],
-      // colorBg: Colors.white,
       estatus: json['estatus'],
       documentacion: json['documentacion'] != null ? DocumentacionModel.fromJson(json['documentacion']) : null,
       fechaRegistro:  json['fechaRegistro'] != null ? DateTime.tryParse(json['fechaRegistro']) : null,
-      // colorBg: json['avatar_image'] != null ? getColorBh(json['avatar_image']) : Future.value(Colors.white),
     );
   }
 
   /// Convierte una instancia de PersonaModel a un Map JSON.
   Map<String, dynamic> toJson() {
     return {
-      'id_persona': idPersona,
+      'idPersona': idPersona,
       'nombre': nombre,
       'apellidoPaterno': apellidoPaterno,
       'apellidoMaterno': apellidoMaterno,
@@ -105,14 +102,13 @@ class PersonaModel {
       'nombreCompletoFamiliar': nombreCompletoFamiliar,
       'domicilio': domicilio?.toJson(),
       'datosMedicos': datosMedicos?.toJson(),
-      'certificaciones': certificaciones?.map((v) => v.toJson()).toList(),
+      'certificaciones': certificaciones?.map((e) => e.toJson()).toList(),
       'avatarImage': avatarImage,
       'estatus': estatus,
       'documentacion': documentacion?.toJson(),
-      'fechaRegistro': fechaRegistro?.toIso8601String()
+      'fechaRegistro': fechaRegistro,
     };
   }
-
   // Crea un color de fondo para la persona
   static Future<Color> getColorBh(String image) async {
     PaletteGenerator paletteGenerator = await PaletteGenerator.fromImageProvider(NetworkImage(image));

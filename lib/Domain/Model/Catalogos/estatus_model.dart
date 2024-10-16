@@ -16,7 +16,7 @@ class EstatusModel{
 
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id_estatus'] = idEstatus;
+    data['idEstatus'] = idEstatus;
     data['codigo'] = codigo;
     data['nombre'] = nombre;
     data['color'] = color;

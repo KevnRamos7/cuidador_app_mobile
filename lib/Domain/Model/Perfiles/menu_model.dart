@@ -36,12 +36,14 @@ class MenuModel {
   /// Convierte una instancia de MenuModel a un Map JSON.
   Map<String, dynamic> toJson() {
     return {
-      'id_menu': idMenu,
-      'estatus_id': estatusId,
-      'nombre_menu': nombreMenu,
-      'descripcion_menu': descripcionMenu,
-      'ruta_menu': rutaMenu,
+      'idMenu': idMenu,
+      'estatusId': estatusId,
+      'nombreMenu': nombreMenu,
+      'descripcionMenu': descripcionMenu,
+      'rutaMenu': rutaMenu,
       'endpoint': endpoint,
     };
   }
+
+
 }

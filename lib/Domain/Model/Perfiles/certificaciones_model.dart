@@ -28,12 +28,12 @@ class CertificacionesModel{
 
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id_certificacion'] = idCertificacion;
-    data['tipo_certificacion'] = tipoCerficacion;
-    data['institucion_emisora'] = institucionEmisora;
-    data['fecha_certificacion'] = fechaCerficacion;
+    data['idCertificacion'] = idCertificacion;
+    data['tipoCerficacion'] = tipoCerficacion;
+    data['institucionEmisora'] = institucionEmisora;
+    data['fechaCerficacion'] = fechaCerficacion;
     data['vigente'] = vigente;
-    data['experiencia_anios'] = experienciaAnios;
+    data['experienciaAnios'] = experienciaAnios;
     data['descripcion'] = descripcion;
     if(documentacion != null){
       data['documentacion'] = documentacion!.toJson();

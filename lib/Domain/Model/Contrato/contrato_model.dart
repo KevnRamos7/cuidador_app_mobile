@@ -14,23 +14,23 @@ class ContratoModel{
   ContratoModel({this.idContrato, this.personaCuidador, this.personaCliente, this.estatus, this.contratoItem});
 
   ContratoModel.fromJson(Map<String, dynamic> json){
-    idContrato = json['id_contrato'];
-    personaCuidador = (json['persona_cuidador'] != null && json['persona_cuidador'].isNotEmpty)
-    ? PersonaModel.fromJson(json['persona_cuidador'][0])
+    idContrato = json['idContrato'];
+    personaCuidador = (json['personaCuidador'] != null && json['personaCuidador'].isNotEmpty)
+    ? PersonaModel.fromJson(json['personaCuidador'][0])
     : null;
-    personaCliente = json['persona_cliente'] != null ? PersonaModel.fromJson(json['persona_cliente']) : null;
+    personaCliente = json['personaCliente'] != null ? PersonaModel.fromJson(json['personaCliente']) : null;
     estatus = json['estatus'] != null ? EstatusModel.fromJson(json['estatus']) : null;
-    contratoItem = json['contrato_item'] != null ? (json['contrato_item'] as List).map((v) => ContratoItemModel.fromJson(v)).toList().obs : null;
+    contratoItem = json['contratoItem'] != null ? (json['contratoItem'] as List).map((v) => ContratoItemModel.fromJson(v)).toList().obs : null;
   }
 
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id_contrato'] = idContrato;
-    data['persona_cuidador_id'] = personaCuidador;
-    data['persona_cliente_id'] = personaCliente;
+    data['idContrato'] = idContrato;
+    data['personaCuidador'] = personaCuidador;
+    data['personaCliente'] = personaCliente;
     data['estatus'] = estatus;
     if(contratoItem != null){
-      data['contrato_item'] = contratoItem!.map((v) => v.toJson()).toList();
+      data['contratoItem'] = contratoItem!.map((v) => v.toJson()).toList();
     }
     return data;
   }

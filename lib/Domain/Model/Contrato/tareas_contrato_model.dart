@@ -1,5 +1,3 @@
-import 'package:cuidador_app_mobile/Domain/Model/Catalogos/estatus_model.dart';
-
 class TareasContratoModel{
 
   int? idTareasContrato;

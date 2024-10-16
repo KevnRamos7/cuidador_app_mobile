@@ -34,26 +34,28 @@ class ListaContratos {
     });
 
     factory ListaContratos.fromJson(Map<String, dynamic> json) => ListaContratos(
-        idContrato: json["id_contrato"],
-        idContratoItem: json["id_contrato_item"],
-        horarioInicio: json["horario_inicio"] != null ? DateTime.parse(json["horario_inicio"]) : null,
-        horarioFin: json["horario_fin"] != null ? DateTime.parse(json["horario_fin"]) : null,
-        personaCuidador: json["persona_cuidador"] != null ? PersonaModel.fromJson(json["persona_cuidador"]) : null,
-        personaCliente: json["persona_cliente"] != null ? PersonaModel.fromJson(json["persona_cliente"]) : null,
+        idContrato: json["idContrato"],
+        idContratoItem: json["idContratoItem"],
+        horarioInicio: json["horarioInicio"] != null ? DateTime.parse(json["horarioInicio"]) : null,
+        horarioFin: json["horarioFin"] != null ? DateTime.parse(json["horarioFin"]) : null,
+        personaCuidador: json["personaCuidador"] != null ? PersonaModel.fromJson(json["personaCuidador"]) : null,
+        personaCliente: json["personaCliente"] != null ? PersonaModel.fromJson(json["personaCliente"]) : null,
         estatus: json["estatus"] != null ? EstatusModel.fromJson(json["estatus"]) : null,
-        numeroDeTareas: json["numero_de_tareas"] ?? 0,
-        importeCuidado: json["importe_cuidado"] ?? 0,
+        numeroDeTareas: json["numeroDeTareas"] ?? 0,
+        importeCuidado: json["importeCuidado"] ?? 0,
     );
 
+
     Map<String, dynamic> toJson() => {
-        "id_contrato": idContrato,
-        "id_contrato_item": idContratoItem,
-        "horario_inicio": horarioInicio!.toIso8601String(),
-        "horario_fin": horarioFin!.toIso8601String(),
-        "persona_cuidador": personaCuidador,
-        "persona_cliente": personaCliente,
-        "estatus": estatus,
-        "numero_de_tareas": numeroDeTareas,
-        "importe_cuidado": importeCuidado,
+        "idContrato": idContrato,
+        "idContratoItem": idContratoItem,
+        "horarioInicio": horarioInicio!.toIso8601String(),
+        "horarioFin": horarioFin!.toIso8601String(),
+        "personaCuidador": personaCuidador!.toJson(),
+        "personaCliente": personaCliente!.toJson(),
+        "estatus": estatus!.toJson(),
+        "numeroDeTareas": numeroDeTareas,
+        "importeCuidado": importeCuidado,
     };
+
 }

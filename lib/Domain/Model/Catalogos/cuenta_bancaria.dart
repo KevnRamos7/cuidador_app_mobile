@@ -21,7 +21,7 @@ class CuentaBancaria{
     // usuario: json['Usuario'] != null ? UsuarioModel.fromJson(json['Usuario']) : null,
     numeroCuenta: json['numeroCuenta'],
     clabeInterbancaria: json['clabeInterbancaria'],
-    nombreBanco: json['nombrebanco']
+    nombreBanco: json['nombreBanco']
   );
 
   Map<String, dynamic> toJson() => {

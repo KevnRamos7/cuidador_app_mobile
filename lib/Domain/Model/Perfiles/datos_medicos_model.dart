@@ -7,10 +7,6 @@ class DatosMedicosModel {
   String? nombreMedicoFamiliar;
   String? telefonoMedicoFamiliar;
   String? observaciones;
-  DateTime? fechaRegistro;
-  int? usuarioRegistro;
-  DateTime? fechaModificacion;
-  int? usuarioModifico;
 
   /// Constructor de la clase DatosMedicosModel.
   DatosMedicosModel({
@@ -20,44 +16,32 @@ class DatosMedicosModel {
     this.tipoSanguineo,
     this.nombreMedicoFamiliar,
     this.telefonoMedicoFamiliar,
-    this.observaciones,
-    required this.fechaRegistro,
-    required this.usuarioRegistro,
-    this.fechaModificacion,
-    this.usuarioModifico,
+    this.observaciones
   });
 
   /// Crea una instancia de DatosMedicosModel a partir de un Map JSON.
   factory DatosMedicosModel.fromJson(Map<String, dynamic> json) {
     return DatosMedicosModel(
-      idDatosMedicos: json['id_datosmedicos'],
-      antecedentesMedicos: json['antecedentes_medicos'],
+      idDatosMedicos: json['idDatosMedicos'],
+      antecedentesMedicos: json['antecedentesMedicos'],
       alergias: json['alergias'],
-      tipoSanguineo: json['tipo_sanguineo'],
-      nombreMedicoFamiliar: json['nombre_medicofamiliar'],
-      telefonoMedicoFamiliar: json['telefono_medicofamiliar'],
-      observaciones: json['observaciones'],
-      fechaRegistro: DateTime.parse(json['fecha_registro']),
-      usuarioRegistro: json['usuario_registro'],
-      fechaModificacion: json['fecha_modificacion'] != null ? DateTime.parse(json['fecha_modificacion']) : null,
-      usuarioModifico: json['usuario_modifico'],
+      tipoSanguineo: json['tipo_sanguineotipoSanguineo'],
+      nombreMedicoFamiliar: json['nombreMedicoFamiliar'],
+      telefonoMedicoFamiliar: json['telefonoMedicoFamiliar'],
+      observaciones: json['observaciones']
     );
   }
 
   /// Convierte una instancia de DatosMedicosModel a un Map JSON.
   Map<String, dynamic> toJson() {
     return {
-      'id_datosmedicos': idDatosMedicos,
-      'antecedentes_medicos': antecedentesMedicos,
+      'idDatosMedicos': idDatosMedicos,
+      'antecedentesMedicos': antecedentesMedicos,
       'alergias': alergias,
-      'tipo_sanguineo': tipoSanguineo,
-      'nombre_medicofamiliar': nombreMedicoFamiliar,
-      'telefono_medicofamiliar': telefonoMedicoFamiliar,
-      'observaciones': observaciones,
-      'fecha_registro': fechaRegistro?.toIso8601String(),
-      'usuario_registro': usuarioRegistro,
-      'fecha_modificacion': fechaModificacion?.toIso8601String(),
-      'usuario_modifico': usuarioModifico,
+      'tipoSanguineo': tipoSanguineo,
+      'nombreMedicoFamiliar': nombreMedicoFamiliar,
+      'telefonoMedicoFamiliar': telefonoMedicoFamiliar,
+      'observaciones': observaciones
     };
   }
 }

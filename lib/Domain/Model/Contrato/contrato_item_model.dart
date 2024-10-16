@@ -19,7 +19,7 @@ class ContratoItemModel{
 
   factory ContratoItemModel.fromJson(Map<String, dynamic> json){
     return ContratoItemModel(
-      idContratoItem: json['id_contrato_item'],
+      idContratoItem: json['idContratoItem'],
       estatus: json['estatus'] != null ? EstatusModel.fromJson(json['estatus']) : null,
       observaciones: json['observaciones'],
       horarioInicioPropuesto: DateTime.tryParse(json['horarioInicioPropuesto'].toString().replaceAll('T', " ")),
@@ -33,18 +33,18 @@ class ContratoItemModel{
   }
 
   Map<String, dynamic> toJson(){
-    return {
-      'id_contrato_item': idContratoItem,
-      'estatus': estatus,
-      'observaciones': observaciones,
-      'horario_inicio_propuesto': horarioInicioPropuesto?.toIso8601String() ?? '',
-      'horario_fin_propuesto': horarioFinPropuesto?.toIso8601String() ?? '',
-      'fecha_aceptacion': fechaAceptacion?.toIso8601String() ?? '',
-      'fecha_cambio_estatus': fechaInicioCuidado?.toIso8601String() ?? '',
-      'fecha_inicio_cuidado': fechaInicioCuidado?.toIso8601String() ?? '',
-      'fecha_fin_cuidado': fechaFinCuidado?.toIso8601String() ?? '',
-      'tareas_contrato': tareasContrato!.map((e) => e.toJson()).toList(),
-    };
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['idContratoItem'] = idContratoItem;
+    data['estatus'] = estatus!.toJson();
+    data['observaciones'] = observaciones;
+    data['horarioInicioPropuesto'] = horarioInicioPropuesto?.toIso8601String();
+    data['horarioFinPropuesto'] = horarioFinPropuesto?.toIso8601String();
+    data['fechaAceptacion'] = fechaAceptacion?.toIso8601String();
+    data['fechaInicioCuidado'] = fechaInicioCuidado?.toIso8601String();
+    data['fechaFinCuidado'] = fechaFinCuidado?.toIso8601String();
+    data['importeCuidado'] = importeCuidado;
+    data['tareasContrato'] = tareasContrato!.map((i) => i.toJson()).toList();
+    return data;
   }
 
 }

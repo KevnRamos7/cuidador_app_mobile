@@ -25,12 +25,12 @@ class ComentariosModel{
 
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id_comentarios'] = idComentarios;
-    data['persona_receptor'] = personaReceptor;
-    data['persona_emisor'] = personaEmisor;
+    data['idComentarios'] = idComentarios;
+    data['personaReceptor'] = personaReceptor;
+    data['personaEmisor'] = personaEmisor;
     data['calificacion'] = calificacion;
     data['comentario'] = comentario;
-    data['fecha_registro'] = fechaRegistro;
+    // data['fechaRegistro'] = fechaRegistro;
     return data;
   }
 

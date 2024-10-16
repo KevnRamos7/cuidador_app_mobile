@@ -25,32 +25,28 @@ class ListcontratoPageMain extends StatelessWidget {
 
   Widget _stateManagement(ListContratoController con){
     return Obx(()=>
-      con.statusLoading.value == true ? screenStates.loadingScreen() : _stateMain(con)
+      RefreshIndicator(
+        onRefresh: () async{
+          await con.getContratosPorCliente();
+          con.timeLineList = con.buildTimeline.construirLista(con.eventos);
+        },
+        child: Scaffold(
+          appBar: AppBar(actions: const [],),
+          body: con.statusLoading.value == true ? screenStates.loadingScreen() : _stateMain(con),
+          bottomNavigationBar: BottomNavigationMain.instance.bottomNavigation(),
+        ),
+      )
     );
   }
 
   Widget _stateMain(ListContratoController con){
     dynamic usuario = GetStorage().read('usuario');
-    return RefreshIndicator(
-      onRefresh: () async{
-        await con.getContratosPorCliente();
-        con.timeLineList = con.buildTimeline.construirLista(con.eventos);
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          actions: const [],
-        ),
-        body: Obx(()=>
-          con.statusLoading.value == true ? const Center(child: CupertinoActivityIndicator()) : Column(
-            children: [
-              header.encabezado(),
-              header.listaFechas(),
-              usuario['tipoUsuarioid'] == 2 ? head.contenido() : headCv.contenido()
-            ],
-          ),
-        ),
-        bottomNavigationBar: BottomNavigationMain.instance.bottomNavigation(),
-      ),
+    return Column(
+      children: [
+        header.encabezado(),
+        header.listaFechas(),
+        usuario['tipoUsuarioid'] == 2 ? head.contenido() : headCv.contenido()
+      ],
     );
   }
 

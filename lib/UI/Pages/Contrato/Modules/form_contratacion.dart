@@ -14,7 +14,6 @@ class FormContratacion{
   FormTextfield formTextfield = Get.put(FormTextfield());
   ContratoController con = Get.put(ContratoController());
   Pickers pickers = Get.put(Pickers());
-  // OnchangeFunctions onchangeFunctions = Get.put(OnchangeFunctions());
 
   Widget listForm(){
     return Expanded(
@@ -22,160 +21,164 @@ class FormContratacion{
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: Get.width * 0.1),
           child: 
-            Obx(()=>
-              Column(
-                  children: [
-                
-                    _textTitulo('¿Qué dias prefieres?', 0),
-                
-                    Container(
-                      margin: EdgeInsets.only(top: Get.height * 0.04),
-                      child: Obx(()=>
-                        calendarContainer.calendarContainer(
-                          disabledDates: con.fechasNoDisponiblesSet.toString().obs,
-                          height: Get.height * 0.4, 
-                          width: Get.height * 0.4,
-                          onDateChanged: (DateTime date) async{
-                            con.onDateChanged(date);
-                            con.horariosInicialesDisponibles = con.extraFunctions.generateAvailableTimes(con.fechasConCita, con.selectedDate.value);
-                            con.update();
-                          }
+            Column(
+                children: [
+              
+                  _textTitulo('¿Qué dias prefieres?', 0),
+              
+                  Container(
+                    margin: EdgeInsets.only(top: Get.height * 0.04),
+                    child: Obx(()=>
+                      calendarContainer.calendarContainer(
+                        disabledDates: con.fechasNoDisponiblesSet.toString().obs,
+                        height: Get.height * 0.4, 
+                        width: Get.height * 0.4,
+                        onDateChanged: (DateTime date) async{
+                          con.onDateChanged(date);
+                          con.horariosInicialesDisponibles = con.extraFunctions.generateAvailableTimes(con.fechasConCita, con.selectedDate.value);
+                        }
+                      ),
+                    )
+                  ),
+              
+                  Obx(()=>
+                    Column(
+                      children: [
+                        _textTitulo('¿Qué horarios prefieres?', Get.height * 0.04),
+                        
+                        _txtSubtitulo('Selecciona una hora de inicio', 10),
+                        _listaHoras(1),
+                        
+                        _txtSubtitulo('Selecciona una hora de finalización', 10),
+                        _listaHoras(2),
+                                      
+                        _textTitulo('¿Alguna Observación?', Get.height * 0.04),
+                                      
+                        _txtSubtitulo('Recuerda que puedes dejar comentarios / notas a tu cuidador para un cuidador más personalizado.', Get.height * 0.01),
+                                      
+                        formTextfield.form_txt(
+                          controller: con.txtObservacion.value,
+                          padding: Get.height * 0.03,
+                          height: Get.height * 0.2,
+                          width: Get.width * 0.8,
+                          hintText: 'Mi padre suele tener dificultades para comer, especialmente durante el desayuno. Sería ideal que se le motive pacientemente para que coma al menos ...',
                         ),
-                      )
-                    ),
-                
-                    _textTitulo('¿Qué horarios prefieres?', Get.height * 0.04),
-
-                    _txtSubtitulo('Selecciona una hora de inicio', 10),
-                    _listaHoras(1),
-
-                    _txtSubtitulo('Selecciona una hora de finalización', 10),
-                    _listaHoras(2),
-                
-                    _textTitulo('¿Alguna Observación?', Get.height * 0.04),
-                
-                    _txtSubtitulo('Recuerda que puedes dejar comentarios / notas a tu cuidador para un cuidador más personalizado.', Get.height * 0.01),
-                
-                    formTextfield.form_txt(
-                      controller: con.txtObservacion.value,
-                      padding: Get.height * 0.03,
-                      height: Get.height * 0.2,
-                      width: Get.width * 0.8,
-                      hintText: 'Mi padre suele tener dificultades para comer, especialmente durante el desayuno. Sería ideal que se le motive pacientemente para que coma al menos ...',
-                    ),
-                
-                    Obx(()=>
-                      Column(
-                        children: [
-                      
-                          Container(
-                              margin: EdgeInsets.only(top: Get.height * 0.04),
-                              child: Row(
-                                children: [
-                                  _textTitulo('¿Quieres Asignar Tareas?', 0),
-                                  Checkbox(
-                                    value: con.cbxAsignTask.value, 
-                                    onChanged: (value) {
-                                      con.cbxTaskOnChange(value!);
-                                    }
-                                    , activeColor: const Color(0xFF395886)
-                                    , checkColor: Colors.white
-                                    )
-                                ],
-                              ),
-                            ),
-                                        
-                          _txtSubtitulo('En “Cuidador”, puedes generar una lista de tareas o actividades que tu cuidador debe realizar durante el cuidado en curso.', 10),
-                                        
-                          con.cbxAsignTask.value == true ? _txtTitulo2('Titulo', Get.height * 0.02) : const SizedBox(),
-                                        
-                          con.cbxAsignTask.value == true ? formTextfield.form_txt(
-                            controller: con.txtTituloTarea.value,
-                            padding: Get.height * 0.02,
-                            height: Get.height * 0.05,
-                            width: Get.width * 0.8,
-                            contentPaddingTop: 0,
-                            contentPaddingLeft: 20,
-                            hintText: 'Ejercicio Matutino, Limpieza del Hogar, etc.',
-                          ) : const SizedBox(),
-                                        
-                          con.cbxAsignTask.value == true ? _txtTitulo2('Descripción', Get.height * 0.02) : const SizedBox(),
-                                        
-                          con.cbxAsignTask.value == true ? formTextfield.form_txt(
-                            controller: con.txtDescripcionTarea.value,
-                            padding: Get.height * 0.02,
-                            height: Get.height * 0.1,
-                            width: Get.width * 0.8,
-                            contentPaddingTop: 10,
-                            maxLines: 10,
-                            hintText: 'Mantener el área de convivencia del paciente limpia y ordenada. Esto incluye la limpieza de la habitación, sala, cocina y baño.',
-                          ) : const SizedBox(),
-                                        
-                          con.cbxAsignTask.value == true ? _txtTitulo2('Hora de prefererencia', Get.height * 0.04) : const SizedBox(),  
-                                        
-                          con.cbxAsignTask.value == true ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      
+                        Obx(()=>
+                          Column(
                             children: [
-                              _listaHoras(3),
-                              IconButton.filled(onPressed: (){
-                                con.addTareasContrato();
-                              }, icon: const Icon(CupertinoIcons.add, size: 20,color: Colors.white,))
+                          
+                              Container(
+                                  margin: EdgeInsets.only(top: Get.height * 0.04),
+                                  child: Row(
+                                    children: [
+                                      _textTitulo('¿Quieres Asignar Tareas?', 0),
+                                      Checkbox(
+                                        value: con.cbxAsignTask.value, 
+                                        onChanged: (value) {
+                                          con.cbxTaskOnChange(value!);
+                                        }
+                                        , activeColor: const Color(0xFF395886)
+                                        , checkColor: Colors.white
+                                        )
+                                    ],
+                                  ),
+                                ),
+                                            
+                              _txtSubtitulo('En “Cuidador”, puedes generar una lista de tareas o actividades que tu cuidador debe realizar durante el cuidado en curso.', 10),
+                                            
+                              con.cbxAsignTask.value == true ? _txtTitulo2('Titulo', Get.height * 0.02) : const SizedBox(),
+                                            
+                              con.cbxAsignTask.value == true ? formTextfield.form_txt(
+                                controller: con.txtTituloTarea.value,
+                                padding: Get.height * 0.02,
+                                height: Get.height * 0.05,
+                                width: Get.width * 0.8,
+                                contentPaddingTop: 0,
+                                contentPaddingLeft: 20,
+                                hintText: 'Ejercicio Matutino, Limpieza del Hogar, etc.',
+                              ) : const SizedBox(),
+                                            
+                              con.cbxAsignTask.value == true ? _txtTitulo2('Descripción', Get.height * 0.02) : const SizedBox(),
+                                            
+                              con.cbxAsignTask.value == true ? formTextfield.form_txt(
+                                controller: con.txtDescripcionTarea.value,
+                                padding: Get.height * 0.02,
+                                height: Get.height * 0.1,
+                                width: Get.width * 0.8,
+                                contentPaddingTop: 10,
+                                maxLines: 10,
+                                hintText: 'Mantener el área de convivencia del paciente limpia y ordenada. Esto incluye la limpieza de la habitación, sala, cocina y baño.',
+                              ) : const SizedBox(),
+                                            
+                              con.cbxAsignTask.value == true ? _txtTitulo2('Hora de prefererencia', Get.height * 0.04) : const SizedBox(),  
+                                            
+                              con.cbxAsignTask.value == true ? Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  _listaHoras(3),
+                                  IconButton.filled(onPressed: (){
+                                    con.addTareasContrato();
+                                  }, icon: const Icon(CupertinoIcons.add, size: 20,color: Colors.white,))
+                                ],
+                              ) : const SizedBox(),
                             ],
-                          ) : const SizedBox(),
-                        ],
-                      ),
+                          ),
+                        ),
+                                    
+                        const SizedBox(height: 20),
+                                    
+                        Text('${con.tareasContrato.length} Tareas', style: const TextStyle(fontSize: 15, color: Colors.black54),),
+                                    
+                        const SizedBox(height: 20),
+                                    
+                        SizedBox(
+                          width: Get.width * 0.6,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white70,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: const BorderSide(color: Colors.black45, width: 1)
+                              )
+                            ),
+                            onPressed: () => con.saveContratoItem(), 
+                            child: const Text(
+                              'Guardar Fecha', 
+                              style: TextStyle(color: Colors.black, fontSize: 15),
+                            ),
+                          ),
+                        ),
+                                    
+                        const SizedBox(height: 20),
+                                    
+                        con.contratoItems.isNotEmpty ? 
+                        SizedBox(
+                          width: Get.width * 0.6,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black87,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: const BorderSide(color: Colors.white, width: 1)
+                              )
+                            ),
+                            onPressed: () => con.contratoItemList.mostrarListadofromModalSheet(con.contratoItems, con.personaCuidador.persona!.first.avatarImage!, 0), 
+                            child: const Text(
+                              'Ver Solicitudes', 
+                              style: TextStyle(color: Colors.white, fontSize: 15),
+                            ),
+                          ),
+                        ) : const SizedBox(),
+                                      
+                        const SizedBox(height: 100),
+                      ],
                     ),
+                  )
               
-                    const SizedBox(height: 20),
-              
-                    Text('${con.tareasContrato.length} Tareas', style: const TextStyle(fontSize: 15, color: Colors.black54),),
-              
-                    const SizedBox(height: 20),
-              
-                    SizedBox(
-                      width: Get.width * 0.6,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white70,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: const BorderSide(color: Colors.black45, width: 1)
-                          )
-                        ),
-                        onPressed: () => con.saveContratoItem(), 
-                        child: const Text(
-                          'Guardar Fecha', 
-                          style: TextStyle(color: Colors.black, fontSize: 15),
-                        ),
-                      ),
-                    ),
-              
-                    const SizedBox(height: 20),
-              
-                    con.contratoItems.isNotEmpty ? 
-                    SizedBox(
-                      width: Get.width * 0.6,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black87,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: const BorderSide(color: Colors.white, width: 1)
-                          )
-                        ),
-                        onPressed: () => con.contratoItemList.mostrarListadofromModalSheet(con.contratoItems, con.personaCuidador.persona!.first.avatarImage!, 0), 
-                        child: const Text(
-                          'Ver Solicitudes', 
-                          style: TextStyle(color: Colors.white, fontSize: 15),
-                        ),
-                      ),
-                    ) : const SizedBox(),
-                
-                    const SizedBox(height: 100)
-                
-                  ],
-                ),
-            ),
+                ],
+              ),
+            
           ),
         ),
     );

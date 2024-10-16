@@ -12,8 +12,10 @@ import 'package:get_storage/get_storage.dart';
 // import 'package:intl/intl.dart';
 // import 'package:get_storage/get_storage.dart';
 
+import '../../../../Data/Response/Finanzas/finanzas_response.dart';
 import '../../../../Domain/Model/Contrato/contrato_item_model.dart';
 import '../../../../Domain/Model/Contrato/tareas_contrato_model.dart';
+import '../../../../Domain/Model/Objects/finanzas_cliente.dart';
 
 class ContratoController extends GetxController{
 
@@ -24,6 +26,7 @@ class ContratoController extends GetxController{
   ContratoResponse contratoResponse = ContratoResponse();
   ExtraFunctions extraFunctions = ExtraFunctions();
   ContratoItemList contratoItemList = ContratoItemList();
+  FinanzasResponse finanzasResponse = FinanzasResponse();
 
 
   List<ContratoItemModel> fechasConCita = [];
@@ -43,6 +46,7 @@ class ContratoController extends GetxController{
 
   RxString hora = ''.obs;
   RxBool isSelected = false.obs;
+  Rx<FinanzasCliente> saldo = FinanzasCliente().obs;
 
   Rx<TextEditingController> txtObservacion = TextEditingController().obs;
   Rx<TextEditingController> txtTituloTarea = TextEditingController().obs;
@@ -68,12 +72,15 @@ class ContratoController extends GetxController{
       fechasNoDisponiblesSet.refresh();
       horariosInicialesDisponibles.value = extraFunctions.onlyForStartTime(fechasConCita, date);
       update();
+      dynamic usuario = GetStorage().read('usuario');
+      saldo.value = await finanzasResponse.getFinanzasCliente(usuario['idUsuario']); 
     }
     catch(e)
     {
       snackbarUI.snackbarError('Ha Ocurrido Un Error', 'No se ha podido obtener la informacion del cuidador.');
     }
   }
+
 
  // TODO  Funciones de la vista
 
@@ -184,6 +191,7 @@ class ContratoController extends GetxController{
     Get.back();
     update();
   }
+
   // Se agrega el contratoItem a la lista de contratoItems
   void saveContratoItem(){
 
@@ -194,6 +202,10 @@ class ContratoController extends GetxController{
     // Se crea el objeto tipo DateTime de la fecha de inicio y fin
     DateTime horarioInicio = extraFunctions.stringToDateTime(selectedTimeStart.value);
     DateTime horarioFin = extraFunctions.stringToDateTime(selectedTimeEnd.value);
+
+    //Cambiar la fecha de los horarios inicio y fin con respecto a la fecha seleccionada
+    horarioInicio = DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day, horarioInicio.hour, horarioInicio.minute);
+    horarioFin = DateTime(selectedDate.value.year, selectedDate.value.month, selectedDate.value.day, horarioFin.hour, horarioFin.minute);
 
     // Se agrega el contratoItem a la lista de contratoItems
     contratoItems.add(

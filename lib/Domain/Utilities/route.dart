@@ -1,5 +1,7 @@
 import 'package:cuidador_app_mobile/UI/Pages/Contrato/contrato_page_main.dart';
 import 'package:cuidador_app_mobile/UI/Pages/Contrato/resumen_cont_page_main.dart';
+import 'package:cuidador_app_mobile/UI/Pages/CuidadorReview/complete_review_page.dart';
+import 'package:cuidador_app_mobile/UI/Pages/CuidadorReview/cuidador_review_page.dart';
 import 'package:cuidador_app_mobile/UI/Pages/Dashboard/dashboard_page.dart';
 import 'package:cuidador_app_mobile/UI/Pages/FeedPage/feed_page_main.dart';
 import 'package:cuidador_app_mobile/UI/Pages/Finanzas/Modules/add_credit_card_page.dart';
@@ -31,6 +33,8 @@ class Routes {
     GetPage(name: '/dashboard', page: () => DashboardPage()),
     GetPage(name: '/finanzas', page: () => FinanzasPage()),
     GetPage(name: '/add_credit_card', page: () => const AddCreditCardPage()),
+    GetPage(name: '/cuidadorReview', page: () => CuidadorReview()),
+    GetPage(name: '/completeReview', page: () => CompleteReviewPage())
   ];
 
 }

@@ -46,7 +46,7 @@ class UsuarioModel{
       calificacion: json['calificacion'],
       usuario: json['usuario1'],
       contrasena: json['contrasenia'],
-      persona: json['persona'] != null ? (json['persona'] as List).map((v) => PersonaModel.fromJson(v)).toList().obs : null,
+      persona: json['personaFisicas'] != null ? (json['personaFisicas'] as List).map((v) => PersonaModel.fromJson(v)).toList().obs : null,
       comentariosUsuario: json['comentariosUsuario'] != null ? (json['comentariosUsuario'] as List).map((v) => ComentariosModel.fromJson(v)).toList().obs : null,
       menus: json['menu'] != null ? (json['menu'] as List).map((v) => MenuModel.fromJson(v)).toList() : null,
       salarioCuidador: json['salarioCuidador'] ?? 0.0,

@@ -91,11 +91,12 @@ class ContratosCvHead{
         return [
           PullDownMenuItem( //Interactuar con el contrato
             onTap: (){
-              con.eventosPorContrato(index);
-              modalComponents.showModal(estatus.contenidoEstatus(
-                (contrato.estatus!.idEstatus == 7 || contrato.estatus!.idEstatus == 19).obs,
-                contrato
-              ));
+              Get.toNamed('/processContract');
+              // con.eventosPorContrato(index);
+              // modalComponents.showModal(estatus.contenidoEstatus(
+              //   (contrato.estatus!.idEstatus == 7 || contrato.estatus!.idEstatus == 19).obs,
+              //   contrato
+              // ));
             },
             title: 'Entrar',
             icon: CupertinoIcons.square_arrow_right_fill,
@@ -108,14 +109,14 @@ class ContratosCvHead{
             title: 'Ver Perfil',
             icon: CupertinoIcons.person_alt_circle_fill,
           ),
-          PullDownMenuItem(
-            onTap: (){
-              con.getDetalleContrato(index);
-              modalComponents.showModal(detalle.contenidoDetalle());
-            },
-            title: 'Detalle',
-            icon: CupertinoIcons.square_list_fill,
-          ),
+          // PullDownMenuItem(
+          //   onTap: (){
+          //     con.getDetalleContrato(index);
+          //     modalComponents.showModal(detalle.contenidoDetalle());
+          //   },
+          //   title: 'Detalle',
+          //   icon: CupertinoIcons.square_list_fill,
+          // ),
           idEstatus != 8 && idEstatus != 9 && idEstatus != 19 ? 
           PullDownMenuItem(
             onTap: (){modalComponents.showConfirmCancel(

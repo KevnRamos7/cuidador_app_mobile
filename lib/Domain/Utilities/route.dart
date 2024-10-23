@@ -14,6 +14,7 @@ import 'package:cuidador_app_mobile/UI/Pages/ProfilesPreview/ProfileCuidador/pro
 import 'package:get/get.dart';
 
 import '../../UI/Pages/Contrato/confirmacion_cont_page.dart';
+import '../../UI/Pages/ProgressContract/progress_contract_main.dart';
 import '../../UI/Pages/SelectProfile/select_profile_page.dart';
 
 class Routes {
@@ -34,7 +35,10 @@ class Routes {
     GetPage(name: '/finanzas', page: () => FinanzasPage()),
     GetPage(name: '/add_credit_card', page: () => const AddCreditCardPage()),
     GetPage(name: '/cuidadorReview', page: () => CuidadorReview()),
-    GetPage(name: '/completeReview', page: () => CompleteReviewPage())
+    GetPage(name: '/completeReview', page: () => CompleteReviewPage()),
+
+    GetPage(name: '/progressContract', page: () => ProgressContractMain()),
+
   ];
 
 }

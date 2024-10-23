@@ -32,7 +32,7 @@ class HomeResponse extends GetConnect{
           return usuarios;
         
         case 400: 
-          snackbarUI.snackbarError('Usuario o contraseña incorrectos', '');
+          snackbarUI.snackbarError('Error Interno del Servidor', '');
           return usuarios;
 
         default:

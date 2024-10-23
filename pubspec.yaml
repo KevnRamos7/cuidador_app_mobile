@@ -64,6 +64,9 @@ dependencies:
   flutter_credit_card: ^4.0.1
   fade_shimmer: ^2.2.0
   flutter_native_splash: ^2.4.1
+  animated_floating_buttons: ^0.0.2
+  floating_action_bubble: ^1.1.4
+  flutter_expandable_fab: ^2.3.0
 
 dev_dependencies:
   flutter_test:

@@ -38,7 +38,8 @@ class _MyAppState extends State<MyApp> {
       title: "Cuidador",
       debugShowCheckedModeBanner: false,
       initialRoute: 
-      '/introduction',
+      '/login',
+      // '/introduction',
       // 'login',
       //'/list_contratos', 
       getPages: Routes.routes, // Rutas de la aplicacion

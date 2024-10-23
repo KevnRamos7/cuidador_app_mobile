@@ -75,7 +75,7 @@ class PersonaModel {
       nombreCompletoFamiliar: json['nombreCompletoFamiliar'],
       domicilio: json['domicilio'] != null ? DomicilioModel.fromJson(json['domicilio']) : null,
       datosMedicos: json['datosMedicos'] != null ? DatosMedicosModel.fromJson(json['datosMedicos']) : null,
-      certificaciones: json['certificacionesExperiencia'], 
+      certificaciones: json['certificacionesExperiencia'] != null ? (json['certificacionesExperiencia'] as List).map((v) => CertificacionesModel.fromJson(v)).toList().obs : null, 
       avatarImage: json['avatarImage'],
       estatus: json['estatus'],
       documentacion: json['documentacion'] != null ? DocumentacionModel.fromJson(json['documentacion']) : null,

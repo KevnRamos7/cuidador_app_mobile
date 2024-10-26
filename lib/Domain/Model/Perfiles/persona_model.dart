@@ -79,7 +79,7 @@ class PersonaModel {
       avatarImage: json['avatarImage'],
       estatus: json['estatus'],
       documentacion: json['documentacion'] != null ? DocumentacionModel.fromJson(json['documentacion']) : null,
-      fechaRegistro:  json['fechaRegistro'] != null ? DateTime.tryParse(json['fechaRegistro']) : null,
+      fechaRegistro: DateTime(2021, 1, 1) //json['fechaRegistro'] != null ? DateTime.tryParse(json['fechaRegistro']) : ,
     );
   }
 

@@ -17,7 +17,7 @@ class LoginResponse extends GetConnect{
       }, headers: {
         'Content-Type': 'application/json'
       });
-
+    
       switch(response.statusCode){
 
           case 200:

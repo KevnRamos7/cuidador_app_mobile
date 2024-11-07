@@ -21,7 +21,7 @@ class FinanzasCliente{
     saldoId = json['saldoId'];
     saldoActual = json['saldoActual'];
     metodoPagoUsuario = json['metodoPagoUsuario'] != null ? json['metodoPagoUsuario'].map<MetodoPagoUsuario>((e) => MetodoPagoUsuario.fromJson(e)).toList() : [];
-    transacciones = json['transacciones'] != null ? json['transacciones'].map<Transaccionessaldo>((e) => Transaccionessaldo.fromJson(e)).toList() : [];
+    transacciones = json['transaccionSaldo'] != null ? json['transaccionSaldo'].map<Transaccionessaldo>((e) => Transaccionessaldo.fromJson(e)).toList() : [];
   }
 
 }

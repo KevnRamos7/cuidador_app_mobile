@@ -13,16 +13,16 @@ class ContratoRequest extends GetConnect {
     String url =
         '${ConnectionString.connectionString}ContratoItem/guardarContrato';
     Map<String, dynamic> jsonRequest = {
-      'persona_cuidador_id': 6, //contrato.personaCuidador!.idPersona,
-      'persona_cliente_id': 4, //contrato.personaCliente!.idPersona,
-      'contrato_item': contrato.contratoItem!
+      'personaCuidadorId':  contrato.personaCuidador!.idPersona,
+      'personaClienteId': contrato.personaCliente!.idPersona,
+      'contratoItem': contrato.contratoItem!
           .map((e) => {
-                'observaciones': e.observaciones,
-                'horario_inicio_propuesto':
+                'observacion': e.observaciones,
+                'horarioInicioPropuesto':
                     e.horarioInicioPropuesto?.toIso8601String() ?? '',
-                'horario_fin_propuesto':
+                'horarioFinPropuesto':
                     e.horarioFinPropuesto?.toIso8601String() ?? '',
-                'tareas_contrato': e.tareasContrato!
+                'tareaContrato': e.tareasContrato!
                     .map((i) => {
                           'tituloTarea': i.tituloTarea,
                           'descripcionTarea': i.descripcionTarea,
@@ -39,7 +39,7 @@ class ContratoRequest extends GetConnect {
       http.Response response = await http.post(Uri.parse(url),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(jsonRequest));
-
+      print(jsonEncode(jsonRequest));
       switch (response.statusCode) {
         case 200:
           return true;

@@ -1,5 +1,7 @@
+import 'package:cuidador_app_mobile/UI/Pages/CuidadorReview/Models/review_controller.dart';
 import 'package:cuidador_app_mobile/UI/Shared/Containers/star_container.dart';
 import 'package:cuidador_app_mobile/UI/Shared/TextFields/form_textfield.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,9 +9,19 @@ class ReviewContainer{
 
   FormTextfield formTextfield = Get.put(FormTextfield());
 
+  TextEditingController comentario = TextEditingController();
+
   Widget reviewContainer({
     required Widget content,
   }){
+    Get.lazyPut(() => ReviewController());
+    ReviewController controller = Get.find<ReviewController>();
+
+    if(controller.comentarioEdit.value.calificacion != null){
+      comentario.text = controller.comentarioEdit.value.comentario!;
+      controller.rating.value = controller.comentarioEdit.value.calificacion!;
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 30),
       height: Get.height * 0.5,
@@ -33,34 +45,26 @@ class ReviewContainer{
             height: 0,
           ), textAlign: TextAlign.center,),
 
-          SizedBox(
-            width: Get.width * 0.7,
-            child: const Row(
+            Obx(() {
+            ReviewController controller = Get.find<ReviewController>();
+            return SizedBox(
+              width: Get.width * 0.7,
+              child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                RoundedStar(
-                  color: Colors.yellow,
+              children: List.generate(5, (index) {
+                return GestureDetector(
+                onTap: () {
+                  controller.rating.value = index + 1;
+                },
+                child: RoundedStar(
+                  color: index < controller.rating.value ? Colors.yellow : Colors.grey,
                   size: 30,
                 ),
-                RoundedStar(
-                  color: Colors.yellow,
-                  size: 30,
-                ),
-                RoundedStar(
-                  color: Colors.yellow,
-                  size: 30,
-                ),
-                RoundedStar(
-                  color: Colors.yellow,
-                  size: 30,
-                ),
-                RoundedStar(
-                  color: Colors.yellow,
-                  size: 30,
-                ),
-              ],
-            ),
-          ),
+                );
+              }),
+              ),
+            );
+            }),
 
           const Text('¿Te gustaría dejar algun comentario adicional sobre tu experiencia en este cuidado?', style: TextStyle(
             color: Colors.black,
@@ -73,7 +77,7 @@ class ReviewContainer{
           formTextfield.form_txt(
             hintText: 'Ej. Fue un cuidado bastante agradable, muy atento el cuidador',
             maxLines: 40,
-            controller: TextEditingController(),
+            controller: comentario,
             height: Get.height * 0.15,
             padding: 20,
             width: Get.width * 0.9,
@@ -81,58 +85,71 @@ class ReviewContainer{
             contentPaddingTop: 10
           ),
 
-          _buttonSave(),
+          controller.comentarioEdit.value.idComentarios != null ? _buttonEdit() : _buttonSave(),
 
         ],
       ),
     );
   }
 
-  Widget _stars(bool isActive){
-    return Container(
-      width: 39,
-      height: 35,
-      decoration: ShapeDecoration(
-        color: isActive ? const Color(0xFFF6F600) : Colors.grey,
-        shape:  const StarBorder(
-          points: 5,
-          innerRadiusRatio: 0.38,
-          valleyRounding: 0,
-          rotation: 0,
-          squash: 0,
+  Widget _buttonEdit(){
+    Get.lazyPut(() => ReviewController());
+    ReviewController controller = Get.find<ReviewController>();
+    return SizedBox(
+      width: Get.width * 0.8,
+      height: Get.height * 0.05,
+      child: Obx(()=>
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromARGB(255, 7, 74, 89),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          ),
+          onPressed: () {
+            controller.loadingSend.value == true ? null : controller.actualizarComentario(comentario.text);
+          },
+          child: controller.loadingSend.value == true ? const CupertinoActivityIndicator(color: Colors.white) :
+           const Text('Editar Mi Reseña', style: TextStyle(
+            color: Colors.white,
+              fontSize: 16,
+              fontFamily: 'Anek Malayalam',
+              fontWeight: FontWeight.w500,
+              height: 0,
+          )),
         ),
-        shadows: const [
-          BoxShadow(
-            color: Color(0x3F000000),
-            blurRadius: 10,
-            offset: Offset(0, 5),
-            spreadRadius: 0,
-          )
-        ],
       ),
     );
   }
 
   Widget _buttonSave(){
+    Get.lazyPut(() => ReviewController());
+    ReviewController controller = Get.find<ReviewController>();
     return SizedBox(
       width: Get.width * 0.8,
       height: Get.height * 0.05,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color.fromARGB(255, 7, 74, 89),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+      child: Obx(()=>
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromARGB(255, 7, 74, 89),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          onPressed: () {
+            controller.loadingSend.value == true ? null : controller.enviarReview(5, comentario.text);
+          },
+          child: controller.loadingSend.value == true ? const CupertinoActivityIndicator(color: Colors.white) :
+           const Text('Guardar Mi Reseña', style: TextStyle(
+            color: Colors.white,
+              fontSize: 16,
+              fontFamily: 'Anek Malayalam',
+              fontWeight: FontWeight.w500,
+              height: 0,
+          )),
         ),
-        onPressed: () {},
-        child: const Text('Guardar Mi Reseña', style: TextStyle(
-          color: Colors.white,
-            fontSize: 16,
-            fontFamily: 'Anek Malayalam',
-            fontWeight: FontWeight.w500,
-            height: 0,
-        )),
       ),
     );
   }

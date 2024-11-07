@@ -22,18 +22,19 @@ class LoginController extends GetxController{
       return;
     }
 
-    if(usuarioController.text.trim().isEmpty || passwordController.text.trim().isEmpty){
+    if( (usuarioController.text.trim().isEmpty || passwordController.text.trim().isEmpty) && GetStorage().read('credenciales') == null){
       snackbar.snackbarError('Campos vacios', 'Por favor llena los campos');
       return;
     }
     isLoad.value = true;
 
-    UsuarioModel response = await loginResponse.login(usuarioController.text.trim(), passwordController.text.trim());
+    String usuario = usuarioController.text.trim() == '' ? GetStorage().read('credenciales')['usuario'] : usuarioController.text.trim();
+    UsuarioModel response = await loginResponse.login(usuario, passwordController.text.trim());
     if (response.idUsuario != null){
       dynamic credenciales = GetStorage().read('credenciales');
 
-      if(credenciales != null){
-        if(credenciales['usuario'] != usuarioController.text.trim()){
+      if(credenciales != null){ // en caso de que sea otro usuario
+        if(GetStorage().read('biometric') == false){
           GetStorage().remove('credenciales');
           Get.defaultDialog(
             title: 'Guardar Inicio de Sesión',
@@ -41,53 +42,72 @@ class LoginController extends GetxController{
             onConfirm: () {
               LocalAuth.authenticate().then((value) {
                 if(value){
-                  Map<String, dynamic> credenciales = {
-                    'usuario': usuarioController.text.trim(),
-                    'password': passwordController.text.trim()
-                  };
-                  if(GetStorage().read('credenciales') == null){
-                    GetStorage().write('credenciales', credenciales);
-                  }
-                  Get.offNamedUntil('select_profile', (route) => false, arguments: response);
+                  initSesion(response);
+                  GetStorage().write('biometric', true);
                 }
                 else{
-                  Get.offNamedUntil('select_profile', (route) => false, arguments: response);
+                  snackbar.snackbarError('Autenticación biometrica fallida!', 'Vuelve a intentarlo');
+                  Get.back();
                 }
               });
             },
-            onCancel: () => Get.back()
+            onCancel: () {
+              GetStorage().write('biometric', false);
+              initSesion(response);
+            }
           );
         }
         else{
-          Get.offNamedUntil('select_profile', (route) => false, arguments: response);
+          initSesion(response);
         }
       }
-      else{
+      else if (GetStorage().read('biometric') == true){ // en caso de que sea el primer usuario
+        initSesion(response);
+      }
+      else{ // en caso de que sea el primer usuario
         Get.defaultDialog(
           title: 'Guardar Inicio de Sesión',
           middleText: '¿Deseas iniciar la proxima vez con tus datos biometricos?',
           onConfirm: () {
             LocalAuth.authenticate().then((value) {
               if(value){
-                Map<String, dynamic> credenciales = {
-                  'usuario': usuarioController.text.trim(),
-                  'password': passwordController.text.trim()
-                };
-                if(GetStorage().read('credenciales') == null){
-                  GetStorage().write('credenciales', credenciales);
-                }
-                Get.offNamedUntil('select_profile', (route) => false, arguments: response);
+                initSesion(response);
+                GetStorage().write('biometric', true);
               }
               else{
-                Get.offNamedUntil('select_profile', (route) => false, arguments: response);
+                snackbar.snackbarError('Autenticación biometrica fallida!', 'Vuelve a intentarlo');
+                Get.back();
               }
             });
           },
-          onCancel: () => Get.back()
+          onCancel: () {
+            GetStorage().write('biometric', false);
+            initSesion(response);
+          }
         );
       }
     }
     isLoad.value = false;
+  }
+
+  void initSesion(dynamic response) {
+    Map<String, dynamic> credenciales = {
+      'usuario': usuarioController.text.trim(),
+      'password': passwordController.text.trim()
+    };
+    if(GetStorage().read('credenciales') == null){
+      GetStorage().write('credenciales', credenciales);
+    }
+    Get.offNamedUntil('select_profile', (route) => false, arguments: response);
+  }
+
+  void changeUser(){
+    GetStorage().remove('credenciales');
+    GetStorage().remove('biometric');
+    usuarioController.clear();
+    passwordController.clear();
+    Get.back();
+    update();
   }
 
   void loginBiometrico() async{

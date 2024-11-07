@@ -14,6 +14,8 @@ class ListMenuProfile{
     ItemsLista(nombreMenu: 'Cambiar Contraseña', icono: CupertinoIcons.lock_circle_fill, onTap: (){_changePassword();}, trailing: Icon(Icons.arrow_forward_ios, size: 15, color: Colors.grey[800])),
     ItemsLista(nombreMenu: 'Datos Medicos', icono: CupertinoIcons.heart_circle_fill, onTap: (){con.changeIndex(3);}, trailing: Icon(Icons.arrow_forward_ios, size: 15, color: Colors.grey[800])),
     ItemsLista(nombreMenu: 'Padecimientos', icono: CupertinoIcons.bandage_fill, onTap: (){con.changeIndex(4);}, trailing: Icon(Icons.arrow_forward_ios, size: 15, color: Colors.grey[800])),
+    // ItemsLista(nombreMenu: 'Medicamentos', icono: CupertinoIcons., onTap: (){con.changeIndex(5);}, trailing: Icon(Icons.arrow_forward_ios, size: 15, color: Colors.grey[800])),
+    ItemsLista(nombreMenu: 'Feedback', icono: CupertinoIcons.star_fill, onTap: (){Get.toNamed('/feedback');}, trailing: Icon(Icons.arrow_forward_ios, size: 15, color: Colors.grey[800])),
     // ItemsLista(nombreMenu: 'Comentarios', icono: CupertinoIcons.chat_bubble_2_fill, onTap: (){}, trailing: Icon(Icons.arrow_forward_ios, size: 15, color: Colors.grey[800])),
     // ItemsLista(nombreMenu: 'Inicio rapido', icono: CupertinoIcons.bolt_fill, onTap: null, trailing: SizedBox(width: 15, height: 15, child: Obx(()=> CupertinoSwitch(value: con.inicioRapido.value, onChanged: (value){con.changeInicioRapido(value);})))),
   ];

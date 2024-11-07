@@ -103,12 +103,19 @@ class DynamicContainer{
                   ),
                 ],
               ),
-              Container(
+                Container(
                 width: Get.width * 0.12,
                 height: Get.width * 0.12,
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(100)),
-                // child: Image.network(imagen, fit: BoxFit.cover),
-                child: Image.asset(imagen, fit: BoxFit.cover),
+                child: ClipOval(
+                  child: Image.network(
+                  imagen,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(imagen, fit: BoxFit.cover);
+                  },
+                  ),
+                ),
               ),
             ],
           ),

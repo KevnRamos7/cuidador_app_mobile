@@ -8,11 +8,8 @@ import 'package:get/get.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
 import 'contratos_cv_detalle.dart';
-import 'contratos_cv_estatus.dart';
 
 class ContratosCvHead{
-
-  ContratosCvEstatus estatus = Get.put(ContratosCvEstatus());
   ContratosCvDetalle detalle = Get.put(ContratosCvDetalle());
   ModalComponents modalComponents = ModalComponents();
   ListContratoController con = Get.put(ListContratoController());

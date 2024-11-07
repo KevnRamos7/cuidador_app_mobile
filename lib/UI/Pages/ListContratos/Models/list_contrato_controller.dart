@@ -1,12 +1,14 @@
 import 'package:cuidador_app_mobile/Data/Request/ListaContrato/lista_contrato_request.dart';
 import 'package:cuidador_app_mobile/Data/Response/ListContratos/list_contratos_response.dart';
 import 'package:cuidador_app_mobile/Domain/Model/Contrato/contrato_model.dart';
-import 'package:cuidador_app_mobile/Domain/Model/Contrato/tareas_contrato_model.dart';
+import 'package:cuidador_app_mobile/Domain/Model/Objects/estatus_contrato_item_cliente.dart';
+// import 'package:cuidador_app_mobile/Domain/Model/Contrato/tareas_contrato_model.dart';
 import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Models/build_timeline.dart';
+import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Modules/ClienteView/estatus_contrato_cliente.dart';
 import 'package:cuidador_app_mobile/UI/Shared/Snackbar/snackbar_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
+// import 'package:get_storage/get_storage.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 import '../../../../Domain/Model/Objects/eventos_contrato_model.dart';
@@ -25,6 +27,8 @@ class ListContratoController extends GetxController{
   DateTime fechaSeleccionada = DateTime.now();
   Rx<ContratoModel> contrato = ContratoModel().obs;
 
+  Rx<EstatusContratoItemCliente> estatusContrato = EstatusContratoItemCliente().obs;
+
   List<EventosContratoModel> eventos = [];
 
 
@@ -32,6 +36,8 @@ class ListContratoController extends GetxController{
   RxBool statusDetalleLoading = false.obs;
   RxBool statusContratoLoading = false.obs;
   RxBool statusTareaLoading = false.obs;
+
+  RxBool statusEstatusContratoLoading = false.obs;
 
   @override
   void onInit() async{
@@ -140,6 +146,19 @@ class ListContratoController extends GetxController{
       statusTareaLoading.value = false;
     }
     statusTareaLoading.value = false;
+  }
+
+  Future<void> getEstatusContratoCliente(int idContratoItem) async{
+    statusEstatusContratoLoading.value = true;
+    try{
+      var response = await listContratosResponse.getEstatusContratoCliente(idContratoItem);
+      estatusContrato.value = response;
+      statusEstatusContratoLoading.value = false;
+      Get.toNamed('/estatusContratoCliente');
+    }catch(e){
+      snackbarUI.snackbarError('Ups! ha ocurrido un error!', 'No se ha podido obtener el estatus del contrato');
+      statusEstatusContratoLoading.value = false;
+    }
   }
 
 

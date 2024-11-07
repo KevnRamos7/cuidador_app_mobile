@@ -53,72 +53,76 @@ Widget centerContainer(){
 
         SizedBox(
           height: Get.height * 0.3,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-  
-              GetStorage().read('credenciales') != null ? SizedBox(
-                  width: Get.width * 0.7,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF395886),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      )
-                    ),
-                    onPressed: () async {
-                      LocalAuth.authenticate().then((value) {
-                        if(value){
-                          con.loginBiometrico();
-                        }
-                      });
-                    }, 
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(CupertinoIcons.smiley, color: Colors.white, size: 20),
-                        const SizedBox(width: 10),
-                        Text('Ingresar con Face ID', 
-                        style: GoogleFonts.anekMalayalam(
-                          fontSize: 15, 
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white),
-                          textAlign: TextAlign.center,
+          child: GetBuilder<LoginController>(
+            builder: (context) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                
+                  GetStorage().read('biometric') == true ? SizedBox(
+                      width: Get.width * 0.7,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF395886),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          )
                         ),
-                      ],
-                    )
+                        onPressed: () async {
+                          LocalAuth.authenticate().then((value) {
+                            if(value){
+                              con.loginBiometrico();
+                            }
+                          });
+                        }, 
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(CupertinoIcons.smiley, color: Colors.white, size: 20),
+                            const SizedBox(width: 10),
+                            Text('Ingresar con Face ID', 
+                            style: GoogleFonts.anekMalayalam(
+                              fontSize: 15, 
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        )
+                      ),
+                    ): const SizedBox(),
+              
+                  const SizedBox(height: 10),
+              
+                  SizedBox(
+                      width: Get.width * 0.7,
+                      child: GestureDetector(
+                        onTap: () => modelLogin.modalLoginBottom(),
+                        child: const Text('Ingresa con contraseña'
+                          , style: TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.w600)
+                          , textAlign: TextAlign.center,
+                        ),
+                      )
                   ),
-                ): const SizedBox(),
-
-              const SizedBox(height: 10),
-
-              SizedBox(
-                  width: Get.width * 0.7,
-                  child: GestureDetector(
-                    onTap: () => modelLogin.modalLoginBottom(),
-                    child: const Text('Ingresa con contraseña'
-                      , style: TextStyle(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.w600)
-                      , textAlign: TextAlign.center,
-                    ),
-                  )
-              ),
-
-              // Container(
-              //   margin: EdgeInsets.only(top: Get.height * 0.025),
-              //   height: Get.height * 0.05,
-              //   width: Get.width * 0.8,
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.center,
-              //     children: [
-              //       Text('¿No tienes cuenta? ', style: GoogleFonts.anekMalayalam(color: Colors.black45, fontSize: 15)),
-              //       GestureDetector(
-              //         child: Text('Regístrate', style: GoogleFonts.anekMalayalam(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.w600)),
-              //       )
-              //     ],
-              //   ),
-              // ),
-
-            ],
+              
+                  // Container(
+                  //   margin: EdgeInsets.only(top: Get.height * 0.025),
+                  //   height: Get.height * 0.05,
+                  //   width: Get.width * 0.8,
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     children: [
+                  //       Text('¿No tienes cuenta? ', style: GoogleFonts.anekMalayalam(color: Colors.black45, fontSize: 15)),
+                  //       GestureDetector(
+                  //         child: Text('Regístrate', style: GoogleFonts.anekMalayalam(color: Colors.black87, fontSize: 15, fontWeight: FontWeight.w600)),
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
+              
+                ],
+              );
+            }
           ),
         ),
       ],

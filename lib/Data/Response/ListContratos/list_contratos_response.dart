@@ -1,4 +1,5 @@
 import 'package:cuidador_app_mobile/Domain/Model/Contrato/contrato_model.dart';
+import 'package:cuidador_app_mobile/Domain/Model/Objects/estatus_contrato_item_cliente.dart';
 import 'package:cuidador_app_mobile/Domain/Model/Objects/eventos_contrato_model.dart';
 import 'package:cuidador_app_mobile/Domain/Model/Objects/lista_contratos.dart';
 import 'package:cuidador_app_mobile/Domain/Utilities/connection_string.dart';
@@ -60,6 +61,35 @@ class ListContratosResponse extends GetConnect{
       {
         return Future.error(e);
       }
+
+  }
+
+  Future <EstatusContratoItemCliente> getEstatusContratoCliente(int idContratoItem) async {
+
+    try
+    {
+      Response response = await get('${ConnectionString.connectionString}contratoItem/verEstatusContratoItem/$idContratoItem');
+      
+      switch(response.statusCode){
+        case 200:
+          EstatusContratoItemCliente estatus = EstatusContratoItemCliente.fromJson(response.body);
+          return estatus;
+        case 400:
+          snackbarUI.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+          return Future.error('Error al obtener el estatus del contrato');
+        case 500:
+          snackbarUI.snackbarError('Error Interno del Servidor.', 'Intenta más tarde');
+          return Future.error('Error al obtener el estatus del contrato');
+        default:
+          snackbarUI.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+          return Future.error('Error al obtener el estatus del contrato');
+      }  
+          
+    }catch(e)
+    {
+      snackbarUI.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+      return Future.error(e);
+    }
 
   }
 

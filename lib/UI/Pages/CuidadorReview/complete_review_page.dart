@@ -6,6 +6,7 @@ class CompleteReviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Material(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -72,7 +73,9 @@ class CompleteReviewPage extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.offNamedUntil('/list_contratos', (route) => false);
+                  },
                   child: const Text('Volver', style: TextStyle(
                     color: Colors.white,
                       fontSize: 16,

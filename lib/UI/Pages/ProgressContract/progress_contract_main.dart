@@ -1,4 +1,5 @@
 // import 'package:animated_floating_buttons/animated_floating_buttons.dart';
+import 'package:cuidador_app_mobile/Domain/Utilities/letter_dates.dart';
 import 'package:cuidador_app_mobile/UI/Pages/ProgressContract/Models/progress_contract_controller.dart';
 import 'package:cuidador_app_mobile/UI/Pages/ProgressContract/Modules/location_module.dart';
 import 'package:cuidador_app_mobile/UI/Pages/ProgressContract/Modules/resume_module.dart';
@@ -24,6 +25,8 @@ class ProgressContractMain extends StatelessWidget {
     TasksModule tasksModule = Get.put(TasksModule());
     ResumeModule resumeModule = Get.put(ResumeModule());
 
+    LetterDates letter = LetterDates();
+
     return Obx(()=>
       Scaffold(
         floatingActionButton: _pullDownButtons(controller.currectStep.value == 0),
@@ -43,10 +46,10 @@ class ProgressContractMain extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: dynamicContainer.dynamicContainerBig(
-                  nombre: 'Cuidador Name', 
-                  ciudad: 'Nombre de la ciudad', 
-                  importe: 2000, 
-                  fecha: 'Lunes 12 de Julio de 2024', 
+                  nombre: controller.contrato.value.personaCliente!.nombre ?? 'Nombre del cliente', 
+                  ciudad: '${controller.contrato.value.personaCliente!.domicilio?.ciudad}, ${controller.contrato.value.personaCliente!.domicilio?.estado}, ${controller.contrato.value.personaCliente!.domicilio?.pais}' ?? 'Ciudad', 
+                  importe: controller.contrato.value.contratoItem?[0].importeCuidado ?? 0, 
+                  fecha: letter.formatearSoloFecha(controller.contrato.value.contratoItem![0].horarioInicioPropuesto.toString()), 
                   imagen: 'assets/img/testing/profile_image_test.png'
                   ),
                 ),
@@ -188,7 +191,7 @@ class ProgressContractMain extends StatelessWidget {
                 _formatText(
                   texto: 'Salir',
                   onTap: (){
-                    Get.offNamedUntil('/feedPage', (route) => false);
+                    Get.offNamedUntil('/list_contratos', (route) => false);
                   },
                   isActive: false
                 ),

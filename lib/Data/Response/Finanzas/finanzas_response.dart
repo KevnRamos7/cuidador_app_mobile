@@ -13,11 +13,11 @@ class FinanzasResponse extends GetConnect{
       FinanzasCliente finanzasCliente = FinanzasCliente();
       try{
         Response response = await get('${ConnectionString.connectionString}Finanzas/finanzasUsuarioCliente/$idUsuario');
-
+        
         if(response.status.hasError){
           return Future.error('Error al obtener la lista de finanzas');
         }
-        else{
+        else{ 
           finanzasCliente = FinanzasCliente.fromJson(response.body);
         }
         return finanzasCliente;

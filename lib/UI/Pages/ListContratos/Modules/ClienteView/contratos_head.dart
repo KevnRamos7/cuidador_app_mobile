@@ -2,11 +2,9 @@
 import 'package:cuidador_app_mobile/Domain/Utilities/letter_dates.dart';
 import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Models/list_contrato_controller.dart';
 import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Modules/ClienteView/contratos_detalle.dart';
-import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Modules/ClienteView/contratos_estatus.dart';
 import 'package:cuidador_app_mobile/UI/Pages/ListContratos/Modules/Shared/modal_components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
@@ -14,7 +12,6 @@ import '../../../../../Domain/Model/Objects/lista_contratos.dart';
 
 class ContratosHead{
 
-  ContratosEstatus estatus = Get.put(ContratosEstatus());
   ContratosDetalle detalle = Get.put(ContratosDetalle());
   ModalComponents modalComponents = ModalComponents();
   ListContratoController con = Get.put(ListContratoController());
@@ -95,8 +92,7 @@ class ContratosHead{
         return [
           PullDownMenuItem(
             onTap: () async{
-              await con.eventosPorContrato(index);
-              modalComponents.showModal(estatus.contenidoEstatus(contrato.estatus!.idEstatus != 18, contrato));
+              await con.getEstatusContratoCliente(contrato.idContratoItem!);
             },
             title: 'Estatus',
             icon: iconData ?? CupertinoIcons.check_mark_circled_solid,
@@ -116,6 +112,14 @@ class ContratosHead{
             },
             title: 'Detalle',
             icon: CupertinoIcons.square_list_fill,
+          ),
+          idEstatus == 9 ? const PullDownMenuActionsRow.small(items: []) : PullDownMenuItem(
+            onTap: () async{
+              Get.toNamed('/listComentarios', arguments: contrato);
+            },
+            title: 'Dejar Reseña',
+            icon: CupertinoIcons.star_fill,
+            iconColor: Colors.blue,
           ),
           idEstatus != 8 && idEstatus != 9 && idEstatus != 19 ? 
           PullDownMenuItem(

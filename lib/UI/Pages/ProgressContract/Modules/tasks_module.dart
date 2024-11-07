@@ -1,22 +1,30 @@
+import 'package:cuidador_app_mobile/Domain/Model/Contrato/tareas_contrato_model.dart';
+import 'package:cuidador_app_mobile/UI/Pages/ProgressContract/Models/progress_contract_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class TasksModule {
 
+  
+
   Widget taskList(){
+    Get.lazyPut(() => ProgressContractController());
+    ProgressContractController controller = Get.find<ProgressContractController>();
     return SingleChildScrollView(
       child: Container(
         margin: EdgeInsets.only(top: Get.height * 0.15, left: 10, right: 10),
         height: Get.height * 0.73,
         width: Get.width,
         child: ListView.builder(
-          itemCount: 1,
+          itemCount: controller.contrato.value.contratoItem?[0].tareasContrato?.length ?? 0,
           itemBuilder: (context, index){
+            TareasContratoModel tarea = controller.contrato.value.contratoItem?[0].tareasContrato![index] ?? TareasContratoModel();
             return _itemList(
-              title: 'Nombre Tarea 1',
-              time: '18:00 PM',
-              description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et sem aliquet, tristique elit id, rutrum sapien. Nunc fermentum tellus eget'
+              title: tarea.tituloTarea ?? '',
+              time: '${tarea.fechaRealizar!.hour}:${tarea.fechaRealizar!.minute} ${tarea.fechaRealizar!.hour > 12 ? 'PM' : 'AM'}',
+              description: tarea.descripcionTarea ?? '',
+              idTask: tarea.idTareasContrato ?? 0
             );
           },
         ),

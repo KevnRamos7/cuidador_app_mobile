@@ -27,15 +27,15 @@ class ResumeModule {
               
               summary.encabezado('Fechas y Horarios'),
           
-              summary.tableForSchedules(ContratoModel()),
+              summary.tableForSchedules(con.contrato.value),
       
               summary.encabezado('Observaciones'),
       
-              summary.observacionesCard(ContratoModel()),
+              summary.observacionesCard(con.contrato.value),
           
               summary.encabezado('Lista de Tareas'),
           
-              // summary.tableForTask(ContratoModel()),
+              summary.tableForTask(con.contrato.value),
             ],
           ),
         )

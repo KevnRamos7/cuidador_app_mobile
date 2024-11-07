@@ -4,6 +4,7 @@
 import 'package:cuidador_app_mobile/UI/Pages/LoginModule/Models/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class BottomModelLogin{
@@ -27,9 +28,13 @@ class BottomModelLogin{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Ingresa tus Datos!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+            const Text('Ingresa tus Datos', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
 
-            _textFieldsFormat('Usuario', Icons.person, false, loginController.usuarioController, (){}),
+            // Obx(()=>
+              GetStorage().read('credenciales') != null ? _existsUser(GetStorage().read('credenciales')["usuario"]) :
+              _textFieldsFormat('Usuario', Icons.person, false, loginController.usuarioController, (){}),
+            // ),
+
             Obx(()=> _textFieldsFormat('Contraseña', isVisible.value == false ? Icons.visibility : Icons.visibility, !isVisible.value, loginController.passwordController, (){
               isVisible.value = !isVisible.value;}
             )),
@@ -60,6 +65,25 @@ class BottomModelLogin{
           ],
         ),
       )
+    );
+  }
+
+  Widget _existsUser(String usuario){
+    return Column(
+      children: [
+        Text(
+          'Bienvenido de nuevo : $usuario',
+          style: const TextStyle(fontSize: 20, color: Color.fromARGB(255, 81, 81, 81)),
+        ),
+        const SizedBox(height: 10),
+        GestureDetector(
+          onTap: () => loginController.changeUser(),
+          child: const Text(
+            '¿Deseas ingresar con otro usuario?',
+            style: TextStyle(fontSize: 13, color: Color.fromARGB(255, 68, 129, 226), decoration: TextDecoration.underline),
+          ),
+        ),
+      ],
     );
   }
 

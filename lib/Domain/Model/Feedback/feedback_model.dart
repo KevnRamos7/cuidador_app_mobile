@@ -9,7 +9,7 @@ class FeedbackModel {
   String? cuerpo;
   String? fecha;
   String? fechaResolucion;
-  EstatusModel? estatus;
+  int? estatus;
 
   FeedbackModel({
     this.idFeedback,
@@ -28,6 +28,7 @@ class FeedbackModel {
       categoria: json['categoria'],
       cuerpo: json['cuerpo'],
       fecha: json['fecha'],
+      estatus: json['estatusId'],
       fechaResolucion: json['fechaResolucion'],
       // estatus: EstatusModel.fromJson(json['estatus'])
     );
@@ -41,7 +42,7 @@ class FeedbackModel {
       'cuerpo': cuerpo,
       'fecha': fecha,
       'fechaResolucion': fechaResolucion,
-      'estatus': estatus!.toJson()
+      'estatus': estatus!
     };
   }
 

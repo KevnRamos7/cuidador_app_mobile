@@ -1,4 +1,4 @@
-import 'package:cuidador_app_mobile/Data/Response/Home/HomeResponse.dart';
+import 'package:cuidador_app_mobile/Data/Response/Home/home_response.dart';
 // import 'package:cuidador_app_mobile/Domain/Model/Perfiles/persona_model.dart';
 import 'package:cuidador_app_mobile/Domain/Model/Perfiles/usuario_model.dart';
 import 'package:cuidador_app_mobile/UI/Shared/Snackbar/snackbar_ui.dart';

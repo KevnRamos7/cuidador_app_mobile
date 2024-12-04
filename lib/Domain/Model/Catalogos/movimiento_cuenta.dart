@@ -23,7 +23,7 @@ class MovimientoCuenta{
   });
 
   factory MovimientoCuenta.fromJson(Map<String, dynamic> json) => MovimientoCuenta(
-    idMovimientoCuenta: json['idMovimientoCuenta'],
+    idMovimientoCuenta: json['idMovimientocuenta'],
     cuentaBancariaId: json['cuentaBancariaId'],
     conceptoMovimiento: json['conceptoMovimiento'],
     tipoMovimiento: json['tipoMovimiento'],

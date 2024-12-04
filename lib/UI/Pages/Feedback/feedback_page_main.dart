@@ -47,7 +47,7 @@ class FeedbackPageMain extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
-          color: Colors.blueGrey[700],
+          color: feedback.estatus! == 21 ? Colors.green : (feedback.estatus! == 20 ? Colors.orange : Colors.red),
           elevation: 4,
           child: ExpansionTile(
             trailing: const Icon(Icons.arrow_drop_down,color: Colors.white,),

@@ -35,16 +35,18 @@ class TransactionsRecent{
 
           usuario['tipoUsuarioid'] == 1 ?
           
-          Expanded(
+            Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.only(top: 5),
               itemCount: con.finanzasCuidador.value.movimientos?.length ?? 0,
               itemBuilder: (context, index) {
-                MovimientoCuenta? mov = con.finanzasCuidador.value.movimientos?[index];
-                return _itemMov(mov!.tipoMovimiento ?? '', mov.conceptoMovimiento ?? '', letterDates.formatearFecha(mov.fechaMovimiento.toString()) , mov.importeMovimiento ?? 0);
+              List<MovimientoCuenta>? movimientos = con.finanzasCuidador.value.movimientos;
+              movimientos?.sort((a, b) => b.idMovimientoCuenta!.compareTo(a.idMovimientoCuenta!)); // Ordenar por id descendientemente
+              MovimientoCuenta? mov = movimientos?[index];
+              return _itemMov(mov!.tipoMovimiento ?? '', mov.conceptoMovimiento ?? '', letterDates.formatearFecha(mov.fechaMovimiento.toString()) , mov.importeMovimiento ?? 0);
               },
             ),
-          )
+            )
           :
 
           Expanded(

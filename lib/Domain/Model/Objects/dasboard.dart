@@ -24,9 +24,9 @@ class FechasConContratos{
   FechasConContratos({this.horarioInicioPropuesto, this.horarioFinPropuesto, this.nombreCliente});
 
   FechasConContratos.fromJson(Map<String, dynamic> json){
-    horarioInicioPropuesto = json['horarioInicioPropuesto'];
-    horarioFinPropuesto = json['horarioFinPropuesto'];
-    nombreCliente = json['nombreCliente'];
+    horarioInicioPropuesto = json['horarioInicioPropuesto'] != null ? DateTime.parse(json['horarioInicioPropuesto']) : null;
+    horarioFinPropuesto = json['horarioFinPropuesto'] != null ? DateTime.parse(json['horarioFinPropuesto']) : null;
+    nombreCliente = json['nombreCliente']; 
   }
 
 }

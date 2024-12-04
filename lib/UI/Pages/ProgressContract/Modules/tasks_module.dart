@@ -13,18 +13,18 @@ class TasksModule {
     ProgressContractController controller = Get.find<ProgressContractController>();
     return SingleChildScrollView(
       child: Container(
-        margin: EdgeInsets.only(top: Get.height * 0.15, left: 10, right: 10),
+        margin: EdgeInsets.only(top: Get.height * 0.2, left: 10, right: 10),
         height: Get.height * 0.73,
         width: Get.width,
         child: ListView.builder(
-          itemCount: controller.contrato.value.contratoItem?[0].tareasContrato?.length ?? 0,
+          itemCount: controller.contrato.value.contratoItem?[0].tareasContrato?.where((e) => e.estatus != 9).length ?? 0,
           itemBuilder: (context, index){
             TareasContratoModel tarea = controller.contrato.value.contratoItem?[0].tareasContrato![index] ?? TareasContratoModel();
             return _itemList(
               title: tarea.tituloTarea ?? '',
               time: '${tarea.fechaRealizar!.hour}:${tarea.fechaRealizar!.minute} ${tarea.fechaRealizar!.hour > 12 ? 'PM' : 'AM'}',
               description: tarea.descripcionTarea ?? '',
-              idTask: tarea.idTareasContrato ?? 0
+              idTask: index
             );
           },
         ),
@@ -38,6 +38,8 @@ class TasksModule {
     String description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et sem aliquet, tristique elit id, rutrum sapien. Nunc fermentum tellus eget volutpat blandit. ',
     int idTask = 0
   }){
+    Get.lazyPut(() => ProgressContractController());
+    ProgressContractController controller = Get.find<ProgressContractController>();
     return Container(
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.only(bottom: 10),
@@ -119,43 +121,64 @@ class TasksModule {
                 ],
               ),
             ),
-            Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FloatingActionButton.small(
-                    tooltip: 'Cancelar Tarea',
-                    elevation: 20,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    backgroundColor: const Color(0xFF891F0D),
-                    onPressed: (){},
-                    child: const Icon(CupertinoIcons.xmark_circle_fill, color: Colors.white,),
+            Obx(()=>
+              controller.contrato.value.contratoItem![0].tareasContrato![idTask].estatus == 19
+               ? FloatingActionButton.small(
+                  tooltip: 'Finalizar Tarea',
+                  elevation: 20,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
                   ),
-                  const SizedBox(width: 10),
-                  FloatingActionButton.small(
-                    tooltip: 'Posponer Tarea',
-                    elevation: 20,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
+                  backgroundColor: const Color.fromARGB(255, 19, 137, 13),
+                  onPressed: (){
+                    controller.taskAction('finish', idTask);
+                  },
+                  child: const Icon(CupertinoIcons.check_mark_circled_solid, color: Colors.white,),
+                )
+               : Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    FloatingActionButton.small(
+                      tooltip: 'Cancelar Tarea',
+                      elevation: 20,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      backgroundColor: const Color(0xFF891F0D),
+                      onPressed: (){
+                        controller.taskAction('cancel', idTask);
+                      },
+                      child: const Icon(CupertinoIcons.xmark_circle_fill, color: Colors.white,),
                     ),
-                    backgroundColor: const Color.fromARGB(255, 133, 137, 13),
-                    onPressed: (){},
-                    child: const Icon(CupertinoIcons.pause_circle_fill, color: Colors.white,),
-                  ),
-                  const SizedBox(width: 10),
-                  FloatingActionButton.small(
-                    tooltip: 'Iniciar Viaje',
-                    elevation: 20,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    backgroundColor: const Color(0xFF0D7289),
-                    onPressed: (){},
-                    child: const Icon(CupertinoIcons.play_circle_fill, color: Colors.white,),
-                  ),
-                ],
-              )
+                    const SizedBox(width: 10),
+                     FloatingActionButton.small(
+                       tooltip: 'Posponer Tarea',
+                       elevation: 20,
+                       shape: RoundedRectangleBorder(
+                         borderRadius: BorderRadius.circular(50),
+                       ),
+                       backgroundColor: const Color.fromARGB(255, 133, 137, 13),
+                       onPressed: (){
+                          controller.taskAction('postpone', idTask);
+                       },
+                       child: const Icon(CupertinoIcons.pause_circle_fill, color: Colors.white,),
+                     ),
+                     const SizedBox(width: 10),
+                     FloatingActionButton.small(
+                       tooltip: 'Iniciar Viaje',
+                       elevation: 20,
+                       shape: RoundedRectangleBorder(
+                         borderRadius: BorderRadius.circular(50),
+                       ),
+                       backgroundColor: const Color(0xFF0D7289),
+                       onPressed: (){
+                          controller.taskAction('start', idTask);
+                       },
+                       child: const Icon(CupertinoIcons.play_circle_fill, color: Colors.white,),
+                     ),
+                  ],
+                ),
+            )
           ],
         ),
       ),

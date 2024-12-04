@@ -28,7 +28,7 @@ class ContratoPageMain extends StatelessWidget {
                 stickyTopBar.topInteractiveNav(
                   onTap: () => formContratacion.con.saveContrato(),
                   nombre: '${formContratacion.con.personaCuidador.persona!.first.nombre} ${formContratacion.con.personaCuidador.persona!.first.apellidoMaterno}',
-                  costo: formContratacion.con.personaCuidador.salarioCuidador ?? 0.0,
+                  costo: formContratacion.con.personaCuidador.horariosCuidador!.first.precioPorHora ?? 0.0,
                   imagen: formContratacion.con.personaCuidador.persona!.first.avatarImage ?? '',
                   enable: formContratacion.con.contratoItems.isNotEmpty.obs
                 ),

@@ -1,6 +1,7 @@
 import 'package:cuidador_app_mobile/UI/Pages/FeedPage/Models/feed_controller.dart';
 import 'package:cuidador_app_mobile/UI/Shared/TextFields/search_textfield.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,13 +31,30 @@ class FilterBarNav{
         bottom: false,
         child: Column(
           children: [
-            searchComponent.searchTextField(
-              hintText: 'Nombre del Cuidador',
-              icon: CupertinoIcons.search,
-              onChanged: (value) => { feedController.buscarCuidador(value) },
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(left: 16, right: 10),
+                width: Get.height * 0.05,
+                child: IconButton(
+                  onPressed: () {
+                    GetStorage().remove('perfil');
+                    GetStorage().remove('usuario');
+                    Get.back();
+                  },
+                  icon: Icon(CupertinoIcons.back, color: const Color.fromARGB(255, 44, 44, 44), size: Get.height * 0.035,)),
+                ),
+                Expanded(
+                  child: searchComponent.searchTextField(
+                    hintText: 'Nombre del Cuidador',
+                    icon: CupertinoIcons.search,
+                    onChanged: (value) => { feedController.buscarCuidador(value) },
+                  ),
+                ),
+              ],
             ),
-            _logotipoTemp(),
-            // _scrollIconsFilter(),
+            // _logotipoTemp(),
+            _scrollIconsFilter(),
           ],
         ),
       ),

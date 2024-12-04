@@ -1,4 +1,4 @@
-
+ 
 import 'package:cuidador_app_mobile/Domain/Model/Catalogos/cuenta_bancaria.dart';
 import 'package:cuidador_app_mobile/Domain/Model/Catalogos/salario_cuidador.dart';
 

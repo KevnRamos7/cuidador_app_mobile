@@ -56,6 +56,7 @@ class ListContratoController extends GetxController{
       for(ListaContratos c in contratos){
         c.color = asignarColor(c.estatus?.nombre ?? '');
       }
+      contratos.assignAll(contratos.where((element) => element.estatus!.idEstatus != 9).toList());
       contratos.refresh();
       contratosFiltrados.assignAll(contratos.where((element) => 
       element.horarioInicio!.day == fechaSeleccionada.day &&

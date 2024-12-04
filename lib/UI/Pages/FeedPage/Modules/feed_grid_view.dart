@@ -30,6 +30,8 @@ class FeedGridView{
   Widget itemForGrid({
     required UsuarioModel usuario
   }){
+    String horarioInicio = usuario.horariosCuidador?.first.horaInicio ?? '';
+    String horarioFin = usuario.horariosCuidador?.first.horaFin ?? ''; 
     return Column(
       children: [
         SizedBox(
@@ -40,10 +42,10 @@ class FeedGridView{
 
               Positioned(
                 left: 0,
-                top: 23.53,
+                top: 20.53,
                 child: Container(
                   width: Get.width * 0.45,
-                  height: Get.height * 0.2,
+                  height: Get.height * 0.22,
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
@@ -77,7 +79,8 @@ class FeedGridView{
                               overflow: TextOverflow.ellipsis,
                             ),
                             // Text(usuario.nivelUsuario ?? '', style: const TextStyle(fontWeight: FontWeight.w300)),
-                            Text('Costo: ${money.formatCurrencyInMXN(usuario.salarioCuidador ?? 0)} /h.', style: const TextStyle(fontWeight: FontWeight.w300)),
+                            Text('Costo: ${money.formatCurrencyInMXN(usuario.horariosCuidador?.first.precioPorHora ?? 0)} /h.', style: const TextStyle(fontWeight: FontWeight.w300)),
+                            Text('$horarioInicio - $horarioFin', style: const TextStyle(fontWeight: FontWeight.w300)),
                           ],
                         ),
                         Container(

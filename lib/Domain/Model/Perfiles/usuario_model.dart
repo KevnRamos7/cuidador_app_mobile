@@ -1,4 +1,5 @@
 import 'package:cuidador_app_mobile/Domain/Model/Catalogos/estatus_model.dart';
+import 'package:cuidador_app_mobile/Domain/Model/Catalogos/salario_cuidador.dart';
 import 'package:cuidador_app_mobile/Domain/Model/Perfiles/comentarios_model.dart';
 import 'package:cuidador_app_mobile/Domain/Model/Perfiles/menu_model.dart';
 import 'package:get/get.dart';
@@ -18,7 +19,7 @@ class UsuarioModel{
   RxList<PersonaModel>? persona;
   RxList<ComentariosModel>? comentariosUsuario;
   List<MenuModel>? menus;
-  double? salarioCuidador;
+  List<SalarioCuidador>? horariosCuidador;
   int? cuidadosRealizados;
 
   UsuarioModel({
@@ -33,7 +34,7 @@ class UsuarioModel{
     this.calificacion,
     this.comentariosUsuario,
     this.menus,
-    this.salarioCuidador,
+    this.horariosCuidador,
     this.cuidadosRealizados
   });
     
@@ -49,7 +50,7 @@ class UsuarioModel{
       persona: json['personaFisica'] != null ? (json['personaFisica'] as List).map((v) => PersonaModel.fromJson(v)).toList().obs : null,
       comentariosUsuario: json['comentariosUsuarioPersonaReceptor'] != null ? (json['comentariosUsuarioPersonaReceptor'] as List).map((v) => ComentariosModel.fromJson(v)).toList().obs : null,
       menus: json['menu'] != null ? (json['menu'] as List).map((v) => MenuModel.fromJson(v)).toList() : null,
-      salarioCuidador: 500, //double.tryParse(json['salarioCuidador']) ?? 0.0,
+      horariosCuidador: json['horariosCuidador'] != null ? (json['horariosCuidador'] as List).map((v) => SalarioCuidador.fromJson(v)).toList() : null,
       cuidadosRealizados: json['cuidadosRealizados'] ?? 0
     );
   }
@@ -72,7 +73,9 @@ class UsuarioModel{
     if(menus != null){
       data['menus'] = menus!.map((v) => v.toJson()).toList();
     }
-    data['salarioCuidador'] = salarioCuidador;
+    if(horariosCuidador != null){
+      data['horariosCuidador'] = horariosCuidador!.map((v) => v.toJson()).toList();
+    }
     data['cuidadosRealizados'] = cuidadosRealizados;
     return data;
   }

@@ -7,6 +7,14 @@
 			<string>comgooglemaps</string>
 			<string>iosamap</string>
 		</array>
+
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Necesitamos acceso a tu galería para seleccionar imágenes.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Necesitamos acceso a tu cámara para tomar fotos.</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>Necesitamos permiso para guardar fotos en tu galería.</string>
+
 		<key>NSFaceIDUsageDescription</key>
 		<string>Why is my app authenticating using face id?</string>
 		<key>NSLocationWhenInUseUsageDescription</key>

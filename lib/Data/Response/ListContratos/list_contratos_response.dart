@@ -15,8 +15,9 @@ class ListContratosResponse extends GetConnect{
     try
     {
       dynamic usuario = GetStorage().read('usuario');
+      dynamic persona = GetStorage().read('perfil');
       // final response = await get('${ConnectionString.connectionString}Contratotem/listaContrato${4}/${2}');
-      Response response = await get('${ConnectionString.connectionString}ContratoItem/listarContrato/${usuario['idUsuario']}/${usuario['tipoUsuarioid']}');
+      Response response = await get('${ConnectionString.connectionString}ContratoItem/listarContratoByPersonId/${persona['idPersona']}/${usuario['tipoUsuarioid']}');
       
       switch(response.statusCode){
         case 200:
@@ -48,18 +49,28 @@ class ListContratosResponse extends GetConnect{
       try
       {
         Response response = await get('${ConnectionString.connectionString}ContratoItem/detalleVistaCliente/$idContrato');
-        if(response.status.hasError)
-        {
-          return Future.error('Error al obtener el detalle del contrato');
+        
+        switch(response.statusCode){
+          case 200:  
+            ContratoModel contrato = ContratoModel.fromJson(response.body);
+            return contrato;
+          case 400:
+            snackbarUI.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+            return ContratoModel();
+          case 500:
+            snackbarUI.snackbarError('Error Interno del Servidor.', 'Intenta más tarde');
+            return ContratoModel();
+          default:
+            snackbarUI.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+            return ContratoModel();
         }
-        else
-        {
-          ContratoModel contrato = ContratoModel.fromJson(response.body);
-          return contrato;
-        }
+
+
       }catch(e)
       {
-        return Future.error(e);
+        print(e);
+        snackbarUI.snackbarError('Solicitud no procesada correctamente.', 'Intenta más tarde');
+        return ContratoModel();
       }
 
   }

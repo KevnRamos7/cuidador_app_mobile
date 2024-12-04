@@ -13,13 +13,20 @@ class ContratoResponse extends GetConnect{
     List<ContratoItemModel> contratos = [];
     try
     {
-      final response = await get('${ConnectionString.connectionString}api/ContratoItem/fechasOcupadasCuidador/$idpersona');
+      final response = await get('${ConnectionString.connectionString}ContratoItem/fechasOcupadasCuidador/$idpersona');
       
-      for(var item in response.body){
-        contratos.add(ContratoItemModel.fromJson(item));
-        print(response.body);
+      switch(response.statusCode)
+      {
+        case 200:
+          if(response.body.isNotEmpty)
+          {
+            List<dynamic> data = response.body;
+            contratos = data.map((e) => ContratoItemModel.fromJson(e)).toList();
+          }
+        case 500:
+          snackbarUI.snackbarError('Ha Ocurrido un Error!', 'Error en el servidor');
+          break;
       }
-
     }
     catch(e)
     {

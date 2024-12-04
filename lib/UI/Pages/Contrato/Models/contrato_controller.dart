@@ -42,7 +42,7 @@ class ContratoController extends GetxController{
   RxString selectedTimeEnd = ''.obs;
   RxString selectedTimeTask = ''.obs;
 
-  DateTime date = DateTime.now();
+  DateTime date = DateTime.now().add(const Duration(days: 1));
 
   RxString hora = ''.obs;
   RxBool isSelected = false.obs;
@@ -86,6 +86,11 @@ class ContratoController extends GetxController{
 
   void onDateChanged(DateTime date){
       selectedDate = date.obs;
+      horariosInicialesDisponibles.value = extraFunctions.onlyForStartTime(fechasConCita, selectedDate.value);
+      horariosInicialesDisponibles.refresh();
+      selectedTimeStart.value = '';
+      selectedTimeEnd.value = '';
+      update();
   }
 
   void onTimeStartChanged(String time){
@@ -217,7 +222,7 @@ class ContratoController extends GetxController{
         tareasContrato: RxList<TareasContratoModel>(
           tareasContrato
         ),
-        importeCuidado: personaCuidador.salarioCuidador! * horarioFin.difference(horarioInicio).inMinutes / 60
+        importeCuidado: personaCuidador.horariosCuidador!.first.precioPorHora! * horarioFin.difference(horarioInicio).inMinutes / 60
       )
     );
 
@@ -334,7 +339,7 @@ class ContratoController extends GetxController{
       contratoItems[indexContrato].horarioFinPropuesto = horarioFin;
 
       double horasContratas = horarioFin.difference(horarioInicio).inMinutes / 60;
-      double costoTotal = horasContratas * personaCuidador.salarioCuidador!;
+      double costoTotal = horasContratas * personaCuidador.horariosCuidador!.first.precioPorHora!;
 
       contratoItems[indexContrato].importeCuidado = costoTotal;
 
@@ -416,8 +421,6 @@ class ContratoController extends GetxController{
       // contratoItemList.mostrarListadofromModalSheet(contratoItems, personaCuidador.persona!.first.avatarImage!, 0);
     }
   }
-
-  //! METODOS DE PRUEBAS
 
 
 

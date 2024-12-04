@@ -27,6 +27,7 @@ class ContratoRequest extends GetConnect {
                           'tituloTarea': i.tituloTarea,
                           'descripcionTarea': i.descripcionTarea,
                           'tipoTarea': i.tipoTarea,
+                          // 'estatusId': 18,
                           'fechaARealizar':
                               i.fechaRealizar?.toIso8601String() ?? ''
                         })

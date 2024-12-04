@@ -88,12 +88,7 @@ class ContratosCvHead{
         return [
           PullDownMenuItem( //Interactuar con el contrato
             onTap: (){
-              Get.toNamed('/processContract');
-              // con.eventosPorContrato(index);
-              // modalComponents.showModal(estatus.contenidoEstatus(
-              //   (contrato.estatus!.idEstatus == 7 || contrato.estatus!.idEstatus == 19).obs,
-              //   contrato
-              // ));
+              Get.toNamed('/progressContract', arguments: contrato);
             },
             title: 'Entrar',
             icon: CupertinoIcons.square_arrow_right_fill,

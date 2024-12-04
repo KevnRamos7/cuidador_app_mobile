@@ -17,8 +17,8 @@ class SelectProfileController extends GetxController {
   List<MenuModel> menusCliente = <MenuModel>[
     MenuModel(idMenu: 1, nombreMenu: 'FeedPage', rutaMenu: '/home', icono: CupertinoIcons.house),
     MenuModel(idMenu: 2, nombreMenu: 'Cuidados', rutaMenu: '/list_contratos', icono: CupertinoIcons.heart),
-    MenuModel(idMenu: 3, nombreMenu: 'Perfil', rutaMenu: 'my_profile_cliente', icono: CupertinoIcons.person),
-    MenuModel(idMenu: 4, nombreMenu: 'Finanzas', rutaMenu: '/finanzas', icono: CupertinoIcons.money_dollar_circle_fill)
+    MenuModel(idMenu: 3, nombreMenu: 'Finanzas', rutaMenu: '/finanzas', icono: CupertinoIcons.money_dollar_circle_fill),
+    MenuModel(idMenu: 4, nombreMenu: 'Ver Más', rutaMenu: 'my_profile_cliente', icono: CupertinoIcons.equal_circle_fill)
   ];
 
   List<MenuModel> menusCuidador = <MenuModel>[
@@ -53,7 +53,7 @@ class SelectProfileController extends GetxController {
     if(usuario.tipoUsuarioId == 2){
       BottomNavigationMain.instance.con.setIndex(0);
       BottomNavigationMain.instance.parameters.assignAll(menusCliente);
-      Get.offNamedUntil('/home', (route) => false);
+      Get.toNamed('/home');
     }
     else{
       BottomNavigationMain.instance.con.setIndex(0);

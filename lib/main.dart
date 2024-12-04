@@ -1,5 +1,7 @@
 
 import 'package:cuidador_app_mobile/Domain/Utilities/colors_theme_data.dart';
+import 'package:cuidador_app_mobile/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -11,6 +13,7 @@ import 'Domain/Utilities/route.dart';
 void main() async{
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
   await GetStorage.init(); 
   FlutterNativeSplash.remove();

@@ -48,6 +48,7 @@ class ProfileCuidadorMain extends StatelessWidget {
                     _listCardReviews(),
                     _moreInformationComtainer(),
                     _experienceContainer(),
+                    _horariosContainer(),
                     const SizedBox(height: 30,)
                   ],
                 ),
@@ -106,7 +107,7 @@ class ProfileCuidadorMain extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('\$ ${con.profileCuidador.value.salarioCuidador ?? 0.0} MXN', style: const TextStyle(color: Color.fromARGB(255, 8, 83, 10), fontSize: 20), textAlign: TextAlign.center,),
+              Text('\$ ${con.profileCuidador.value.horariosCuidador?.first.precioPorHora ?? 0.0} MXN', style: const TextStyle(color: Color.fromARGB(255, 8, 83, 10), fontSize: 20), textAlign: TextAlign.center,),
               const SizedBox(width: 5,),
               const Text('por hora', style: TextStyle(color: Colors.grey, fontSize: 15), textAlign: TextAlign.center,),
             ],
@@ -116,7 +117,7 @@ class ProfileCuidadorMain extends StatelessWidget {
             height: Get.height * 0.05,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate((con.profileCuidador.value.comentariosUsuario?.isNotEmpty == true ? con.profileCuidador.value.comentariosUsuario!.map((c) => c.calificacion!.toDouble()).reduce((a, b) => a + b) / 5 : 0).toInt(), (index) {
+                children: List.generate((con.profileCuidador.value.comentariosUsuario?.isNotEmpty == true ? (con.profileCuidador.value.comentariosUsuario!.map((c) => c.calificacion!.toDouble()).reduce((a, b) => a + b) / con.profileCuidador.value.comentariosUsuario!.length).toInt() : 0), (index) {
                 return const Icon(Icons.star, color: Colors.yellow, size: 20);
               }),
             ),
@@ -345,6 +346,7 @@ class ProfileCuidadorMain extends StatelessWidget {
   }
 
   Widget _experienceContainer(){
+    LetterDates letterDates = LetterDates();
     return Container(
       margin: EdgeInsets.only(top: Get.height * 0.02),
       height: Get.height * 0.3,
@@ -369,8 +371,53 @@ class ProfileCuidadorMain extends StatelessWidget {
             child: ListView.builder(
               itemCount: con.profileCuidador.value.persona?.first.certificaciones?.length ?? 0,
               itemBuilder: (context, index){
-                return _profileMoreInformationItem(con.profileCuidador.value.persona?.first.certificaciones![index].tipoCerficacion ?? '', 
-                con.profileCuidador.value.persona?.first.certificaciones![index].fechaCerficacion ?? '', null);
+                return ListTile(
+                  title: Text(con.profileCuidador.value.persona?.first.certificaciones?[index].descripcion ?? '', style: const TextStyle(color: Colors.black, fontSize: 15),),
+                  subtitle: Text('Experiencia de ${letterDates.calcularEdad(con.profileCuidador.value.persona?.first.certificaciones?[index].fechaCerficacion ?? '')} años', style: const TextStyle(color: Colors.grey, fontSize: 13),),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _horariosContainer(){
+    return Container(
+      margin: EdgeInsets.only(top: Get.height * 0.02),
+      height: Get.height * 0.3,
+      width: Get.width * 0.97,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          const Text('Experiencia', style: TextStyle(color: Colors.grey, fontSize: 18),),
+          const SizedBox(height: 20,),
+          Expanded(
+            child: ListView.builder(
+              itemCount: con.profileCuidador.value.persona?.first.certificaciones?.length ?? 0,
+              itemBuilder: (context, index){
+                return ListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(con.profileCuidador.value.horariosCuidador![index].diaSemana ?? '', style: const TextStyle(color: Colors.black, fontSize: 15),),
+                      Text('${con.profileCuidador.value.horariosCuidador![index].horaInicio}   a   ${con.profileCuidador.value.horariosCuidador![index].horaFin}', style: const TextStyle(color: Colors.black, fontSize: 15),),
+                    ],
+                  ),
+                  subtitle: Text('Costo por hora de \$${con.profileCuidador.value.horariosCuidador?[index].precioPorHora ?? 0}', style: const TextStyle(color: Colors.grey, fontSize: 13),),
+                );
               },
             ),
           ),

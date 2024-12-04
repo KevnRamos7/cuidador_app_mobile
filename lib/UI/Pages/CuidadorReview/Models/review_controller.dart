@@ -121,10 +121,10 @@ class ReviewController extends GetxController{
       snackbarUI.snackbarError('Calificación no seleccionada', 'Selecciona una calificación');
       return false;
     }
-    if(reviewController.text.isEmpty){
-      snackbarUI.snackbarError('Comentario vacío', 'Escribe un comentario');
-      return false;
-    }
+    // if(reviewController.text.isEmpty){
+    //   snackbarUI.snackbarError('Comentario vacío', 'Escribe un comentario');
+    //   return false;
+    // }
     return true;
   }
 

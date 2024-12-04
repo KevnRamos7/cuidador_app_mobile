@@ -19,7 +19,7 @@ class ComentariosModel{
       personaEmisor: json['personaEmisor'] != null ? PersonaModel.fromJson(json['personaEmisor']) : null,
       calificacion: json['calificacion'],
       comentario: json['comentario'],
-      // fechaRegistro: json['fecha_registro'] != null ? DateTime.tryParse(json['fecha_registro']) : null
+      fechaRegistro: json['fechaRegistro'] != null ? DateTime.tryParse(json['fechaRegistro']) : null
     );
   }
 
@@ -30,7 +30,7 @@ class ComentariosModel{
     data['personaEmisor'] = personaEmisor;
     data['calificacion'] = calificacion;
     data['comentario'] = comentario;
-    // data['fechaRegistro'] = fechaRegistro;
+    data['fechaRegistro'] = fechaRegistro;
     return data;
   }
 

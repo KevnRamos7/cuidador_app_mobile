@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "3287239514",
+    "project_id": "cuidador-5d99d",
+    "storage_bucket": "cuidador-5d99d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3287239514:android:18af3b894bc943e6e00163",
+        "android_client_info": {
+          "package_name": "com.cuidador.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-3b4qCMc_Lg74qc9netfMvxrvCgzSu1A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

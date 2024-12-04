@@ -4,13 +4,27 @@ import 'package:latlong2/latlong.dart';
 
 class LocationModule {
 
-  Widget mapTest(){
+  Widget mapTest(LatLng initialCoordinates){
     return FlutterMap(
-      options: const MapOptions(
-        initialCenter: LatLng(37.7749, -122.4194), // Coordenadas de ejemplo (San Francisco)
+      options: MapOptions(
+        initialCenter: initialCoordinates, // Coordenadas de ejemplo (San Francisco)
         initialZoom: 13,
       ),
       children: [
+        MarkerLayer(
+          markers: [
+            Marker(
+              width: 80.0,
+              height: 80.0,
+              point: initialCoordinates,
+              child: const Icon(
+                Icons.location_on,
+                color: Colors.red,
+                size: 50.0,
+              ),
+            ),
+          ],
+        ),
         TileLayer(
           urlTemplate: 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
           additionalOptions:  const{
